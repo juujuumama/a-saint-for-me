@@ -1,0 +1,401 @@
+// A Saint for Me — client
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = (s = "") => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const main = $("#main");
+const store = { get: (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } }, set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} } };
+
+async function api(path, opts = {}) {
+  const res = await fetch(path, { headers: { "Content-Type": "application/json" }, credentials: "same-origin", ...opts, body: opts.body ? JSON.stringify(opts.body) : undefined });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(json.error || "Something went wrong.");
+  return json;
+}
+function toast(msg) { const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("show"), 2600); }
+const fmtDate = (iso, opts = { weekday: "long", month: "long", day: "numeric" }) => new Date(iso).toLocaleDateString(undefined, opts);
+const ICON = {
+  heart: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z" fill="currentColor"/></svg>',
+  heartO: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>',
+  refresh: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  share: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  book: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h9a4 4 0 0 1 4 4v12H8a3 3 0 0 1-3-3Z M5 17a3 3 0 0 1 3-3h10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+  lock: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>',
+};
+const CHIP_COLORS = ["var(--pink)", "var(--turq)", "var(--orange)", "var(--peach)", "var(--coral)"];
+
+// ---------------- router ----------------
+function navigate(path, replace = false) { (replace ? history.replaceState : history.pushState).call(history, {}, "", path); route(); }
+document.addEventListener("click", (e) => {
+  const a = e.target.closest("a[data-link]");
+  if (a && !e.metaKey && !e.ctrlKey && a.origin === location.origin) { e.preventDefault(); navigate(a.pathname); }
+});
+addEventListener("popstate", route);
+let pollTimer = null;
+function route() {
+  clearTimeout(pollTimer);
+  const p = location.pathname;
+  $$("[data-nav]").forEach((n) => n.removeAttribute("aria-current"));
+  if (p.startsWith("/e/")) return renderExperience(p.slice(3));
+  if (p === "/journey") { $('[data-nav="journey"]').setAttribute("aria-current", "page"); return renderJourney(); }
+  $('[data-nav="today"]').setAttribute("aria-current", "page");
+  renderHome();
+}
+
+// ---------------- HOME ----------------
+let OPTIONS = null;
+async function renderHome() {
+  document.title = "A Saint for Me";
+  const [opts, me] = await Promise.all([OPTIONS || api("/api/options"), api("/api/me")]);
+  OPTIONS = opts;
+  const state = { mode: "new", emotions: new Set(), circumstances: new Set(), continueFrom: null };
+  const returning = me.returning;
+  const canContinue = me.settings.memoryConsent && me.recentIntentions.length;
+
+  main.innerHTML = `
+  <section class="hero">
+    <div class="hero-art" style="background-image:url('/hero.svg')"></div>
+    <div class="hero-inner">
+      ${returning ? `<p class="welcome">Welcome back. We're glad you're here.</p>` : `<p class="eyebrow">Your daily art &amp; prayer</p>`}
+      <h1>What's on your <span>heart</span> today?</h1>
+      <p class="lead">Tell us what you're carrying, what you're celebrating, or what you need help navigating. We'll help you find the prayers, saints, and words of faith for this moment.</p>
+    </div>
+  </section>
+  <form class="checkin" id="checkin" novalidate>
+    <div class="paths" role="group" aria-label="How would you like to pray today?">
+      <button type="button" class="path" data-mode="new" aria-pressed="true">${returning ? "Something new on my heart" : "What's on my heart"}</button>
+      ${returning ? `<button type="button" class="path" data-mode="continue" aria-pressed="false">Keep praying about something</button>` : ""}
+      <button type="button" class="path" data-mode="someone" aria-pressed="false">Pray for someone</button>
+      <button type="button" class="path" data-mode="thanks" aria-pressed="false">Give thanks</button>
+    </div>
+    <div id="continueBox" hidden></div>
+    <div id="personBox" hidden style="margin-bottom:14px">
+      <label class="field-label" for="personName">Who would you like to pray for?</label>
+      <input type="text" id="personName" maxlength="40" placeholder="A first name is plenty" autocomplete="off">
+    </div>
+    <label class="field-label" for="text" id="textLabel">${returning ? "How are you feeling today?" : "In your own words"}</label>
+    <textarea id="text" maxlength="2000" placeholder="Write as much or as little as you like…"></textarea>
+    <p class="hint">Write freely, choose a few words below, or both. Nothing here is required.</p>
+    <div class="chip-group"><h3>Feelings</h3><div class="chips" data-kind="emotions">
+      ${opts.emotions.map((e, i) => `<button type="button" class="chip" style="--c:${CHIP_COLORS[i % 5]}" data-id="${e.id}" aria-pressed="false">${esc(e.label)}</button>`).join("")}
+    </div></div>
+    <div class="chip-group"><h3>What it's about</h3><div class="chips" data-kind="circumstances">
+      ${opts.circumstances.map((c, i) => `<button type="button" class="chip" style="--c:${CHIP_COLORS[(i + 2) % 5]}" data-id="${c.id}" aria-pressed="false">${esc(c.label)}</button>`).join("")}
+    </div></div>
+    <div class="submit-row">
+      <span class="privacy-note">${ICON.lock} Private to you. The art studio never sees your words.</span>
+      <button class="btn primary" id="go">Receive today's devotional</button>
+    </div>
+    <p class="hint" id="formError" role="alert" style="color:#C0392B"></p>
+  </form>
+  <section class="recent" id="recent" hidden></section>`;
+
+  const LABELS = {
+    new: returning ? "How are you feeling today?" : "In your own words",
+    continue: "Anything new since then? (optional)",
+    someone: "What would you like to pray for them?",
+    thanks: "What would you like to give thanks for?",
+  };
+  $$(".path").forEach((b) => b.addEventListener("click", () => {
+    state.mode = b.dataset.mode;
+    $$(".path").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+    $("#textLabel").textContent = LABELS[state.mode];
+    $("#personBox").hidden = state.mode !== "someone";
+    const box = $("#continueBox");
+    box.hidden = state.mode !== "continue";
+    if (state.mode === "continue") {
+      box.innerHTML = canContinue
+        ? `<p class="field-label" style="font-size:1.05rem">Would you like to continue praying about…</p><div class="continue-list">${me.recentIntentions.map((r) => `<button type="button" data-id="${r.id}" aria-pressed="false">${esc(r.title)}${r.personName ? ` · for ${esc(r.personName)}` : ""}<small>${fmtDate(r.date, { month: "short", day: "numeric" })}</small></button>`).join("")}</div>`
+        : `<div class="notice" style="margin:0 0 14px">To continue an earlier intention without retelling your story, turn on <button type="button" class="btn small ghost" id="openMemory">Remember my intentions</button>. Or simply write about it below.</div>`;
+      $$(".continue-list button", box).forEach((cb) => cb.addEventListener("click", () => {
+        state.continueFrom = cb.getAttribute("aria-pressed") === "true" ? null : cb.dataset.id;
+        $$(".continue-list button", box).forEach((x) => x.setAttribute("aria-pressed", String(x.dataset.id === state.continueFrom)));
+      }));
+      $("#openMemory", box)?.addEventListener("click", openSettings);
+    }
+  }));
+  $$(".chips").forEach((group) => group.addEventListener("click", (e) => {
+    const c = e.target.closest(".chip"); if (!c) return;
+    const set = state[group.dataset.kind];
+    set.has(c.dataset.id) ? set.delete(c.dataset.id) : set.add(c.dataset.id);
+    c.setAttribute("aria-pressed", String(set.has(c.dataset.id)));
+  }));
+
+  $("#checkin").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const body = {
+      mode: state.mode, text: $("#text").value, personName: $("#personName").value,
+      emotions: [...state.emotions], circumstances: [...state.circumstances], continueFrom: state.continueFrom,
+    };
+    if (state.mode === "continue" && !state.continueFrom && !body.text.trim() && !body.emotions.length) return ($("#formError").textContent = "Choose an intention to continue, or write a few words.");
+    if (state.mode === "someone" && !body.personName.trim() && !body.text.trim()) return ($("#formError").textContent = "Add a name or a few words about who you're praying for.");
+    if (state.mode === "new" && !body.text.trim() && !body.emotions.length && !body.circumstances.length) return ($("#formError").textContent = "Share a few words, or choose a feeling to begin.");
+    renderPreparing();
+    try {
+      const exp = await api("/api/devotional", { method: "POST", body });
+      history.pushState({}, "", `/e/${exp.id}`);
+      renderExperience(exp.id, exp);
+    } catch (err) { await renderHome(); $("#formError").textContent = err.message; }
+  });
+
+  // gentle look back
+  if (returning) api("/api/journey").then(({ experiences }) => {
+    const items = experiences.filter((x) => x.art.current).slice(0, 8);
+    if (!items.length) return;
+    const r = $("#recent"); r.hidden = false;
+    r.innerHTML = `<div class="section-title"><h2>From your recent days</h2><a href="/journey" data-link>See your collection →</a></div>
+      <div class="strip">${items.map(tile).join("")}</div>`;
+  }).catch(() => {});
+}
+
+function renderPreparing() {
+  const lines = ["Listening to what's on your heart…", "Finding saints who have walked this road…", "Writing a prayer for this moment…", "Choosing words of Scripture…"];
+  main.innerHTML = `<section class="preparing" aria-live="polite"><div><div class="orb" aria-hidden="true"></div><h2>Preparing your devotional</h2><p id="prepLine">${lines[0]}</p></div></section>`;
+  let i = 0; const t = setInterval(() => { const el = $("#prepLine"); if (!el) return clearInterval(t); el.textContent = lines[++i % lines.length]; }, 2600);
+  scrollTo({ top: 0 });
+}
+
+// ---------------- EXPERIENCE ----------------
+let VIEW = store.get("asfm:view", "prayer");
+async function renderExperience(id, preloaded) {
+  let exp;
+  try { exp = preloaded || (await api(`/api/experiences/${id}`)); } catch { main.innerHTML = `<div class="empty"><h2>We couldn't find that devotional.</h2><p><a href="/" data-link>Return to today</a></p></div>`; return; }
+  const d = exp.devotional;
+  document.title = `${exp.intentionTitle} · A Saint for Me`;
+  const paras = d.prayer.body.split(/\n\s*\n/).map((p) => `<p>${esc(p.trim())}</p>`).join("");
+
+  main.innerHTML = `
+  <header class="exp-head">
+    <span class="date">${fmtDate(exp.createdAt)}${exp.personName ? ` · Praying for ${esc(exp.personName)}` : ""}</span>
+    <h1>${esc(exp.intentionTitle)}</h1>
+    <p class="opening">${esc(d.opening)}</p>
+  </header>
+  ${exp.care ? `<aside class="care" role="note"><h2>${esc(exp.care.heading)}</h2><p>${esc(exp.care.body)}</p><ul>${exp.care.links.map((l) => `<li><a href="${esc(l.href)}" ${l.href.startsWith("http") ? 'target="_blank" rel="noopener"' : ""}>${esc(l.label)}</a></li>`).join("")}</ul></aside>` : ""}
+  <div class="diptych">
+    <div class="art-col" id="artCol"></div>
+    <div>
+      <article class="card prayer" id="prayer">
+        <span class="badge ai" title="Composed for you with AI. Not an official prayer of the Church.">✦ Written for you</span>
+        <h2>${esc(d.prayer.title)}</h2>
+        <div class="prayer-body">${paras}<p class="closing">${esc(d.prayer.closing)}</p></div>
+        <div class="row" style="margin-top:6px">
+          <button class="btn small ghost" id="savePrayer">${exp.prayerSaved ? ICON.heart + " Prayer saved" : ICON.book + " Save this prayer"}</button>
+        </div>
+        <p class="provenance">This prayer was composed ${d.source === "claude" ? "with AI" : "from our prayer library"} for what you shared. It is not an official prayer of the Church. Traditional prayers below are marked “Traditional”.</p>
+      </article>
+    </div>
+  </div>
+
+  <div class="section-title"><h2>Saints to walk with you</h2></div>
+  <div class="saints">${d.saints.map((s) => `
+    <article class="card saint">
+      <figure><img src="${s.emblem}" alt="Symbolic emblem for ${esc(s.name)}" loading="lazy" width="480" height="600"><figcaption>Symbolic emblem · artistic interpretation</figcaption></figure>
+      <div class="body">
+        <h3>${esc(s.name)}</h3>
+        <p class="facts">${esc(s.years)} · Feast: ${esc(s.feast)}<br>${esc(s.region)}</p>
+        <div class="tags">${s.patronages.slice(0, 4).map((p) => `<span>${esc(p)}</span>`).join("")}</div>
+        <p class="why">${esc(s.why)}</p>
+        <details><summary>Their story</summary><p>${esc(s.story)}</p></details>
+      </div>
+    </article>`).join("")}
+  </div>
+
+  <div class="section-title"><h2>Words of Scripture</h2></div>
+  ${d.scripture.map((s) => `<div class="card scripture"><blockquote>${esc(s.text)}</blockquote><cite>${esc(s.ref)} · <a href="${esc(s.url)}" target="_blank" rel="noopener">Read in context</a></cite><p class="conn">${esc(s.connection)}</p></div>`).join("")}
+  <p class="hint">Quotations adapted from the World English Bible (public domain). “Read in context” opens the New American Bible on usccb.org.</p>
+
+  <div class="section-title"><h2>Traditional prayers &amp; devotions</h2></div>
+  ${d.devotions.map((v) => `<div class="card devotion"><span class="badge trad">✝ Traditional</span><h3>${esc(v.title)}</h3>
+    ${v.kind === "prayer" ? `<p class="text">${esc(v.text)}</p>${v.note ? `<p class="hint">${esc(v.note)}</p>` : ""}` : ""}
+    ${v.kind === "rosary" ? `<p class="hint">Traditionally prayed on ${esc(v.days)}</p><ol>${v.mysteries.map((m) => `<li>${esc(m)}</li>`).join("")}</ol>` : ""}
+    ${v.kind === "devotion" ? `<p>${esc(v.description)}</p><p><a href="${esc(v.url)}" target="_blank" rel="noopener">Learn more</a></p>` : ""}
+    <p class="suggest">${esc(v.suggestion)}</p></div>`).join("")}
+
+  <section class="card reflection"><p>${esc(d.reflection)}</p><a class="btn" href="/journey" data-link>Visit my collection</a></section>`;
+
+  $("#savePrayer").addEventListener("click", async () => {
+    exp = await api(`/api/experiences/${exp.id}/save`, { method: "POST", body: { prayerSaved: !exp.prayerSaved } });
+    $("#savePrayer").innerHTML = exp.prayerSaved ? ICON.heart + " Prayer saved" : ICON.book + " Save this prayer";
+    toast(exp.prayerSaved ? "Prayer saved to your collection" : "Prayer removed from saved");
+  });
+  renderArt(exp);
+  scrollTo({ top: 0 });
+}
+
+function renderArt(exp) {
+  const col = $("#artCol"); if (!col) return;
+  const d = exp.devotional, art = exp.art, cur = art.current;
+  const busy = art.status === "queued" || art.status === "generating";
+  const imgOrPending = cur && !(busy && !cur)
+    ? `<img src="${cur.url}" alt="Original devotional artwork: ${esc(cur.title || d.art_brief.title)}">`
+    : "";
+  const pending = busy ? `<div class="art-pending" style="${cur ? "background:rgba(36,22,58,.65)" : ""}"><div><div class="glass" aria-hidden="true"></div><p>Your artwork is being made…</p></div></div>` : "";
+  const failed = !cur && art.status === "failed" ? `<div class="art-pending"><p>No artwork yet. Your prayer is ready.</p></div>` : "";
+  const firstLines = d.prayer.body.split(/\n\s*\n/).slice(0, 2).join(" ");
+  const saintNames = d.saints.slice(0, 3).map((s) => s.name).join(" · ");
+
+  let framed;
+  if (VIEW === "card") framed = `<div class="collectible"><div class="artframe">${imgOrPending}${pending}${failed}</div><div class="meta"><div class="t">${esc(d.prayer.title)}</div><div class="p">${esc(firstLines)}</div><div class="s">${esc(saintNames)}<br>${fmtDate(exp.createdAt, { month: "long", day: "numeric", year: "numeric" })}</div></div></div>`;
+  else framed = `<div class="artframe">${imgOrPending}${pending}${failed}${VIEW === "prayer" && cur ? `<div class="overlay-prayer"><h3>${esc(d.prayer.title)}</h3><p>${esc(firstLines)}</p></div>` : ""}</div>`;
+
+  col.innerHTML = `
+    <div class="view-switch" role="group" aria-label="Artwork view">
+      ${[["art", "Artwork"], ["prayer", "With prayer"], ["card", "Devotional card"]].map(([v, l]) => `<button data-view="${v}" aria-pressed="${VIEW === v}">${l}</button>`).join("")}
+    </div>
+    ${framed}
+    <div class="art-label">
+      <span><strong>${esc(cur?.title || d.art_brief.title)}</strong></span>
+      ${cur ? `<span class="badge ${cur.kind === "ai-generated" ? "ai" : ""}">${cur.kind === "ai-generated" ? "Original AI artwork" : "Studio sketch"}</span>` : ""}
+    </div>
+    ${art.notice ? `<p class="notice">${esc(art.notice)}</p>` : ""}
+    <div class="art-actions">
+      <button class="btn small" id="saveArt" ${!cur ? "disabled" : ""}>${exp.saved ? ICON.heart + " In my collection" : ICON.heartO + " Save to collection"}</button>
+      <button class="btn small ghost" id="shareArt" ${!cur ? "disabled" : ""}>${ICON.share} Download or share</button>
+      <button class="btn small ghost" id="regen" ${busy ? "disabled" : ""}>${ICON.refresh} New artwork</button>
+    </div>
+    ${art.history.length > 1 ? `<div class="history" role="group" aria-label="Artwork versions">${art.history.map((h) => `<button data-i="${h.index}" aria-pressed="${cur?.url === h.url}" aria-label="Version ${h.index + 1}"><img src="${h.url}" alt=""></button>`).join("")}</div>` : ""}`;
+
+  $$(".view-switch button", col).forEach((b) => b.addEventListener("click", () => { VIEW = b.dataset.view; store.set("asfm:view", VIEW); renderArt(exp); }));
+  $("#saveArt", col).addEventListener("click", async () => {
+    exp = await api(`/api/experiences/${exp.id}/save`, { method: "POST", body: { saved: !exp.saved } });
+    toast(exp.saved ? "Saved to My Devotional Collection" : "Removed from your collection");
+    renderArt(exp);
+  });
+  $("#regen", col).addEventListener("click", async () => {
+    try { exp = await api(`/api/experiences/${exp.id}/art/regenerate`, { method: "POST", body: {} }); renderArt(exp); poll(exp.id); }
+    catch (e) { toast(e.message); }
+  });
+  $("#shareArt", col).addEventListener("click", () => openShare(exp));
+  $$(".history button", col).forEach((b) => b.addEventListener("click", async () => { exp = await api(`/api/experiences/${exp.id}/art/select`, { method: "POST", body: { index: Number(b.dataset.i) } }); renderArt(exp); }));
+  if (busy) poll(exp.id);
+}
+
+function poll(id) {
+  clearTimeout(pollTimer);
+  pollTimer = setTimeout(async () => {
+    if (location.pathname !== `/e/${id}`) return;
+    try {
+      const exp = await api(`/api/experiences/${id}`);
+      if (exp.art.status === "queued" || exp.art.status === "generating") return poll(id);
+      renderArt(exp);
+    } catch { poll(id); }
+  }, 2500);
+}
+
+// ---------------- devotional card (canvas) ----------------
+function loadImage(src) { return new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; }); }
+function wrap(ctx, text, maxW) {
+  const words = text.split(/\s+/), lines = []; let line = "";
+  for (const w of words) { const t = line ? line + " " + w : w; if (ctx.measureText(t).width > maxW && line) { lines.push(line); line = w; } else line = t; }
+  if (line) lines.push(line); return lines;
+}
+function cover(ctx, img, x, y, w, h) {
+  const s = Math.max(w / img.width, h / img.height), iw = img.width * s, ih = img.height * s;
+  ctx.drawImage(img, x + (w - iw) / 2, y + (h - ih) / 2, iw, ih);
+}
+async function drawCard(canvas, exp, mode, format) {
+  await document.fonts.ready;
+  const W = 1080, H = format === "square" ? 1080 : 1350;
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext("2d");
+  const d = exp.devotional, img = await loadImage(exp.art.current.url);
+  const serif = '"Fraunces", Georgia, serif', sans = '"Instrument Sans", system-ui, sans-serif';
+  const body = d.prayer.body.replace(/\n\s*\n/g, " ");
+  if (mode === "art") { cover(ctx, img, 0, 0, W, H); return; }
+  if (mode === "prayer") {
+    cover(ctx, img, 0, 0, W, H);
+    const g = ctx.createLinearGradient(0, H * 0.3, 0, H); g.addColorStop(0, "rgba(20,15,31,0)"); g.addColorStop(0.45, "rgba(20,15,31,.82)"); g.addColorStop(1, "rgba(20,15,31,.95)");
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = "#FFF4EA"; ctx.font = `600 54px ${serif}`;
+    const pad = 80; let lines = wrap(ctx, d.prayer.title, W - pad * 2);
+    ctx.font = `italic 34px ${serif}`;
+    let pl = wrap(ctx, body, W - pad * 2); const maxL = format === "square" ? 9 : 13;
+    if (pl.length > maxL) { pl = pl.slice(0, maxL); pl[maxL - 1] = pl[maxL - 1].replace(/\s+\S*$/, "") + " …"; }
+    let y = H - pad - pl.length * 48 - 30 - lines.length * 62;
+    ctx.font = `600 54px ${serif}`; for (const l of lines) { ctx.fillText(l, pad, y); y += 62; }
+    y += 16; ctx.font = `italic 34px ${serif}`; for (const l of pl) { ctx.fillText(l, pad, y); y += 48; }
+    ctx.font = `600 22px ${sans}`; ctx.fillStyle = "#FFC9A8"; ctx.fillText("A SAINT FOR ME", pad, H - 44);
+    return;
+  }
+  // collectible card
+  ctx.fillStyle = "#FFF6EC"; ctx.fillRect(0, 0, W, H);
+  const m = 44, artH = format === "square" ? 620 : 820;
+  ctx.save(); roundRect(ctx, m, m, W - m * 2, artH, 28); ctx.clip(); cover(ctx, img, m, m, W - m * 2, artH); ctx.restore();
+  const grad = ctx.createLinearGradient(m, 0, W - m, 0); ["#FF5FA2", "#FF7A1A", "#FFC9A8", "#1FC8C0"].forEach((c, i) => grad.addColorStop(i / 3, c));
+  ctx.fillStyle = grad; ctx.fillRect(m, m + artH + 26, W - m * 2, 6);
+  ctx.textAlign = "center"; ctx.fillStyle = "#1E1530";
+  let y = m + artH + 96; ctx.font = `650 50px ${serif}`;
+  for (const l of wrap(ctx, d.prayer.title, W - 200).slice(0, 2)) { ctx.fillText(l, W / 2, y); y += 58; }
+  ctx.font = `italic 30px ${serif}`; ctx.fillStyle = "#3A2D4C";
+  const maxL = format === "square" ? 3 : 5; let pl = wrap(ctx, body, W - 220);
+  if (pl.length > maxL) { pl = pl.slice(0, maxL); pl[maxL - 1] = pl[maxL - 1].replace(/\s+\S*$/, "") + " …"; }
+  y += 6; for (const l of pl) { ctx.fillText(l, W / 2, y); y += 42; }
+  ctx.font = `600 22px ${sans}`; ctx.fillStyle = "#8A4B6B";
+  const saints = d.saints.slice(0, 3).map((s) => s.name.replace(/\s*\(.*\)/, "")).join("  ·  ").toUpperCase();
+  ctx.fillText(wrap(ctx, saints, W - 160)[0], W / 2, H - 82);
+  ctx.fillStyle = "#5B4E6B"; ctx.fillText(`A SAINT FOR ME  ·  ${fmtDate(exp.createdAt, { month: "long", day: "numeric", year: "numeric" }).toUpperCase()}`, W / 2, H - 46);
+}
+function roundRect(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+
+function openShare(exp) {
+  let mode = VIEW === "art" ? "art" : VIEW === "card" ? "card" : "prayer", format = "portrait";
+  const dlg = document.createElement("dialog"); dlg.className = "sheet share-sheet";
+  dlg.innerHTML = `<div class="sheet-inner"><h2>Your devotional card</h2>
+    <div class="formats"><div class="tabs" id="mode">${[["art", "Artwork"], ["prayer", "With prayer"], ["card", "Collectible card"]].map(([v, l]) => `<button data-v="${v}" aria-pressed="${v === mode}">${l}</button>`).join("")}</div>
+    <div class="tabs" id="fmt">${[["portrait", "Portrait"], ["square", "Square"]].map(([v, l]) => `<button data-v="${v}" aria-pressed="${v === format}">${l}</button>`).join("")}</div></div>
+    <div class="share-preview"><canvas aria-label="Card preview"></canvas></div>
+    <p class="hint">Cards include your prayer and saints, but never what you wrote privately.</p>
+    <div class="sheet-actions"><button class="btn ghost" data-close>Close</button><div class="row"><button class="btn ghost" id="dl">Download</button>${navigator.share ? `<button class="btn" id="sh">${ICON.share} Share</button>` : ""}</div></div></div>`;
+  document.body.append(dlg); dlg.showModal();
+  const canvas = $("canvas", dlg);
+  const redraw = () => drawCard(canvas, exp, mode, format).catch(() => toast("Couldn't draw the card."));
+  redraw();
+  $$("#mode button", dlg).forEach((b) => b.onclick = () => { mode = b.dataset.v; $$("#mode button", dlg).forEach((x) => x.setAttribute("aria-pressed", String(x === b))); redraw(); });
+  $$("#fmt button", dlg).forEach((b) => b.onclick = () => { format = b.dataset.v; $$("#fmt button", dlg).forEach((x) => x.setAttribute("aria-pressed", String(x === b))); redraw(); });
+  const blob = () => new Promise((r) => canvas.toBlob(r, "image/png"));
+  const name = `a-saint-for-me-${exp.intentionTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-")}.png`;
+  $("#dl", dlg).onclick = async () => { const a = document.createElement("a"); a.href = URL.createObjectURL(await blob()); a.download = name; a.click(); };
+  $("#sh", dlg)?.addEventListener("click", async () => {
+    const file = new File([await blob()], name, { type: "image/png" });
+    try { await navigator.share({ files: [file], title: exp.devotional.prayer.title }); } catch {}
+  });
+  $("[data-close]", dlg).onclick = () => dlg.close();
+  dlg.addEventListener("close", () => dlg.remove());
+}
+
+// ---------------- JOURNEY ----------------
+function tile(x) {
+  return `<a class="tile" href="/e/${x.id}" data-link>
+    <div class="img">${x.art.current ? `<img src="${x.art.current.url}" alt="" loading="lazy">` : ""}</div>
+    <div class="info"><strong>${esc(x.intentionTitle)}</strong><small>${fmtDate(x.createdAt, { month: "short", day: "numeric", year: "numeric" })} ${x.saved ? '<span class="heart" aria-label="Saved">♥</span>' : ""}${x.prayerSaved ? " · prayer saved" : ""}</small></div></a>`;
+}
+let JFILTER = "all";
+async function renderJourney() {
+  document.title = "My Devotional Collection · A Saint for Me";
+  const { experiences } = await api(`/api/journey${JFILTER === "all" ? "" : `?filter=${JFILTER}`}`);
+  main.innerHTML = `
+    <div class="journey-head"><div><p class="eyebrow" style="color:var(--accent)">Your prayer journey</p><h1>My Devotional Collection</h1></div>
+      <div class="tabs" role="group" aria-label="Filter">${[["all", "All days"], ["saved", "Saved art"], ["prayers", "Saved prayers"]].map(([v, l]) => `<button data-f="${v}" aria-pressed="${JFILTER === v}">${l}</button>`).join("")}</div></div>
+    ${experiences.length ? `<div class="gallery">${experiences.map(tile).join("")}</div>`
+      : `<div class="empty"><h2>${JFILTER === "all" ? "Your collection begins today" : "Nothing saved here yet"}</h2><p>Each devotional you receive keeps its artwork, prayer and saints together here, whether you visit every day or once in a while.</p><a class="btn primary" href="/" data-link>What's on your heart?</a></div>`}`;
+  $$(".tabs button").forEach((b) => b.addEventListener("click", () => { JFILTER = b.dataset.f; renderJourney(); }));
+}
+
+// ---------------- settings ----------------
+async function openSettings() {
+  const me = await api("/api/me");
+  $("#memoryToggle").checked = me.settings.memoryConsent;
+  $("#settings").showModal();
+}
+$("#settingsBtn").addEventListener("click", openSettings);
+$("#memoryToggle").addEventListener("change", async (e) => {
+  await api("/api/me/settings", { method: "POST", body: { memoryConsent: e.target.checked } });
+  toast(e.target.checked ? "We'll remember your intentions" : "Memory off. Your words have been forgotten.");
+  if (location.pathname === "/") renderHome();
+});
+$("#deleteAll").addEventListener("click", async () => {
+  if (!confirm("Delete all your devotionals, artwork and settings? This can't be undone.")) return;
+  await api("/api/me", { method: "DELETE" });
+  $("#settings").close(); toast("Everything has been deleted."); navigate("/");
+});
+
+route();

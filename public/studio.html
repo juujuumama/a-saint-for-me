@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Style Studio</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..800,0..100;1,9..144,300..700,0..100&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    .studio { max-width: 1180px; margin: 0 auto; padding: 24px 16px 60px; }
+    .studio h1 { font-size: clamp(2rem, 5vw, 2.8rem); }
+    .grid2 { display: grid; gap: 20px; grid-template-columns: minmax(0, 1fr); }
+    @media (min-width: 900px) { .grid2 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+    .card h2 { font-size: 1.4rem; }
+    .prov { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px dashed var(--line); }
+    .prov:last-child { border: 0; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: #C0392B; }
+    .dot.ok { background: var(--turq); }
+    code { font-size: .85em; background: var(--bg-2); padding: 1px 6px; border-radius: 6px; }
+    .refs { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr)); gap: 14px; margin-top: 14px; }
+    .ref { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--bg-2); }
+    .ref img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+    .ref .b { padding: 10px; font-size: .85rem; }
+    .ref .b .row { margin-top: 8px; }
+    .ref pre { white-space: pre-wrap; font-size: .76rem; max-height: 160px; overflow: auto; background: var(--surface); padding: 8px; border-radius: 8px; }
+    .drop { border: 2px dashed var(--line); border-radius: 16px; padding: 22px; text-align: center; cursor: pointer; }
+    .drop.over { border-color: var(--pink); background: color-mix(in srgb, var(--pink) 8%, transparent); }
+    textarea.json { font: .82rem/1.45 ui-monospace, Menlo, monospace; min-height: 420px; }
+    select, input[type=text].sm { border: 1.5px solid var(--line); border-radius: 12px; background: var(--bg-2); color: var(--ink); padding: 10px 12px; font: inherit; width: 100%; }
+    .form-grid { display: grid; gap: 10px; }
+    .preview-out img { border-radius: 14px; box-shadow: var(--shadow); margin-top: 12px; max-height: 70vh; }
+    .preview-out details pre { white-space: pre-wrap; font-size: .8rem; }
+    .palette { display: flex; gap: 6px; flex-wrap: wrap; margin: 6px 0 12px; }
+    .palette span { width: 38px; height: 38px; border-radius: 10px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.1); }
+  </style>
+</head>
+<body>
+  <header class="topbar"><a href="/" class="wordmark"><span>A Saint <em>for</em> Me</span></a><nav><a href="/studio" aria-current="page">Style Studio</a></nav></header>
+  <main class="studio" id="app">
+    <p class="eyebrow" style="color:var(--accent)">Founder tools</p>
+    <h1>Style Studio</h1>
+    <p class="muted" style="max-width:720px">Shape the visual signature of every devotional: upload your own artworks as style references, distill them into reusable style notes, tune the house style, and choose which image model paints.</p>
+    <form id="login" class="card" style="max-width:480px">
+      <label class="field-label" for="tok">Studio token</label>
+      <input type="text" id="tok" class="sm" autocomplete="off" placeholder="The STUDIO_TOKEN from your .env">
+      <p class="hint" id="loginErr" style="color:#C0392B"></p>
+      <button class="btn" style="margin-top:8px">Enter studio</button>
+    </form>
+    <div id="panels" hidden></div>
+  </main>
+  <div id="toast" role="status" aria-live="polite"></div>
+<script type="module">
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = (s = "") => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+let TOKEN = sessionStorage.getItem("asfm:studio") || "";
+const toast = (m) => { const t = $("#toast"); t.textContent = m; t.classList.add("show"); setTimeout(() => t.classList.remove("show"), 2600); };
+async function api(path, opts = {}) {
+  const isForm = opts.body instanceof FormData;
+  const res = await fetch("/api/studio" + path, { ...opts, headers: { "x-studio-token": TOKEN, ...(isForm ? {} : { "Content-Type": "application/json" }) }, body: isForm ? opts.body : opts.body ? JSON.stringify(opts.body) : undefined });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) throw Object.assign(new Error(json.error || res.statusText), { status: res.status });
+  return json;
+}
+
+$("#login").addEventListener("submit", async (e) => { e.preventDefault(); TOKEN = $("#tok").value.trim(); boot(); });
+
+async function boot() {
+  try { await api("/providers"); } catch (e) { $("#loginErr").textContent = e.message; return; }
+  sessionStorage.setItem("asfm:studio", TOKEN);
+  $("#login").hidden = true; $("#panels").hidden = false;
+  $("#panels").innerHTML = `
+    <div class="grid2" style="margin-top:24px">
+      <section class="card"><h2>Image providers</h2><div id="providers"></div></section>
+      <section class="card"><h2>Preview the style</h2><div id="preview"></div></section>
+    </div>
+    <section class="card" style="margin-top:20px"><h2>Reference artworks</h2>
+      <p class="muted">Upload your own pieces. References marked “Guide generation” are sent to providers that accept reference images (e.g. OpenAI) as a style guide. Every provider also benefits from the style notes you adopt. New compositions are always original; references are never reproduced.</p>
+      <label class="drop" id="drop"><input type="file" id="file" accept="image/png,image/jpeg,image/webp" multiple hidden><strong>Drop artworks here</strong> or click to choose · PNG, JPEG or WEBP, up to 15 MB</label>
+      <div class="refs" id="refs"></div>
+    </section>
+    <section class="card" style="margin-top:20px"><h2>House style configuration</h2>
+      <div class="palette" id="palette"></div>
+      <p class="muted">Palette, composition archetypes, textures, techniques, motifs (by theme), lighting, typography, iconography rules, things to avoid, and the prompt template. Saved changes apply to the next artwork, with no rebuild needed.</p>
+      <textarea class="json" id="styleJson" spellcheck="false"></textarea>
+      <div class="row" style="margin-top:10px"><button class="btn" id="saveStyle">Save style</button><span class="hint" id="styleMsg"></span></div>
+    </section>`;
+  loadProviders(); loadRefs(); loadStyleEditor(); setupPreview();
+  const drop = $("#drop"), file = $("#file");
+  file.addEventListener("change", () => uploadFiles(file.files));
+  drop.addEventListener("dragover", (e) => { e.preventDefault(); drop.classList.add("over"); });
+  drop.addEventListener("dragleave", () => drop.classList.remove("over"));
+  drop.addEventListener("drop", (e) => { e.preventDefault(); drop.classList.remove("over"); uploadFiles(e.dataTransfer.files); });
+}
+
+async function loadProviders() {
+  const { status, devotionalAI, config } = await api("/providers");
+  $("#providers").innerHTML = `
+    <p class="muted" style="margin-top:0">Devotional writing: <strong>${devotionalAI ? "Claude (connected)" : "offline composer (set ANTHROPIC_API_KEY)"}</strong></p>
+    ${status.map((p) => `<div class="prov"><span class="dot ${p.configured ? "ok" : ""}" title="${p.configured ? "Credentials found" : "Missing credentials"}"></span>
+      <div><strong>${esc(p.label)}</strong>${p.model ? ` · <code>${esc(p.model)}</code>` : ""}<br><span class="hint">${p.type === "http" ? `Posts to the endpoint in config/providers.json${p.credentialEnv ? ` · optional key <code>${p.credentialEnv}</code>` : ""}` : p.credentialEnv ? (p.configured ? `Key found in <code>${p.credentialEnv}</code>` : `Set <code>${p.credentialEnv}</code> in .env, then restart`) : "No key needed"}</span></div>
+      ${p.active ? `<span class="badge trad">Active</span>` : `<button class="btn small ghost" data-activate="${p.id}" ${p.configured ? "" : "disabled"}>Use</button>`}</div>`).join("")}
+    <p class="hint">Fallback order if the active provider fails: ${[...config.fallbackChain, "procedural"].filter((v, i, a) => a.indexOf(v) === i).join(" → ")}. To change models, edit <code>config/providers.json</code>; changes apply on the next artwork.</p>`;
+  $$("[data-activate]").forEach((b) => b.onclick = async () => { await api("/providers", { method: "PUT", body: { active: b.dataset.activate } }); toast("Provider switched"); loadProviders(); });
+}
+
+async function uploadFiles(files) {
+  if (!files?.length) return;
+  const fd = new FormData(); [...files].forEach((f) => fd.append("files", f));
+  try { await api("/references", { method: "POST", body: fd }); toast("Uploaded"); loadRefs(); } catch (e) { toast(e.message); }
+}
+async function loadRefs() {
+  const refs = await api("/references");
+  const imgs = await Promise.all(refs.map(async (r) => {
+    const res = await fetch(r.url, { headers: { "x-studio-token": TOKEN } });
+    return URL.createObjectURL(await res.blob());
+  }));
+  $("#refs").innerHTML = refs.length ? refs.map((r, i) => `<div class="ref"><img src="${imgs[i]}" alt="${esc(r.name)}"><div class="b">
+    <strong>${esc(r.name)}</strong>
+    <label style="display:flex;gap:6px;align-items:center;margin-top:6px"><input type="checkbox" data-use="${r.id}" ${r.useForGeneration ? "checked" : ""}> Guide generation</label>
+    ${r.notes ? `<details><summary>Style notes</summary><pre>${esc(JSON.stringify(r.notes, null, 2))}</pre></details>` : ""}
+    <div class="row"><button class="btn small ghost" data-analyze="${r.id}">${r.notes ? "Re-analyze" : "Analyze style"}</button>
+    ${r.notes ? `<button class="btn small" data-adopt="${r.id}">Adopt note</button>` : ""}
+    <button class="btn small ghost danger" data-del="${r.id}">Remove</button></div></div></div>`).join("")
+    : `<p class="hint">No references yet.</p>`;
+  $$("[data-use]").forEach((c) => c.onchange = () => api(`/references/${c.dataset.use}`, { method: "PATCH", body: { useForGeneration: c.checked } }));
+  $$("[data-analyze]").forEach((b) => b.onclick = async () => { b.disabled = true; b.textContent = "Analyzing…"; try { await api(`/references/${b.dataset.analyze}/analyze`, { method: "POST" }); loadRefs(); } catch (e) { toast(e.message); b.disabled = false; b.textContent = "Analyze style"; } });
+  $$("[data-adopt]").forEach((b) => b.onclick = async () => { await api(`/references/${b.dataset.adopt}/adopt`, { method: "POST" }); toast("Style note added to the house style"); loadStyleEditor(); });
+  $$("[data-del]").forEach((b) => b.onclick = async () => { if (confirm("Remove this reference?")) { await api(`/references/${b.dataset.del}`, { method: "DELETE" }); loadRefs(); } });
+}
+
+let STYLE = null;
+async function loadStyleEditor() {
+  STYLE = await api("/style");
+  $("#styleJson").value = JSON.stringify(STYLE, null, 2);
+  $("#palette").innerHTML = [...STYLE.palette.primary, ...STYLE.palette.grounds, ...STYLE.palette.accents].map((c) => `<span title="${esc(c.name)} ${c.hex}" style="background:${c.hex}"></span>`).join("");
+  const sel = $("#pvComp"); if (sel) sel.innerHTML = STYLE.composition.archetypes.map((a) => `<option value="${a.id}">${a.id.replace(/_/g, " ")}</option>`).join("");
+  $("#saveStyle").onclick = async () => {
+    try { const s = await api("/style", { method: "PUT", body: JSON.parse($("#styleJson").value) }); $("#styleMsg").textContent = `Saved as version ${s.version}.`; loadStyleEditor(); }
+    catch (e) { $("#styleMsg").textContent = e instanceof SyntaxError ? "That isn't valid JSON: " + e.message : e.message; }
+  };
+}
+
+function setupPreview() {
+  $("#preview").innerHTML = `<form class="form-grid" id="pv">
+    <input type="text" class="sm" name="concept" value="a symbolic meditation on a mother's protective love">
+    <input type="text" class="sm" name="central_symbol" value="a mother-and-child silhouette nested inside a crescent">
+    <select name="composition" id="pvComp"></select>
+    <div class="row"><select name="aspect" style="width:auto"><option value="portrait">Portrait</option><option value="square">Square</option></select>
+    <label style="display:flex;gap:6px;align-items:center"><input type="checkbox" name="include_figure" checked> Include a figure</label></div>
+    <div class="row"><button class="btn" name="go">Generate preview</button><button class="btn ghost" name="po" type="button">Show prompt only</button></div>
+  </form><div class="preview-out" id="pvOut"></div>`;
+  if (STYLE) loadStyleEditor();
+  const run = async (promptOnly) => {
+    const f = new FormData($("#pv"));
+    const body = { concept: f.get("concept"), central_symbol: f.get("central_symbol"), composition: f.get("composition"), aspect: f.get("aspect"), include_figure: f.get("include_figure") === "on", themes: ["motherhood"], promptOnly };
+    $("#pvOut").innerHTML = `<p class="hint">${promptOnly ? "Building prompt…" : "Painting… this can take up to a minute."}</p>`;
+    try {
+      const r = await api("/preview", { method: "POST", body });
+      $("#pvOut").innerHTML = `${r.image ? `<img src="${r.image}" alt="Style preview"><p class="hint">Made by <strong>${esc(r.provider)}</strong>${r.errors?.length ? ` · fell back after: ${esc(r.errors.join("; "))}` : ""}</p>` : ""}
+        <details ${promptOnly ? "open" : ""}><summary>Prompt sent to the image model</summary><pre>${esc(r.prompt)}</pre></details>`;
+    } catch (e) { $("#pvOut").innerHTML = `<p class="notice">${esc(e.message)}</p>`; }
+  };
+  $("#pv").addEventListener("submit", (e) => { e.preventDefault(); run(false); });
+  $("#pv").po.addEventListener("click", () => run(true));
+}
+
+if (TOKEN) { $("#tok").value = TOKEN; boot(); }
+</script>
+</body>
+</html>

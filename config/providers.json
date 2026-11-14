@@ -1,0 +1,46 @@
+{
+  "_comment": "Image-generation provider config. Read on every request, so you can switch providers or models without restarting or rebuilding. Credentials are NEVER stored here; each provider names the environment variable that holds its key.",
+  "active": "procedural",
+  "fallbackChain": [
+    "procedural"
+  ],
+  "timeoutMs": 120000,
+  "providers": {
+    "procedural": {
+      "label": "Built-in studio sketch (no API, always available)",
+      "type": "procedural"
+    },
+    "openai": {
+      "label": "OpenAI Images",
+      "type": "openai",
+      "apiKeyEnv": "OPENAI_API_KEY",
+      "model": "gpt-image-1",
+      "quality": "high",
+      "useReferenceImages": true,
+      "maxReferenceImages": 4
+    },
+    "replicate": {
+      "label": "Replicate (any hosted model)",
+      "type": "replicate",
+      "apiKeyEnv": "REPLICATE_API_TOKEN",
+      "model": "black-forest-labs/flux-1.1-pro",
+      "extraInput": {
+        "output_format": "png",
+        "safety_tolerance": 2
+      }
+    },
+    "stability": {
+      "label": "Stability AI (Stable Image Core)",
+      "type": "stability",
+      "apiKeyEnv": "STABILITY_API_KEY",
+      "endpoint": "https://api.stability.ai/v2beta/stable-image/generate/core",
+      "stylePreset": null
+    },
+    "custom": {
+      "label": "Custom HTTP endpoint (your own model server)",
+      "type": "http",
+      "apiKeyEnv": "CUSTOM_IMAGE_API_KEY",
+      "endpoint": "http://localhost:9000/generate"
+    }
+  }
+}

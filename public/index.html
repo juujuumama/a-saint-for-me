@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>A Saint for Me</title>
+  <meta name="description" content="A daily personalized Catholic devotional: saints, an original prayer, Scripture, and original devotional art made for what's on your heart.">
+  <meta name="theme-color" content="#24163A">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..800,0..100;1,9..144,300..700,0..100&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="topbar">
+    <a href="/" class="wordmark" data-link>
+      <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 3 23.5 15 36 13 25.5 20 36 27 23.5 25 20 37 16.5 25 4 27 14.5 20 4 13 16.5 15Z" fill="var(--pink)"/><circle cx="20" cy="20" r="5" fill="var(--turq)"/></svg>
+      <span>A Saint <em>for</em> Me</span>
+    </a>
+    <nav>
+      <a href="/" data-link data-nav="today">Today</a>
+      <a href="/journey" data-link data-nav="journey">My Collection</a>
+      <button class="icon-btn" id="settingsBtn" aria-label="Privacy & memory settings" title="Privacy & memory">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+      </button>
+    </nav>
+  </header>
+
+  <main id="main" tabindex="-1"></main>
+
+  <footer class="foot">
+    <p>Prayers marked <strong>“Written for you”</strong> are composed with AI, guided by Catholic teaching. They are not official prayers of the Church. Prayers marked <strong>“Traditional”</strong> are the Church's own. Saint emblems are artistic interpretations.</p>
+    <p>If you are in crisis, call or text <a href="tel:988">988</a> (US) or visit <a href="https://findahelpline.com" target="_blank" rel="noopener">findahelpline.com</a>.</p>
+  </footer>
+
+  <dialog id="settings" class="sheet">
+    <form method="dialog" class="sheet-inner">
+      <h2>Privacy &amp; memory</h2>
+      <p class="muted">Your devotionals are private to this device's account. We never share your words, and the image studio never sees them — it only receives a symbolic art brief.</p>
+      <label class="toggle">
+        <input type="checkbox" id="memoryToggle">
+        <span class="track"><span class="thumb"></span></span>
+        <span>
+          <strong>Remember my intentions</strong><br>
+          <span class="muted">Lets you continue praying about something without retelling your story. Keeps what you wrote so tomorrow's prayer can build on it. Turn off anytime — your words are forgotten immediately.</span>
+        </span>
+      </label>
+      <div class="sheet-actions">
+        <button type="button" class="btn ghost danger" id="deleteAll">Delete all my data</button>
+        <button class="btn">Done</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
