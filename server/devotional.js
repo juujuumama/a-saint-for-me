@@ -192,9 +192,7 @@ function composeOffline(checkin, context) {
     prayer: { title: who ? `A prayer for ${who}` : isThanks ? "A prayer of thanksgiving" : "A prayer for today", body, closing: "Through Christ our Lord. Amen." },
     scripture: scripture.map((s) => ({ id: s.id, connection: "A word to rest in today, slowly, more than once." })),
     devotions: devotions.map((d) => ({ id: d.id, suggestion: d.kind === "rosary" ? "If a whole Rosary feels like too much today, one decade is a beautiful prayer." : "Pray it slowly, perhaps once in the morning and once at night." })),
-    reflection: isThanks
-      ? "Gratitude is a way of seeing. Carry one of today's gifts with you, and say thank you for it again tonight."
-      : "You do not need to have everything figured out to be held by God today. Take the next small step, and let that be enough.",
+    reflection: pickReflection(themes, isThanks),
     art_brief: {
       title: isThanks ? "Overflowing Light" : "Held in the Night Garden",
       concept: `A symbolic meditation on ${named[0] || "being held by God"}.`,
@@ -206,6 +204,20 @@ function composeOffline(checkin, context) {
       include_figure: !isThanks,
     },
   };
+}
+
+const REFLECTIONS = {
+  thanks: ["Gratitude is a way of seeing. Carry one of today's gifts with you, and say thank you for it again tonight.", "Joy shared is joy multiplied. Tell someone today what you are thankful for.", "Every good gift comes from above. Let today's thanks become tomorrow's trust."],
+  grief: ["Love does not end. The ones we have lost are held in the same hands that hold us.", "Grief is love with nowhere to go. Let it go to God today, a little at a time.", "You may carry this for a long while. You will not carry it alone."],
+  fear: ["Do not be afraid. It is the most repeated command in Scripture, and it always comes with a promise: I am with you.", "Courage is not the absence of fear. It is one small yes, said while trembling.", "You are guarded more closely than you know. Rest in that tonight."],
+  hope: ["Morning comes, even after the longest night. Watch for one small sign of it today.", "Hope is a seed, not a feeling. Plant it anyway.", "Nothing is wasted in God's hands. Not even this."],
+  growth: ["Becoming whole is slow, holy work. Be as patient with yourself as God is.", "Every saint has a past. Every sinner has a future.", "One honest step today is enough."],
+  default: ["You do not need to have everything figured out to be held by God today. Take the next small step, and let that be enough.", "Be still for one minute today. That minute is a prayer.", "You are seen, you are known, and you are loved exactly where you are."],
+};
+const REFLECT_MAP = { grief: "grief", sadness: "grief", fear: "fear", anxiety: "fear", overwhelm: "fear", hope: "hope", discouragement: "hope", finances: "hope", work: "hope", addiction: "growth", growth: "growth", decisions: "growth" };
+function pickReflection(themes, isThanks) {
+  const pool = REFLECTIONS[isThanks ? "thanks" : REFLECT_MAP[themes.find((t) => REFLECT_MAP[t])] || "default"];
+  return pool[Math.floor(Math.random() * pool.length)];
 }
 
 // ---------- Hydrate model choices with library facts ----------

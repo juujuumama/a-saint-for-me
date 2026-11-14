@@ -464,10 +464,11 @@ export function proceduralArtwork({ brief, themes = [], seed = Date.now(), aspec
 
   if (figParts && comp !== "flooded_snapshot") L.push(figParts[0], figParts[1]);
   if (saint) L.push(MOTIFS[theme](W * (r() > 0.5 ? 0.16 : 0.84), H * 0.1, motifSize * 0.3, P, r));
-  if (words.length) L.push(wordStrips(words, saint ? W * (r() > 0.5 ? 0.6 : 0.04) : W * (r() > 0.5 ? 0.52 : 0.08), saint ? H * 0.8 : H * (0.62 + r() * 0.08), r, W * 0.4));
   // scattered gems and stars
   for (let i = 0; i < 6; i++) L.push(crystal(60 + r() * (W - 120), 60 + r() * (H - 120), 14 + r() * 18, glassPal[Math.floor(r() * 6)], r, r() * 3));
   for (let i = 0; i < 10; i++) L.push(`<path d="${star(r() * W, r() * H, 6 + r() * 12)}" fill="${night ? P.peach : P.ink}" opacity=".8"/>`);
+  // found words go on top of everything except the paper grain, so gems never cover them
+  if (words.length) L.push(wordStrips(words, saint ? W * (r() > 0.5 ? 0.6 : 0.04) : W * (r() > 0.5 ? 0.52 : 0.08), saint ? H * 0.8 : H * (0.62 + r() * 0.08), r, W * 0.4));
   // paper grain over everything + deckled border
   L.push(`<rect width="${W}" height="${H}" fill="#fff" filter="url(#paper)" opacity=".9" style="mix-blend-mode:multiply"/>`);
 
