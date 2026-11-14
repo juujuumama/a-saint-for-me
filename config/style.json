@@ -319,11 +319,11 @@
     "onCards": "high-contrast serif display (Fraunces) for titles; prayer set in italic serif; small caps for labels; generous margins"
   },
   "sacredIconographyRules": [
-    "Do not depict Jesus, Mary or specific saints as photorealistic portraits.",
-    "When a sacred person appears, use a symbolic, abstracted collage treatment with correct traditional attributes.",
+    "Every artwork centers a saint or angel as a stylized collage figure: never photorealistic, never presented as a likeness.",
+    "Saints wear halos; only angels (such as the archangels and guardian angels) have wings.",
+    "Saints carry their correct traditional attributes.",
     "Use only accurate Christian symbols; never invent pseudo-religious symbols or add occult or esoteric signs.",
-    "No halos on figures representing the user; halos belong to sacred figures only.",
-    "No angels depicted as cherubs or generic winged women.",
+    "No cherubs or generic winged women.",
     "Saint portraits are artistic interpretations, not historical likenesses."
   ],
   "avoid": [

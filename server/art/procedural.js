@@ -244,8 +244,92 @@ export function wordsFrom(text = "", max = 6) {
   return out;
 }
 
+
+// ---------- Saint figures (stylized collage portraits, never likenesses) ----------
+const TONE = { deep: "#4E2F20", deep2: "#6B4129", brown: "#8A5A3C", medium: "#AE7A55", mlight: "#C99C78", light: "#E4BFA0" };
+const SAINT_FIG = {
+  monica: ["brown", "veil"], gianna: ["light", "short"], anne: ["medium", "veil"], joseph: ["medium", "short"],
+  zelie_louis: ["light", "bun"], rita: ["mlight", "veil"], thomas_more: ["light", "short"], bakhita: ["deep", "veil"],
+  moses_black: ["deep", "hood"], matt_talbot: ["light", "short"], augustine: ["brown", "short"], martin_porres: ["deep2", "hood"],
+  benedict_moor: ["deep", "hood"], perpetua_felicity: ["brown", "bun"], charles_lwanga: ["deep", "short"], katharine_drexel: ["light", "veil"],
+  cajetan: ["mlight", "short"], jude: ["medium", "short"], dymphna: ["light", "long"], padre_pio: ["mlight", "hood"],
+  therese: ["light", "veil"], teresa_avila: ["mlight", "veil"], john_cross: ["mlight", "hood"], teresa_calcutta: ["mlight", "veilWhite"],
+  peregrine: ["mlight", "hood"], bernadette: ["mlight", "veil"], elizabeth_seton: ["light", "veil"], ignatius: ["mlight", "short"],
+  francis: ["mlight", "hood"], mary_magdalene: ["medium", "long"], thomas_apostle: ["medium", "short"], anthony: ["mlight", "hood"],
+  faustina: ["light", "veil"], kateri: ["brown", "long"],
+  // angels have no ethnicity; the artist's palette of tones and styles rotates
+  michael: ["*", "curls"], raphael: ["*", "long"], gabriel: ["*", "curls"], guardian_angel: ["*", "long"],
+};
+
+function wings(cx, sy, R, r, P) {
+  let o = "";
+  for (const side of [-1, 1]) {
+    const ox = cx + side * R * 1.4;
+    [[R * 5.2, "url(#iri)", 11], [R * 3.9, side < 0 ? P.pink : P.peach, 9], [R * 2.6, "#FBF6EC", 8]].forEach(([len, fill, n]) => {
+      for (let i = 0; i < n; i++) {
+        const a = (-172 + (i / (n - 1)) * 125) * (Math.PI / 180), ang = side < 0 ? a : Math.PI - a;
+        const l = len * (0.75 + 0.25 * Math.sin((i / (n - 1)) * Math.PI)) * (0.9 + r() * 0.15);
+        const ex = ox + Math.cos(ang) * l, ey = sy + Math.sin(ang) * l * 0.85, nx = -Math.sin(ang) * R * 0.42, ny = Math.cos(ang) * R * 0.42;
+        o += `<path d="M${f(ox)},${f(sy)} Q${f((ox + ex) / 2 + nx)},${f((sy + ey) / 2 + ny)} ${f(ex)},${f(ey)} Q${f((ox + ex) / 2 - nx)},${f((sy + ey) / 2 - ny)} ${f(ox)},${f(sy)}Z" fill="${fill}" stroke="#fff" stroke-opacity=".55" stroke-width="2"/>`;
+      }
+    });
+  }
+  return `<g filter="url(#shadow)">${o}</g>`;
+}
+
+function halo(cx, cy, R, kind, r, P) {
+  if (kind === 0) return `<circle cx="${f(cx)}" cy="${f(cy)}" r="${f(R * 1.02)}" fill="${P.paper}" filter="url(#shadow)"/>${stainedGlass(cx, cy, R * 0.95, r, [P.gold, P.peach, P.pink, P.turq, P.lav], 2)}`;
+  if (kind === 1) { let o = ""; for (let i = 0; i < 28; i++) { const a = (i / 28) * Math.PI * 2, l = i % 2 ? R * 1.25 : R * 1.05; o += `<path d="M${f(cx + Math.cos(a - 0.05) * R * 0.55)},${f(cy + Math.sin(a - 0.05) * R * 0.55)} L${f(cx + Math.cos(a) * l)},${f(cy + Math.sin(a) * l)} L${f(cx + Math.cos(a + 0.05) * R * 0.55)},${f(cy + Math.sin(a + 0.05) * R * 0.55)}Z" fill="${i % 2 ? P.gold : P.orange}"/>`; } return `<g filter="url(#shadow)">${o}<circle cx="${f(cx)}" cy="${f(cy)}" r="${f(R * 0.82)}" fill="${P.gold}"/><circle cx="${f(cx)}" cy="${f(cy)}" r="${f(R * 0.82)}" fill="url(#halftone)"/></g>`; }
+  if (kind === 2) return agate(cx, cy, R * 1.05, r, P);
+  let o = `<circle cx="${f(cx)}" cy="${f(cy)}" r="${f(R)}" fill="url(#iri)" filter="url(#shadow)"/><circle cx="${f(cx)}" cy="${f(cy)}" r="${f(R * 0.9)}" fill="none" stroke="${P.gold}" stroke-width="${f(R * 0.06)}"/>`;
+  for (let i = 0; i < 24; i++) { const a = (i / 24) * Math.PI * 2; o += i % 4 ? `<circle cx="${f(cx + Math.cos(a) * R * 0.9)}" cy="${f(cy + Math.sin(a) * R * 0.9)}" r="${f(R * 0.035)}" fill="#FBF6EC"/>` : `<path d="${star(cx + Math.cos(a) * R * 0.9, cy + Math.sin(a) * R * 0.9, R * 0.09)}" fill="${P.gold}"/>`; }
+  return o;
+}
+
+// Returns [body, hands] so a flood can rise between them.
+function saintFigure(saint, cx, hy, R, H, r, P) {
+  let [toneKey, head] = SAINT_FIG[saint.id] || ["medium", "short"];
+  if (toneKey === "*") toneKey = ["deep", "deep2", "brown", "medium"][Math.floor(r() * 4)];
+  const skin = TONE[toneKey], hair = ["#1C1212", "#2B1B14", "#3A2418"][Math.floor(r() * 3)];
+  const robes = ["url(#mudcloth)", "url(#iri)", "url(#starchart)", P.turq, P.lav, P.pink, P.red];
+  const robe = robes[Math.floor(r() * robes.length)];
+  const mantle = [P.indigo, P.turq, P.red, P.lav, "#3B2A55"][Math.floor(r() * 5)];
+  const veilC = head === "veilWhite" ? "#FBF8F2" : ["#1E1A2E", "#4A3426", "#24305E", "#FBF6EC"][Math.floor(r() * 4)];
+  const isVeil = head === "veil" || head === "veilWhite";
+  const by = hy + R * 1.15, bottom = H + 20, sw = R * (saint.kind === "angel" ? 2.2 : 2.7);
+  let b = saint.kind === "angel" ? wings(cx, by + R * 0.2, R, r, P) : "";
+  b += halo(cx, hy, R * 2, Math.floor(r() * 4), r, P);
+  if (head === "curls") { for (let i = 0; i < 14; i++) { const a = (i / 14) * Math.PI * 2; b += `<circle cx="${f(cx + Math.cos(a) * R * 0.95)}" cy="${f(hy - R * 0.25 + Math.sin(a) * R * 1.0)}" r="${f(R * 0.42)}" fill="${hair}"/>`; } }
+  // hair / veil / hood behind head
+  if (isVeil) b += `<path d="M${f(cx - R * 1.05)},${f(hy - R * 0.2)} C${f(cx - R * 1.15)},${f(hy - R * 1.45)} ${f(cx + R * 1.15)},${f(hy - R * 1.45)} ${f(cx + R * 1.05)},${f(hy - R * 0.2)} L${f(cx + R * 1.6)},${f(by + R * 1.4)} L${f(cx - R * 1.6)},${f(by + R * 1.4)}Z" fill="${veilC}" filter="url(#shadow)"/>`;
+  if (head === "hood") b += `<path d="M${f(cx - R * 1.1)},${f(hy + R * 0.3)} C${f(cx - R * 1.25)},${f(hy - R * 1.5)} ${f(cx + R * 1.25)},${f(hy - R * 1.5)} ${f(cx + R * 1.1)},${f(hy + R * 0.3)} L${f(cx + R * 1.5)},${f(by + R * 0.8)} L${f(cx - R * 1.5)},${f(by + R * 0.8)}Z" fill="#8B6A4E" filter="url(#shadow)"/>`;
+  if (head === "long") b += `<path d="M${f(cx - R * 0.95)},${f(hy - R * 0.3)} C${f(cx - R * 1.1)},${f(hy - R * 1.4)} ${f(cx + R * 1.1)},${f(hy - R * 1.4)} ${f(cx + R * 0.95)},${f(hy - R * 0.3)} L${f(cx + R * 1.15)},${f(by + R * 1.6)} L${f(cx - R * 1.15)},${f(by + R * 1.6)}Z" fill="${hair}"/>`;
+  if (head === "bun") b += `<circle cx="${f(cx)}" cy="${f(hy - R * 1.15)}" r="${f(R * 0.55)}" fill="${hair}"/>`;
+  // robe + mantle
+  b += `<g filter="url(#shadow)"><path d="M${f(cx - R * 0.5)},${f(by)} C${f(cx - R * 1.6)},${f(by + R * 0.2)} ${f(cx - sw)},${f(by + R * 0.9)} ${f(cx - sw)},${f(by + R * 2.4)} L${f(cx - sw - R * 0.3)},${f(bottom)} L${f(cx + sw + R * 0.3)},${f(bottom)} L${f(cx + sw)},${f(by + R * 2.4)} C${f(cx + sw)},${f(by + R * 0.9)} ${f(cx + R * 1.6)},${f(by + R * 0.2)} ${f(cx + R * 0.5)},${f(by)}Z" fill="${mantle}"/>`;
+  b += `<path d="M${f(cx - R * 0.55)},${f(by)} L${f(cx + R * 0.55)},${f(by)} L${f(cx + R * 1.5)},${f(bottom)} L${f(cx - R * 1.5)},${f(bottom)}Z" fill="${robe}"/>`;
+  b += `<path d="M${f(cx - R * 0.55)},${f(by)} L${f(cx - R * 1.5)},${f(bottom)} M${f(cx + R * 0.55)},${f(by)} L${f(cx + R * 1.5)},${f(bottom)}" stroke="${P.gold}" stroke-width="${f(R * 0.08)}"/></g>`;
+  // neck + head
+  b += `<rect x="${f(cx - R * 0.36)}" y="${f(hy + R * 0.6)}" width="${f(R * 0.72)}" height="${f(R * 0.7)}" fill="${skin}"/>`;
+  b += `<ellipse cx="${f(cx)}" cy="${f(hy)}" rx="${f(R * 0.8)}" ry="${f(R)}" fill="${skin}" filter="url(#shadow)"/>`;
+  if (head === "short") b += `<path d="M${f(cx - R * 0.82)},${f(hy - R * 0.05)} C${f(cx - R * 0.9)},${f(hy - R * 1.35)} ${f(cx + R * 0.9)},${f(hy - R * 1.35)} ${f(cx + R * 0.82)},${f(hy - R * 0.05)} C${f(cx + R * 0.6)},${f(hy - R * 0.7)} ${f(cx - R * 0.6)},${f(hy - R * 0.7)} ${f(cx - R * 0.82)},${f(hy - R * 0.05)}Z" fill="${hair}"/>`;
+  if (head === "bun" || head === "long" || head === "curls") b += `<path d="M${f(cx - R * 0.84)},${f(hy)} C${f(cx - R * 0.9)},${f(hy - R * 1.3)} ${f(cx + R * 0.9)},${f(hy - R * 1.3)} ${f(cx + R * 0.84)},${f(hy)} C${f(cx + R * 0.5)},${f(hy - R * 0.75)} ${f(cx - R * 0.5)},${f(hy - R * 0.75)} ${f(cx - R * 0.84)},${f(hy)}Z" fill="${hair}"/>`;
+  if (isVeil) b += `<path d="M${f(cx - R * 0.86)},${f(hy + R * 0.1)} C${f(cx - R * 0.95)},${f(hy - R * 1.25)} ${f(cx + R * 0.95)},${f(hy - R * 1.25)} ${f(cx + R * 0.86)},${f(hy + R * 0.1)} C${f(cx + R * 0.7)},${f(hy - R * 0.55)} ${f(cx - R * 0.7)},${f(hy - R * 0.55)} ${f(cx - R * 0.86)},${f(hy + R * 0.1)}Z" fill="${head === "veilWhite" ? "#FBF8F2" : "#FBF6EC"}"/>` + (head === "veilWhite" ? `<path d="M${f(cx - R * 0.9)},${f(hy - R * 0.62)} C${f(cx - R * 0.4)},${f(hy - R * 1.05)} ${f(cx + R * 0.4)},${f(hy - R * 1.05)} ${f(cx + R * 0.9)},${f(hy - R * 0.62)}" stroke="#2F5DA8" stroke-width="${f(R * 0.09)}" fill="none"/>` : "");
+  if (head === "hood") b += `<path d="M${f(cx - R * 0.9)},${f(hy + R * 0.2)} C${f(cx - R * 1.0)},${f(hy - R * 1.3)} ${f(cx + R * 1.0)},${f(hy - R * 1.3)} ${f(cx + R * 0.9)},${f(hy + R * 0.2)} C${f(cx + R * 0.75)},${f(hy - R * 0.75)} ${f(cx - R * 0.75)},${f(hy - R * 0.75)} ${f(cx - R * 0.9)},${f(hy + R * 0.2)}Z" fill="#8B6A4E"/>`;
+  // serene face: closed eyes, soft cheeks
+  b += `<path d="M${f(cx - R * 0.42)},${f(hy + R * 0.02)} q${f(R * 0.15)},${f(R * 0.12)} ${f(R * 0.3)},0 M${f(cx + R * 0.12)},${f(hy + R * 0.02)} q${f(R * 0.15)},${f(R * 0.12)} ${f(R * 0.3)},0" stroke="#1B1420" stroke-width="${f(R * 0.05)}" fill="none" stroke-linecap="round"/>`;
+  b += `<circle cx="${f(cx - R * 0.42)}" cy="${f(hy + R * 0.32)}" r="${f(R * 0.13)}" fill="${P.pink}" opacity=".45"/><circle cx="${f(cx + R * 0.42)}" cy="${f(hy + R * 0.32)}" r="${f(R * 0.13)}" fill="${P.pink}" opacity=".45"/>`;
+  b += `<path d="M${f(cx - R * 0.14)},${f(hy + R * 0.52)} q${f(R * 0.14)},${f(R * 0.09)} ${f(R * 0.28)},0" stroke="#7A2E3A" stroke-width="${f(R * 0.06)}" fill="none" stroke-linecap="round"/>`;
+  // hands holding the saint's traditional attribute
+  const sym = (saint.emblem?.symbols || ["star"]).find((x) => ICONS[x]) || "star";
+  const ix = cx, iy = by + R * 1.75, k = R * 0.016;
+  const hands = `<g transform="translate(${f(ix - 50 * k)} ${f(iy - 50 * k)}) scale(${f(k)})" filter="url(#shadow)">${ICONS[sym](P)}</g>
+    <ellipse cx="${f(ix - R * 0.42)}" cy="${f(iy + R * 0.85)}" rx="${f(R * 0.32)}" ry="${f(R * 0.22)}" fill="${skin}" stroke="#FBF6EC" stroke-opacity=".5" stroke-width="2" filter="url(#shadow)"/><ellipse cx="${f(ix + R * 0.42)}" cy="${f(iy + R * 0.85)}" rx="${f(R * 0.32)}" ry="${f(R * 0.22)}" fill="${skin}" stroke="#FBF6EC" stroke-opacity=".5" stroke-width="2" filter="url(#shadow)"/>`;
+  return [b, hands];
+}
+
 // ---------- main ----------
-export function proceduralArtwork({ brief, themes = [], seed = Date.now(), aspect = "portrait", words = [] }) {
+export function proceduralArtwork({ brief, themes = [], seed = Date.now(), aspect = "portrait", words = [], saint = null }) {
   const style = loadStyle();
   const P = palette(style);
   const r = rng(seed);
@@ -257,7 +341,9 @@ export function proceduralArtwork({ brief, themes = [], seed = Date.now(), aspec
   const flood = [P.red, P.pink, P.red, P.coral, P.pink, P.turq, "#FF8FB5"];
   const night = r() > 0.4;
   const ground = night ? P.night : P.paper;
-  const cx = W / 2, cy = H * (aspect === "square" ? 0.5 : 0.46);
+  const cx = W / 2, cy = saint ? H * (aspect === "square" ? 0.3 : 0.31) : H * (aspect === "square" ? 0.5 : 0.46);
+  const headR = W * (aspect === "square" ? 0.072 : 0.088);
+  const figParts = saint ? saintFigure(saint, cx, cy, headR, H, rng(seed + 991), P) : null;
   let L = [];
 
   // ground + texture
@@ -271,7 +357,7 @@ export function proceduralArtwork({ brief, themes = [], seed = Date.now(), aspec
   L.push(`<path d="${tornRect(-40, H * (0.55 + r() * 0.2), W * 0.7, H * 0.25, r, 14, -0.12)}" fill="url(#halftone)" opacity=".9"/>`);
 
   const motifSize = (aspect === "square" ? 230 : 260) * (0.9 + r() * 0.25);
-  const drawMotif = (t, x, y, s) => MOTIFS[t](x, y, s, P, r);
+  const drawMotif = (t, x, y, s) => (saint ? "" : MOTIFS[t](x, y, s, P, r));
 
   switch (comp) {
     case "arched_window": {
@@ -342,12 +428,14 @@ export function proceduralArtwork({ brief, themes = [], seed = Date.now(), aspec
     case "flooded_snapshot": {
       const x = W * 0.08, y = H * 0.07, w = W * 0.84, h = H * 0.86;
       L.push(snapshot(x, y, w, h, r, P));
+      if (figParts) L.push(figParts[0]);
       const top = y + h * (0.38 + r() * 0.12), pts = [[x - 4, y + h + 4], [x - 4, top + 40]];
       for (let i = 0; i <= 10; i++) pts.push([x + (w * i) / 10, top + (r() - 0.5) * 120]);
       pts.push([x + w + 4, top + 30], [x + w + 4, y + h + 4]);
       L.push(impasto(tornPoly(pts, r, 22), [x - 10, top - 80, w + 20, y + h - top + 100], flood, r, 1.3));
       L.push(`<path d="${tornRect(x + w * (0.2 + r() * 0.4), top + h * 0.18, w * 0.22, h * 0.12, r, 18, (r() - 0.5) * 0.4)}" fill="${P.turq}" opacity=".95"/>`);
       L.push(drawMotif(theme, x + w * (0.3 + r() * 0.4), y + h * 0.22, motifSize * 0.45));
+      if (figParts) L.push(figParts[1]);
       break;
     }
     case "crystal_bloom": {
@@ -374,7 +462,9 @@ export function proceduralArtwork({ brief, themes = [], seed = Date.now(), aspec
     }
   }
 
-  if (words.length) L.push(wordStrips(words, W * (r() > 0.5 ? 0.52 : 0.08), H * (0.62 + r() * 0.08), r, W * 0.42));
+  if (figParts && comp !== "flooded_snapshot") L.push(figParts[0], figParts[1]);
+  if (saint) L.push(MOTIFS[theme](W * (r() > 0.5 ? 0.16 : 0.84), H * 0.1, motifSize * 0.3, P, r));
+  if (words.length) L.push(wordStrips(words, saint ? W * (r() > 0.5 ? 0.6 : 0.04) : W * (r() > 0.5 ? 0.52 : 0.08), saint ? H * 0.8 : H * (0.62 + r() * 0.08), r, W * 0.4));
   // scattered gems and stars
   for (let i = 0; i < 6; i++) L.push(crystal(60 + r() * (W - 120), 60 + r() * (H - 120), 14 + r() * 18, glassPal[Math.floor(r() * 6)], r, r() * 3));
   for (let i = 0; i < 10; i++) L.push(`<path d="${star(r() * W, r() * H, 6 + r() * 12)}" fill="${night ? P.peach : P.ink}" opacity=".8"/>`);
@@ -414,6 +504,9 @@ const ICONS = {
   jar: (P) => `<path d="M38 14 H62 V24 C78 34 80 60 70 82 H30 C20 60 22 34 38 24Z" fill="${P.paper}"/><rect x="34" y="10" width="32" height="8" fill="${P.gold}"/>`,
   hand: (P) => `<path d="M30 90 V50 C30 44 38 44 38 50 V30 C38 24 46 24 46 30 V24 C46 18 54 18 54 24 V30 C54 24 62 24 62 30 V52 L70 44 C74 40 80 46 76 50 L62 74 C58 84 50 90 40 90Z" fill="${P.peach}"/><circle cx="48" cy="58" r="5" fill="${P.coral}"/>`,
   rays: (P) => `<path d="M50 30 L20 95 H45Z" fill="#E8F4FF" fill-opacity=".9"/><path d="M50 30 L55 95 H80Z" fill="${P.coral}"/><circle cx="50" cy="28" r="10" fill="${P.gold}"/>`,
+  sword: (P) => `<path d="M50 6 L57 20 L55 64 H45 L43 20Z" fill="#E8EEF4" stroke="#140F1F" stroke-opacity=".3" stroke-width="2"/><rect x="28" y="62" width="44" height="8" rx="3" fill="${P.gold}"/><rect x="46" y="70" width="8" height="18" fill="#6B4A35"/><circle cx="50" cy="92" r="5" fill="${P.gold}"/>`,
+  scales: (P) => `<path d="M50 12 V86 M30 86 H70 M18 30 H82" stroke="${P.gold}" stroke-width="5" stroke-linecap="round"/><path d="M18 30 L8 56 H28Z M82 30 L72 56 H92Z" fill="${P.gold}" opacity=".85"/>`,
+  fish: (P) => `<path d="M14 50 C30 26 62 26 76 50 C62 74 30 74 14 50Z" fill="${P.turq}"/><path d="M74 50 L94 34 V66Z" fill="${P.turq}"/><circle cx="30" cy="46" r="4" fill="#140F1F"/>`,
   wheat: (P) => `<path d="M50 94 V20" stroke="${P.gold}" stroke-width="4"/>${[26, 38, 50, 62].map((y) => `<ellipse cx="42" cy="${y}" rx="8" ry="4" transform="rotate(-35 42 ${y})" fill="${P.gold}"/><ellipse cx="58" cy="${y}" rx="8" ry="4" transform="rotate(35 58 ${y})" fill="${P.gold}"/>`).join("")}`,
 };
 

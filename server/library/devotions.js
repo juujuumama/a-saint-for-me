@@ -20,6 +20,11 @@ export const DEVOTIONS = [
     text: "St. Michael the Archangel, defend us in battle. Be our protection against the wickedness and snares of the devil. May God rebuke him, we humbly pray; and do thou, O Prince of the heavenly host, by the power of God, cast into hell Satan and all the evil spirits who prowl about the world seeking the ruin of souls. Amen.",
   },
   {
+    id: "guardian_angel_prayer", kind: "prayer", title: "Angel of God (Guardian Angel Prayer)",
+    themes: ["fear", "loneliness", "parenting", "anxiety"],
+    text: "Angel of God, my guardian dear, to whom God's love commits me here, ever this day be at my side, to light and guard, to rule and guide. Amen.",
+  },
+  {
     id: "anima_christi", kind: "prayer", title: "Anima Christi",
     themes: ["health", "faith", "growth", "fear"],
     text: "Soul of Christ, sanctify me. Body of Christ, save me. Blood of Christ, inebriate me. Water from the side of Christ, wash me. Passion of Christ, strengthen me. O good Jesus, hear me. Within thy wounds hide me. Permit me not to be separated from thee. From the wicked foe defend me. At the hour of my death call me, and bid me come to thee, that with thy saints I may praise thee for ever and ever. Amen.",

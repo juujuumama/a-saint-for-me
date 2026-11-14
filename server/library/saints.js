@@ -415,6 +415,59 @@ export const SAINTS = [
     themes: ["loneliness", "health", "faith", "peace", "grief"],
     emblem: { symbols: ["lily", "cross"], colors: ["#1FC8C0", "#FF7A1A"] },
   },
+  // Angels: shown with wings (saints get halos only). The archangels are honored with the saints.
+  {
+    id: "michael",
+    kind: "angel",
+    name: "St. Michael the Archangel",
+    years: "Archangel",
+    feast: "September 29",
+    region: "Named in Daniel, Jude and Revelation",
+    patronages: ["protection", "spiritual battle", "police and first responders", "the sick"],
+    story:
+      "The archangel whose name means \"Who is like God?\" Scripture shows him as the protector of God's people, who casts down the forces of evil. The Church has long prayed to him for protection against harm, fear and temptation.",
+    themes: ["fear", "anxiety", "addiction", "family", "overwhelm"],
+    emblem: { symbols: ["sword", "scales"], colors: ["#1FC8C0", "#E8364F"] },
+  },
+  {
+    id: "raphael",
+    kind: "angel",
+    name: "St. Raphael the Archangel",
+    years: "Archangel",
+    feast: "September 29",
+    region: "Named in the Book of Tobit",
+    patronages: ["healing", "travelers", "the blind", "finding a spouse"],
+    story:
+      "His name means \"God heals.\" In the Book of Tobit he travels in disguise with young Tobias, protects him on the road, helps him find his wife Sarah, and brings healing to Tobias's blind father.",
+    themes: ["health", "fear", "relationships", "marriage", "decisions", "loneliness"],
+    emblem: { symbols: ["fish", "water"], colors: ["#1FC8C0", "#A98BEA"] },
+  },
+  {
+    id: "gabriel",
+    kind: "angel",
+    name: "St. Gabriel the Archangel",
+    years: "Archangel",
+    feast: "September 29",
+    region: "Named in Daniel and Luke",
+    patronages: ["messengers", "communication", "expectant mothers (popular devotion)"],
+    story:
+      "His name means \"God is my strength.\" Gabriel announced the birth of John the Baptist to Zechariah and brought Mary the news that she would be the Mother of God: \"Do not be afraid.\"",
+    themes: ["motherhood", "decisions", "fear", "inspiration", "hope"],
+    emblem: { symbols: ["lily", "star"], colors: ["#FF5FA2", "#FFC9A8"] },
+  },
+  {
+    id: "guardian_angel",
+    kind: "angel",
+    name: "Your Guardian Angel",
+    years: "Angel",
+    feast: "October 2",
+    region: "Matthew 18:10; Psalm 91:11",
+    patronages: ["protection", "children", "those who feel alone"],
+    story:
+      "The Church teaches that every person has an angel to guard and guide them. Jesus speaks of the angels of little ones who always behold the face of the Father. The traditional prayer begins: \"Angel of God, my guardian dear.\"",
+    themes: ["fear", "loneliness", "parenting", "anxiety", "family"],
+    emblem: { symbols: ["hand", "star"], colors: ["#A98BEA", "#1FC8C0"] },
+  },
 ];
 
 export const SAINT_IDS = SAINTS.map((s) => s.id);

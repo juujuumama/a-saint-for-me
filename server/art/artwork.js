@@ -24,13 +24,18 @@ export async function createArtwork(exp, { aspect = "portrait", providerId } = {
     const ids = loadStyle().composition.archetypes.map((a) => a.id).filter((id) => !prev.includes(id));
     if (ids.length) brief.composition = ids[seed % ids.length];
   }
-  const built = buildArtPrompt(brief, { aspect, seed });
+  // The figure: an angel on days of fear or need for protection (if one was
+  // recommended), otherwise the day's lead saint.
+  const saints = exp.devotional.saints || [];
+  const angelDay = (exp.devotional.themes || []).some((t) => ["fear", "anxiety", "loneliness", "overwhelm"].includes(t));
+  const saint = (angelDay && saints.find((x) => x.kind === "angel")) || saints[0] || null;
+  const built = buildArtPrompt(brief, { aspect, seed, saint });
   exp.art = { status: "generating", startedAt: new Date().toISOString() };
   saveUser();
   try {
     // Found-word strips come from the reflection (never from what the person wrote).
     const words = seed % 3 === 0 ? [] : wordsFrom(exp.devotional.reflection);
-    const out = await generateImage({ ...built, brief, themes: exp.devotional.themes, seed, aspect, words, references: activeReferences() }, { providerId });
+    const out = await generateImage({ ...built, brief, themes: exp.devotional.themes, seed, aspect, words, saint, references: activeReferences() }, { providerId });
     const file = `${newId(9)}.${out.ext}`;
     fs.writeFileSync(path.join(ART_DIR, file), out.buffer);
     const record = {

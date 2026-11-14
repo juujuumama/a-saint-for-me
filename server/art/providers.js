@@ -49,7 +49,7 @@ async function fail(res, name) {
 
 const ADAPTERS = {
   async procedural(p, job) {
-    const svg = proceduralArtwork({ brief: job.brief, themes: job.themes, seed: job.seed, aspect: job.aspect, words: job.words || [] });
+    const svg = proceduralArtwork({ brief: job.brief, themes: job.themes, seed: job.seed, aspect: job.aspect, words: job.words || [], saint: job.saint || null });
     return { buffer: Buffer.from(svg), mime: "image/svg+xml", ext: "svg" };
   },
 
