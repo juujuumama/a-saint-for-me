@@ -58,7 +58,7 @@ async function renderHome() {
   document.title = "A Saint for Me";
   const [opts, me] = await Promise.all([OPTIONS || api("/api/options"), api("/api/me")]);
   OPTIONS = opts;
-  const state = { mode: "new", emotions: new Set(), circumstances: new Set(), continueFrom: null };
+  const state = { mode: "new", continueFrom: null };
   const returning = me.returning;
   const canContinue = me.settings.memoryConsent && me.recentIntentions.length;
 
@@ -84,14 +84,13 @@ async function renderHome() {
       <input type="text" id="personName" maxlength="40" placeholder="A first name is plenty" autocomplete="off">
     </div>
     <label class="field-label" for="text" id="textLabel">${returning ? "How are you feeling today?" : "In your own words"}</label>
-    <textarea id="text" maxlength="2000" placeholder="Write as much or as little as you like…"></textarea>
-    <p class="hint">Write freely, choose a few words below, or both. Nothing here is required.</p>
-    <div class="chip-group"><h3>Feelings</h3><div class="chips" data-kind="emotions">
-      ${opts.emotions.map((e, i) => `<button type="button" class="chip" style="--c:${CHIP_COLORS[i % 5]}" data-id="${e.id}" aria-pressed="false">${esc(e.label)}</button>`).join("")}
-    </div></div>
-    <div class="chip-group"><h3>What it's about</h3><div class="chips" data-kind="circumstances">
-      ${opts.circumstances.map((c, i) => `<button type="button" class="chip" style="--c:${CHIP_COLORS[(i + 2) % 5]}" data-id="${c.id}" aria-pressed="false">${esc(c.label)}</button>`).join("")}
-    </div></div>
+    <div class="speak-wrap">
+      <textarea id="text" maxlength="2000" placeholder="Type or tap the mic and speak. Say as much or as little as you like…"></textarea>
+      <button type="button" class="mic" id="mic" aria-label="Speak instead of typing" aria-pressed="false" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <p class="hint" id="micHint">Tell it the way you'd tell a friend. We'll find the saints and prayers for it.</p>
     <div class="submit-row">
       <span class="privacy-note">${ICON.lock} Private to you. The art studio never sees your words.</span>
       <button class="btn primary" id="go">Receive today's devotional</button>
@@ -124,22 +123,18 @@ async function renderHome() {
       $("#openMemory", box)?.addEventListener("click", openSettings);
     }
   }));
-  $$(".chips").forEach((group) => group.addEventListener("click", (e) => {
-    const c = e.target.closest(".chip"); if (!c) return;
-    const set = state[group.dataset.kind];
-    set.has(c.dataset.id) ? set.delete(c.dataset.id) : set.add(c.dataset.id);
-    c.setAttribute("aria-pressed", String(set.has(c.dataset.id)));
-  }));
+  setupVoice($("#text"), $("#mic"), $("#micHint"));
 
   $("#checkin").addEventListener("submit", async (e) => {
     e.preventDefault();
     const body = {
       mode: state.mode, text: $("#text").value, personName: $("#personName").value,
-      emotions: [...state.emotions], circumstances: [...state.circumstances], continueFrom: state.continueFrom,
+      emotions: [], circumstances: [], continueFrom: state.continueFrom,
     };
-    if (state.mode === "continue" && !state.continueFrom && !body.text.trim() && !body.emotions.length) return ($("#formError").textContent = "Choose an intention to continue, or write a few words.");
+    if (state.mode === "continue" && !state.continueFrom && !body.text.trim()) return ($("#formError").textContent = "Choose an intention to continue, or say a few words.");
     if (state.mode === "someone" && !body.personName.trim() && !body.text.trim()) return ($("#formError").textContent = "Add a name or a few words about who you're praying for.");
-    if (state.mode === "new" && !body.text.trim() && !body.emotions.length && !body.circumstances.length) return ($("#formError").textContent = "Share a few words, or choose a feeling to begin.");
+    if (state.mode === "new" && !body.text.trim()) return ($("#formError").textContent = "Share a few words (typed or spoken) to begin.");
+    stopVoice();
     renderPreparing();
     try {
       const exp = await api("/api/devotional", { method: "POST", body });
@@ -156,6 +151,34 @@ async function renderHome() {
     r.innerHTML = `<div class="section-title"><h2>From your recent days</h2><a href="${L("/journey")}" data-link>See your collection →</a></div>
       <div class="strip">${items.map(tile).join("")}</div>`;
   }).catch(() => {});
+}
+
+// Voice-to-text using the browser's built-in speech recognition, where available.
+let recognizer = null;
+function stopVoice() { try { recognizer?.stop(); } catch {} recognizer = null; }
+function setupVoice(textarea, btn, hint) {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { hint.textContent = "Tip: to speak instead of type, tap the microphone on your keyboard."; return; }
+  btn.hidden = false;
+  btn.addEventListener("click", () => {
+    if (recognizer) { stopVoice(); return; }
+    const rec = new SR(); recognizer = rec;
+    rec.lang = navigator.language || "en-US"; rec.continuous = true; rec.interimResults = true;
+    const base = textarea.value ? textarea.value.replace(/\s*$/, " ") : "";
+    let finalText = "";
+    rec.onresult = (ev) => {
+      let interim = "";
+      for (let i = ev.resultIndex; i < ev.results.length; i++) {
+        const t = ev.results[i][0].transcript;
+        if (ev.results[i].isFinal) finalText += t + " "; else interim += t;
+      }
+      textarea.value = base + finalText + interim;
+    };
+    rec.onstart = () => { btn.setAttribute("aria-pressed", "true"); hint.textContent = "Listening… tap the mic again when you're done."; };
+    rec.onend = () => { btn.setAttribute("aria-pressed", "false"); hint.textContent = "Edit anything you like, then receive your devotional."; if (recognizer === rec) recognizer = null; };
+    rec.onerror = (ev) => { hint.textContent = ev.error === "not-allowed" ? "Microphone access was blocked. You can type instead, or allow the mic in your browser settings." : "Couldn't hear that. Try again, or type instead."; };
+    rec.start();
+  });
 }
 
 function renderPreparing() {
@@ -196,33 +219,41 @@ async function renderExperience(id, preloaded) {
     </div>
   </div>
 
-  <div class="section-title"><h2>Saints to walk with you</h2></div>
-  <div class="saints">${d.saints.map((s) => `
-    <article class="card saint">
-      <figure><img src="${s.emblem}" alt="Symbolic emblem for ${esc(s.name)}" loading="lazy" width="480" height="600"><figcaption>Symbolic emblem · artistic interpretation</figcaption></figure>
-      <div class="body">
+  <div class="tabbar" role="tablist" aria-label="More for today">
+    <button role="tab" aria-selected="true" data-tab="saints">Saints <span>${d.saints.length}</span></button>
+    <button role="tab" aria-selected="false" data-tab="scripture">Scripture</button>
+    <button role="tab" aria-selected="false" data-tab="trad">Prayers of the Church</button>
+  </div>
+  <div class="tabpanel" data-panel="saints">${d.saints.map((s) => `
+    <article class="saint-row">
+      <img src="${s.emblem}" alt="Symbolic emblem for ${esc(s.name)} (artistic interpretation)" loading="lazy" width="96" height="120">
+      <div>
         <h3>${esc(s.name)}</h3>
-        <p class="facts">${esc(s.years)} · Feast: ${esc(s.feast)}<br>${esc(s.region)}</p>
-        <div class="tags">${s.patronages.slice(0, 4).map((p) => `<span>${esc(p)}</span>`).join("")}</div>
+        <p class="facts">${esc(s.years)} · Feast ${esc(s.feast)} · Patron of ${esc(s.patronages.slice(0, 2).join(", "))}</p>
         <p class="why">${esc(s.why)}</p>
         <details><summary>Their story</summary><p>${esc(s.story)}</p></details>
       </div>
     </article>`).join("")}
+    <p class="hint">Emblems are symbolic, artistic interpretations.</p>
   </div>
-
-  <div class="section-title"><h2>Words of Scripture</h2></div>
-  ${d.scripture.map((s) => `<div class="card scripture"><blockquote>${esc(s.text)}</blockquote><cite>${esc(s.ref)} · <a href="${esc(s.url)}" target="_blank" rel="noopener">Read in context</a></cite><p class="conn">${esc(s.connection)}</p></div>`).join("")}
-  <p class="hint">Quotations adapted from the World English Bible (public domain). “Read in context” opens the New American Bible on usccb.org.</p>
-
-  <div class="section-title"><h2>Traditional prayers &amp; devotions</h2></div>
-  ${d.devotions.map((v) => `<div class="card devotion"><span class="badge trad">✝ Traditional</span><h3>${esc(v.title)}</h3>
-    ${v.kind === "prayer" ? `<p class="text">${esc(v.text)}</p>${v.note ? `<p class="hint">${esc(v.note)}</p>` : ""}` : ""}
-    ${v.kind === "rosary" ? `<p class="hint">Traditionally prayed on ${esc(v.days)}</p><ol>${v.mysteries.map((m) => `<li>${esc(m)}</li>`).join("")}</ol>` : ""}
-    ${v.kind === "devotion" ? `<p>${esc(v.description)}</p><p><a href="${esc(v.url)}" target="_blank" rel="noopener">Learn more</a></p>` : ""}
-    <p class="suggest">${esc(v.suggestion)}</p></div>`).join("")}
+  <div class="tabpanel" data-panel="scripture" hidden>
+    ${d.scripture.map((s) => `<div class="scripture"><blockquote>${esc(s.text)}</blockquote><cite>${esc(s.ref)} · <a href="${esc(s.url)}" target="_blank" rel="noopener">Read in context</a></cite><p class="conn">${esc(s.connection)}</p></div>`).join("")}
+    <p class="hint">Adapted from the World English Bible (public domain). “Read in context” opens the NABRE on usccb.org.</p>
+  </div>
+  <div class="tabpanel" data-panel="trad" hidden>
+    ${d.devotions.map((v) => `<details class="devotion" ${v.kind === "prayer" ? "open" : ""}><summary><span class="badge trad">✝ Traditional</span> ${esc(v.title)}</summary>
+      ${v.kind === "prayer" ? `<p class="text">${esc(v.text)}</p>${v.note ? `<p class="hint">${esc(v.note)}</p>` : ""}` : ""}
+      ${v.kind === "rosary" ? `<p class="hint">Traditionally prayed on ${esc(v.days)}</p><ol>${v.mysteries.map((m) => `<li>${esc(m)}</li>`).join("")}</ol>` : ""}
+      ${v.kind === "devotion" ? `<p>${esc(v.description)} <a href="${esc(v.url)}" target="_blank" rel="noopener">Learn more</a></p>` : ""}
+      <p class="suggest">${esc(v.suggestion)}</p></details>`).join("")}
+  </div>
 
   <section class="card reflection"><p>${esc(d.reflection)}</p><a class="btn" href="${L("/journey")}" data-link>Visit my collection</a></section>`;
 
+  $$(".tabbar button").forEach((t) => t.addEventListener("click", () => {
+    $$(".tabbar button").forEach((x) => x.setAttribute("aria-selected", String(x === t)));
+    $$(".tabpanel").forEach((pnl) => (pnl.hidden = pnl.dataset.panel !== t.dataset.tab));
+  }));
   $("#savePrayer").addEventListener("click", async () => {
     exp = await api(`/api/experiences/${exp.id}/save`, { method: "POST", body: { prayerSaved: !exp.prayerSaved } });
     $("#savePrayer").innerHTML = exp.prayerSaved ? ICON.heart + " Prayer saved" : ICON.book + " Save this prayer";
