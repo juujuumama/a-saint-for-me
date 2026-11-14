@@ -8,6 +8,7 @@ import { z } from "zod";
 import { betaZodOutputFormat } from "@anthropic-ai/sdk/helpers/beta/zod";
 import { buildArtPrompt, loadStyle } from "./style.js";
 import { generateImage } from "./providers.js";
+import { wordsFrom } from "./procedural.js";
 import { ART_DIR, REF_DIR, newId, saveUser, listReferences } from "../store.js";
 
 function activeReferences() {
@@ -27,7 +28,9 @@ export async function createArtwork(exp, { aspect = "portrait", providerId } = {
   exp.art = { status: "generating", startedAt: new Date().toISOString() };
   saveUser();
   try {
-    const out = await generateImage({ ...built, brief, themes: exp.devotional.themes, seed, aspect, references: activeReferences() }, { providerId });
+    // Found-word strips come from the reflection (never from what the person wrote).
+    const words = seed % 3 === 0 ? [] : wordsFrom(exp.devotional.reflection);
+    const out = await generateImage({ ...built, brief, themes: exp.devotional.themes, seed, aspect, words, references: activeReferences() }, { providerId });
     const file = `${newId(9)}.${out.ext}`;
     fs.writeFileSync(path.join(ART_DIR, file), out.buffer);
     const record = {

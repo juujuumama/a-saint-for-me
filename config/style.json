@@ -1,35 +1,75 @@
 {
-  "name": "A Saint for Me — House Style v1",
+  "name": "A Saint for Me — House Style v2 (after juujuumama)",
   "version": 1,
-  "summary": "Contemporary devotional art: surrealist, Afrofuturist hand-cut and torn paper collage, built from vintage printed matter, crystals, abstract stained glass and celestial imagery, in vibrant pink, turquoise, orange, coral and peach.",
+  "summary": "Contemporary devotional art in the hand of artist juujuumama: torn-paper collage over faded mid-century snapshots flooded with thick hot-pink and red impasto, iridescent crystal blooms, banded agate, cut-out found-word strips, and Afrofuturist portraiture, in flood red, bubblegum pink, turquoise, lavender and cream.",
   "palette": {
     "primary": [
-      { "name": "Hibiscus pink", "hex": "#FF5FA2" },
-      { "name": "Lagoon turquoise", "hex": "#1FC8C0" },
-      { "name": "Marigold orange", "hex": "#FF7A1A" },
-      { "name": "Living coral", "hex": "#FF6F61" },
-      { "name": "Soft peach", "hex": "#FFC9A8" }
+      {
+        "name": "Flood red",
+        "hex": "#E8364F"
+      },
+      {
+        "name": "Hibiscus pink",
+        "hex": "#FF5FA2"
+      },
+      {
+        "name": "Lagoon turquoise",
+        "hex": "#1FC8C0"
+      },
+      {
+        "name": "Lavender haze",
+        "hex": "#A98BEA"
+      },
+      {
+        "name": "Living coral",
+        "hex": "#FF6F61"
+      },
+      {
+        "name": "Soft peach",
+        "hex": "#FFC9A8"
+      },
+      {
+        "name": "Marigold orange",
+        "hex": "#FF7A1A"
+      }
     ],
     "grounds": [
-      { "name": "Aged newsprint cream", "hex": "#F6EBDD" },
-      { "name": "Night aubergine", "hex": "#24163A" },
-      { "name": "Deep indigo", "hex": "#1B2A5C" }
+      {
+        "name": "Aged newsprint cream",
+        "hex": "#F6EBDD"
+      },
+      {
+        "name": "Night aubergine",
+        "hex": "#24163A"
+      },
+      {
+        "name": "Deep indigo",
+        "hex": "#1B2A5C"
+      }
     ],
     "accents": [
-      { "name": "Burnished gold leaf", "hex": "#D9A441" },
-      { "name": "Ink black", "hex": "#140F1F" }
+      {
+        "name": "Burnished gold leaf",
+        "hex": "#D9A441"
+      },
+      {
+        "name": "Ink black",
+        "hex": "#140F1F"
+      }
     ],
-    "rules": "Saturated, joyful color against either warm aged paper or deep night grounds. Pink and turquoise are the signature pairing. Gold is used sparingly as leaf or seams, never as a glowing haze."
+    "rules": "Hot red-pink paint is the signature: it floods vintage scenes like a sea. Turquoise breaks through as torn openings. Lavender and iridescent opal for crystals and blooms. Cream paper and faded photo tones as ground. Gold only as a single sun disk or small accents."
   },
   "techniques": [
-    "hand-cut paper collage with visible scissor edges",
-    "torn paper edges with white deckled fibers showing",
-    "layered cut-outs casting soft, real paper shadows",
-    "vintage halftone printing and misregistered risograph color",
-    "archival ephemera: botanical engravings, star charts, ledger paper, postage-stamp perforations, old hymnal page textures (no legible words)",
-    "abstract stained-glass segmentation with dark lead lines",
-    "faceted crystals and gemstones as luminous solid forms",
-    "gold-leaf seams in the manner of kintsugi"
+    "thick impasto paint applied over vintage photographs, flooding landscapes and rooms like a sea",
+    "torn-paper collage with white deckled edges and visible layers",
+    "faded mid-century snapshot photography (suburban houses, gardens, family tables) as the base layer",
+    "cut-out found-word strips arranged like ransom-note poetry",
+    "iridescent holographic crystals, opal and geodes",
+    "banded agate and marbled mineral swirls",
+    "tufted, knitted and fuzzy textile textures in checkered patterns",
+    "halftone and black-and-white scribble patterns",
+    "white plaster bas-relief sculpture",
+    "abstract stained-glass segmentation"
   ],
   "composition": {
     "preferences": [
@@ -40,39 +80,88 @@
       "one clear focal point readable at phone size"
     ],
     "archetypes": [
-      { "id": "halo_icon", "description": "a single central emblem inside a large stained-glass halo, radiating cut-paper rays" },
-      { "id": "arched_window", "description": "a tall Gothic-arch window cut from paper, opening onto a surreal celestial landscape" },
-      { "id": "orbital", "description": "concentric orbits and planetary rings circling a central crystal or figure" },
-      { "id": "ascending_stack", "description": "a vertical tower of collaged layers rising from earth strata toward stars" },
-      { "id": "diptych", "description": "two halves in conversation, a seam or thread joining contrasting fields" },
-      { "id": "rose_window", "description": "a mandala-like rose window of radial stained-glass petals and gems" },
-      { "id": "horizon_strata", "description": "layered torn-paper horizons like geological strata under a vast sky" },
-      { "id": "constellation", "description": "scattered cut-out elements connected by fine thread like a star chart" },
-      { "id": "silhouette_cosmos", "description": "an off-center collaged profile silhouette filled with a cosmos, flowers or crystals" },
-      { "id": "triptych", "description": "three vertical panels like a contemporary altarpiece, each a variation on the theme" }
+      {
+        "id": "flooded_snapshot",
+        "description": "a faded vintage snapshot of an ordinary place (house, garden, table) whose lower half is flooded by a sea of thick hot-pink and red impasto paint, with a torn turquoise opening"
+      },
+      {
+        "id": "crystal_bloom",
+        "description": "oversized iridescent flowers growing out of clusters of opal and quartz crystals, painterly and holographic"
+      },
+      {
+        "id": "agate_bands",
+        "description": "a large slice of banded agate in turquoise, coral, lavender and cream, with a small sacred symbol at its heart"
+      },
+      {
+        "id": "halo_icon",
+        "description": "a single central emblem inside a large stained-glass halo, radiating cut-paper rays"
+      },
+      {
+        "id": "arched_window",
+        "description": "a tall Gothic-arch window cut from paper, opening onto a surreal celestial landscape"
+      },
+      {
+        "id": "orbital",
+        "description": "concentric orbits and planetary rings circling a central crystal or figure"
+      },
+      {
+        "id": "ascending_stack",
+        "description": "a vertical tower of collaged layers rising from earth strata toward stars"
+      },
+      {
+        "id": "diptych",
+        "description": "two halves in conversation, a seam or thread joining contrasting fields"
+      },
+      {
+        "id": "rose_window",
+        "description": "a mandala-like rose window of radial stained-glass petals and gems"
+      },
+      {
+        "id": "horizon_strata",
+        "description": "layered torn-paper horizons like geological strata under a vast sky"
+      },
+      {
+        "id": "constellation",
+        "description": "scattered cut-out elements connected by fine thread like a star chart"
+      },
+      {
+        "id": "silhouette_cosmos",
+        "description": "an off-center collaged profile silhouette filled with a cosmos, flowers or crystals"
+      },
+      {
+        "id": "triptych",
+        "description": "three vertical panels like a contemporary altarpiece, each a variation on the theme"
+      }
     ]
   },
   "textures": [
-    "aged paper grain and foxing",
-    "halftone dot fields",
-    "visible paper fiber at torn edges",
-    "subtle print misregistration",
-    "matte gouache-like flat color"
+    "thick wet impasto ridges",
+    "faded photo grain and sepia cast",
+    "torn paper fibers",
+    "holographic shimmer",
+    "halftone dots",
+    "tufted yarn"
   ],
   "motifs": {
     "universal": [
-      "crystals and geodes",
+      "a sea of pink-red paint flooding an ordinary scene",
+      "iridescent crystals and opal",
+      "banded agate",
+      "oversized blooms",
+      "a single gold sun disk",
+      "cut-out word strips",
       "abstract stained-glass fragments",
       "crescent moons, eight-pointed stars, planetary rings",
       "botanicals cut from vintage engravings",
       "fine gold thread connecting elements"
     ],
     "afrocentric": [
-      "Black women and men as dignified, regal collage silhouettes or portraits",
-      "headwraps, braids and natural hair rendered as cut-paper shapes",
-      "geometric patterns inspired by West African textiles (mudcloth, strip-woven cloth)",
-      "cowrie shells, indigo dye patterns, sun disks",
-      "Afrofuturist celestial adornment: crowns of stars, orbiting jewels"
+      "Black women and men as regal, contemporary portraits, in collage or painted treatment",
+      "pearls, beaded collars and sculptural adornment",
+      "natural hair, braids and updos rendered sculpturally",
+      "tufted checkered textiles in pink, lavender and green",
+      "patterns inspired by West African textiles (mudcloth, strip-woven cloth)",
+      "Afrofuturist adornment: crystal crowns, mineral-patterned garments"
     ],
     "sacred": [
       "halos as stained-glass rings, not glowing blur",
@@ -82,31 +171,143 @@
       "lilies, roses and palms as traditional attributes"
     ],
     "byTheme": {
-      "motherhood": ["a mother-and-child silhouette nested inside a crescent", "a geode cradling a single luminous seed", "a protective arch of torn paper over a sleeping form", "two moons tethered by a gold thread", "a nest woven from vintage botanical prints"],
-      "parenting": ["a small hand in a larger hand", "a garden of young sprouts under a rose window", "a lighthouse beam made of stained glass"],
-      "marriage": ["two orbits overlapping into a shared light", "interlocking rings of gemstone", "two trees whose branches form one arch"],
-      "relationships": ["two separate orbits each with its own light", "a heart-shaped geode cracked open to reveal crystal", "a forking garden path under a calm moon", "a mirror of faceted glass reflecting a whole figure"],
-      "family": ["a house-shaped arch made of many patterned papers", "a constellation of linked figures", "a mended quilt with gold seams"],
-      "finances": ["cupped hands receiving falling seeds of light", "terraced stained-glass fields ripening", "a steady keystone arch", "a vessel overflowing with gemstones and wheat", "birds of the air cut from vintage engravings"],
-      "work": ["hands at work with tools of light", "a ladder rising into a doorway of sky", "a sunrise over layered paper hills"],
-      "addiction": ["a broken chain transforming into a flock of paper birds", "a stained-glass chrysalis opening", "a figure emerging from torn layers of strata", "gold kintsugi seams across a mended vessel", "a narrow door opening onto dawn"],
-      "health": ["a figure resting inside a healing arch of turquoise glass", "a geode of light at the heart", "a garden after rain", "a lamp held steady in the dark"],
-      "grief": ["an empty chair beneath a field of stars", "a candle held within a geode", "a doorway of light at the edge of a night meadow", "forget-me-nots cut from vintage botanical prints", "a crescent moon cradling a single star"],
-      "decisions": ["a forked path under a guiding star", "a compass rose of stained glass", "a hand holding a lantern at a crossroads", "two doors, one lit"],
-      "growth": ["a seedling breaking through layered strata", "a butterfly cut from star charts", "a spiral staircase of crystals"],
-      "faith": ["a ladder of light (Jacob's ladder) rising through clouds", "an open hand releasing a dove", "a rose window glowing in a night sky"],
-      "gratitude": ["a sunburst halo of fruits and flowers cut from vintage seed catalogs", "an overflowing chalice of gemstones", "confetti of stained glass", "a table of abundance under a wide sky"],
-      "anxiety": ["still water reflecting a calm moon", "a figure held in the palm of a vast gentle hand", "storm clouds parting around a lighthouse of crystal"],
-      "overwhelm": ["a small boat on large waves beneath a guiding star", "a heavy load set down at the foot of an arch", "a single quiet room inside a busy collage"],
-      "loneliness": ["a single figure under a sky full of companions-as-stars", "a lit window seen from a night garden", "a bird returning to a nest"],
-      "sadness": ["rain falling as tiny crystals onto blooming flowers", "a blue hour sky with the first star", "a heart carried gently in cupped hands"],
-      "anger": ["fire transformed into a warm hearth", "a sword laid down and blossoming", "crimson strata cooling into turquoise water"],
-      "hope": ["a sunrise cut from layered papers", "an anchor wrapped in flowers", "a green shoot in winter ground"],
-      "fear": ["a figure sheltered beneath great wings of patterned paper", "a lantern in a dark forest", "a shield of stained glass"],
-      "confusion": ["a labyrinth seen from above with a lit center", "fog parting around a single path", "a constellation forming a clear shape"],
-      "peace": ["a dove resting on still water", "a quiet garden inside a rose window", "a crescent over a calm sea"],
-      "discouragement": ["a fallen figure being lifted by many hands", "a small flame protected by cupped palms", "a stone rolled away from a doorway"],
-      "inspiration": ["tongues of flame as cut paper", "a figure crowned with stars", "a burst of birds from an open book"]
+      "motherhood": [
+        "a mother-and-child silhouette nested inside a crescent",
+        "a geode cradling a single luminous seed",
+        "a protective arch of torn paper over a sleeping form",
+        "two moons tethered by a gold thread",
+        "a nest woven from vintage botanical prints"
+      ],
+      "parenting": [
+        "a small hand in a larger hand",
+        "a garden of young sprouts under a rose window",
+        "a lighthouse beam made of stained glass"
+      ],
+      "marriage": [
+        "two orbits overlapping into a shared light",
+        "interlocking rings of gemstone",
+        "two trees whose branches form one arch"
+      ],
+      "relationships": [
+        "two separate orbits each with its own light",
+        "a heart-shaped geode cracked open to reveal crystal",
+        "a forking garden path under a calm moon",
+        "a mirror of faceted glass reflecting a whole figure"
+      ],
+      "family": [
+        "a house-shaped arch made of many patterned papers",
+        "a constellation of linked figures",
+        "a mended quilt with gold seams"
+      ],
+      "finances": [
+        "cupped hands receiving falling seeds of light",
+        "terraced stained-glass fields ripening",
+        "a steady keystone arch",
+        "a vessel overflowing with gemstones and wheat",
+        "birds of the air cut from vintage engravings"
+      ],
+      "work": [
+        "hands at work with tools of light",
+        "a ladder rising into a doorway of sky",
+        "a sunrise over layered paper hills"
+      ],
+      "addiction": [
+        "a broken chain transforming into a flock of paper birds",
+        "a stained-glass chrysalis opening",
+        "a figure emerging from torn layers of strata",
+        "gold kintsugi seams across a mended vessel",
+        "a narrow door opening onto dawn"
+      ],
+      "health": [
+        "a figure resting inside a healing arch of turquoise glass",
+        "a geode of light at the heart",
+        "a garden after rain",
+        "a lamp held steady in the dark"
+      ],
+      "grief": [
+        "an empty chair beneath a field of stars",
+        "a candle held within a geode",
+        "a doorway of light at the edge of a night meadow",
+        "forget-me-nots cut from vintage botanical prints",
+        "a crescent moon cradling a single star"
+      ],
+      "decisions": [
+        "a forked path under a guiding star",
+        "a compass rose of stained glass",
+        "a hand holding a lantern at a crossroads",
+        "two doors, one lit"
+      ],
+      "growth": [
+        "a seedling breaking through layered strata",
+        "a butterfly cut from star charts",
+        "a spiral staircase of crystals"
+      ],
+      "faith": [
+        "a ladder of light (Jacob's ladder) rising through clouds",
+        "an open hand releasing a dove",
+        "a rose window glowing in a night sky"
+      ],
+      "gratitude": [
+        "a sunburst halo of fruits and flowers cut from vintage seed catalogs",
+        "an overflowing chalice of gemstones",
+        "confetti of stained glass",
+        "a table of abundance under a wide sky"
+      ],
+      "anxiety": [
+        "still water reflecting a calm moon",
+        "a figure held in the palm of a vast gentle hand",
+        "storm clouds parting around a lighthouse of crystal"
+      ],
+      "overwhelm": [
+        "a small boat on large waves beneath a guiding star",
+        "a heavy load set down at the foot of an arch",
+        "a single quiet room inside a busy collage"
+      ],
+      "loneliness": [
+        "a single figure under a sky full of companions-as-stars",
+        "a lit window seen from a night garden",
+        "a bird returning to a nest"
+      ],
+      "sadness": [
+        "rain falling as tiny crystals onto blooming flowers",
+        "a blue hour sky with the first star",
+        "a heart carried gently in cupped hands"
+      ],
+      "anger": [
+        "fire transformed into a warm hearth",
+        "a sword laid down and blossoming",
+        "crimson strata cooling into turquoise water"
+      ],
+      "hope": [
+        "a sunrise cut from layered papers",
+        "an anchor wrapped in flowers",
+        "a green shoot in winter ground"
+      ],
+      "fear": [
+        "a figure sheltered beneath great wings of patterned paper",
+        "a lantern in a dark forest",
+        "a shield of stained glass"
+      ],
+      "confusion": [
+        "a labyrinth seen from above with a lit center",
+        "fog parting around a single path",
+        "a constellation forming a clear shape"
+      ],
+      "peace": [
+        "a dove resting on still water",
+        "a quiet garden inside a rose window",
+        "a crescent over a calm sea"
+      ],
+      "discouragement": [
+        "a fallen figure being lifted by many hands",
+        "a small flame protected by cupped palms",
+        "a stone rolled away from a doorway"
+      ],
+      "inspiration": [
+        "tongues of flame as cut paper",
+        "a figure crowned with stars",
+        "a burst of birds from an open book"
+      ]
     }
   },
   "lighting": {
@@ -114,7 +315,7 @@
     "avoid": "lens flares, god rays, glowing haze, bloom effects"
   },
   "typography": {
-    "inImage": "no text, letters, numerals or pseudo-writing in the generated image",
+    "inImage": "AI-generated images contain no text (it comes out garbled). Real found-word strips, cut from the prayer, are added as an overlay by the studio-sketch artist.",
     "onCards": "high-contrast serif display (Fraunces) for titles; prayer set in italic serif; small caps for labels; generous margins"
   },
   "sacredIconographyRules": [
@@ -138,5 +339,9 @@
     "copying any specific existing artwork"
   ],
   "promptTemplate": "Original contemporary devotional artwork. {technique}. Concept: {concept}. Central symbol: {central_symbol}. Supporting motifs: {motifs}. Composition: {composition}. Mood: {mood}. Palette: {palette}. Textures: {textures}. {afrocentric} Lighting: {lighting}. Rules: {rules}. Avoid: {avoid}.",
-  "referenceNotes": []
+  "referenceNotes": [
+    "Signature move: an ordinary, faded mid-century photograph is overtaken by thick, glossy hot-pink and red paint that floods the scene like water, with turquoise showing through torn gaps.",
+    "Favor tactile, hand-made surfaces: impasto ridges, torn deckled paper, tufted yarn, plaster relief. Nothing should look smooth or digital.",
+    "Crystals and flowers are iridescent and holographic (opal, pink-lavender-aqua shifts), never plain glass."
+  ]
 }

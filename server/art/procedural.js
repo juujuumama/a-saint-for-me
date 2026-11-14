@@ -144,6 +144,10 @@ function defs(P, r) {
   <pattern id="ledger" width="40" height="22" patternUnits="userSpaceOnUse"><rect width="40" height="22" fill="${P.paper}"/><line x1="0" y1="21" x2="40" y2="21" stroke="${P.turq}" stroke-opacity=".5"/><line x1="8" y1="0" x2="8" y2="22" stroke="${P.coral}" stroke-opacity=".35"/></pattern>
   <pattern id="mudcloth" width="36" height="36" patternUnits="userSpaceOnUse"><rect width="36" height="36" fill="${P.orange}"/><path d="M0 9h36M0 27h36" stroke="${P.ink}" stroke-width="3"/><path d="M6 14l6 8 6-8 6 8 6-8" stroke="${P.paper}" stroke-width="2.5" fill="none"/><circle cx="9" cy="3" r="2" fill="${P.paper}"/><circle cx="27" cy="33" r="2" fill="${P.paper}"/></pattern>
   <pattern id="starchart" width="120" height="120" patternUnits="userSpaceOnUse"><rect width="120" height="120" fill="${P.indigo}"/><circle cx="60" cy="60" r="56" fill="none" stroke="${P.peach}" stroke-opacity=".25"/><path d="M0 60h120M60 0v120" stroke="${P.peach}" stroke-opacity=".15"/><circle cx="22" cy="30" r="1.6" fill="#fff"/><circle cx="90" cy="18" r="1.2" fill="#fff"/><circle cx="76" cy="88" r="2" fill="#fff"/><circle cx="35" cy="96" r="1" fill="#fff"/></pattern>
+  <linearGradient id="iri" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF9BD0"/><stop offset=".35" stop-color="#C3A6FF"/><stop offset=".65" stop-color="#8FEDE6"/><stop offset="1" stop-color="#FFD9BE"/></linearGradient>
+  <linearGradient id="iri2" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9FF3EC"/><stop offset=".5" stop-color="#FFB3DA"/><stop offset="1" stop-color="#B9A0FF"/></linearGradient>
+  <linearGradient id="vsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5FB8C6"/><stop offset="1" stop-color="#D9E6D6"/></linearGradient>
+  <filter id="faded"><feColorMatrix type="matrix" values=".85 .1 .05 0 .06  .08 .82 .1 0 .05  .05 .1 .72 0 .04  0 0 0 1 0"/></filter>
   </defs>`;
 }
 
@@ -153,12 +157,95 @@ function palette(style) {
   return {
     pink: by("pink") || "#FF5FA2", turq: by("turquoise") || "#1FC8C0", orange: by("orange") || "#FF7A1A",
     coral: by("coral") || "#FF6F61", peach: by("peach") || "#FFC9A8", paper: by("cream") || "#F6EBDD",
+    red: by("red") || "#E8364F", lav: by("lavender") || "#A98BEA",
     night: by("aubergine") || "#24163A", indigo: by("indigo") || "#1B2A5C", gold: by("gold") || "#D9A441", ink: by("ink") || "#140F1F",
   };
 }
 
+
+// ---------- founder signatures (from juujuumama.art) ----------
+let clipN = 0;
+// Thick impasto paint: overlapping short, fat strokes with wet highlights.
+function impasto(clipD, box, colors, r, density = 1) {
+  const id = `cp${clipN++}`, [x, y, w, h] = box;
+  let o = `<clipPath id="${id}"><path d="${clipD}"/></clipPath><g clip-path="url(#${id})"><rect x="${f(x)}" y="${f(y)}" width="${f(w)}" height="${f(h)}" fill="${colors[0]}"/>`;
+  const n = Math.floor((w * h) / 2600 * density);
+  for (let i = 0; i < n; i++) {
+    const px = x + r() * w, py = y + r() * h, len = 40 + r() * 110, a = (r() - 0.5) * 0.7;
+    const ex = px + Math.cos(a) * len, ey = py + Math.sin(a) * len, cy2 = py - 10 + r() * 20;
+    const c = colors[Math.floor(r() * colors.length)], sw = 10 + r() * 22;
+    o += `<path d="M${f(px)},${f(py)} Q${f((px + ex) / 2)},${f(cy2)} ${f(ex)},${f(ey)}" stroke="${c}" stroke-width="${f(sw)}" stroke-linecap="round" fill="none"/>`;
+    if (i % 3 === 0) o += `<path d="M${f(px + 4)},${f(py - sw / 3)} Q${f((px + ex) / 2)},${f(cy2 - sw / 3)} ${f(ex - 4)},${f(ey - sw / 3)}" stroke="#fff" stroke-opacity=".28" stroke-width="${f(sw / 5)}" stroke-linecap="round" fill="none"/>`;
+  }
+  return o + "</g>";
+}
+// A faded mid-century snapshot: sky, lawn, houses, trees, white print border.
+function snapshot(x, y, w, h, r, P) {
+  let o = `<g filter="url(#shadow)"><rect x="${f(x - 16)}" y="${f(y - 16)}" width="${f(w + 32)}" height="${f(h + 32)}" fill="#FBF6EC"/></g><g filter="url(#faded)">`;
+  o += `<rect x="${f(x)}" y="${f(y)}" width="${f(w)}" height="${f(h)}" fill="url(#vsky)"/>`;
+  const horizon = y + h * (0.42 + r() * 0.1);
+  o += `<rect x="${f(x)}" y="${f(horizon)}" width="${f(w)}" height="${f(y + h - horizon)}" fill="#7E9460"/>`;
+  for (let i = 0; i < 7; i++) { const tx = x + r() * w, th = 60 + r() * 120; o += `<path d="M${f(tx)},${f(horizon - th)} L${f(tx + th * 0.28)},${f(horizon + 4)} L${f(tx - th * 0.28)},${f(horizon + 4)}Z" fill="${r() > 0.5 ? "#2F4A33" : "#3E5B3A"}"/>`; }
+  const houses = 1 + Math.floor(r() * 3);
+  for (let i = 0; i < houses; i++) {
+    const hw = w * (0.18 + r() * 0.12), hx = x + (w / (houses + 0.4)) * (i + 0.3) + r() * 20, hh = hw * 0.55, hy = horizon - hh * 0.6;
+    const wall = ["#E9DCC4", "#C9D5C9", "#E4C9B8", "#D8D0E6"][Math.floor(r() * 4)];
+    o += `<rect x="${f(hx)}" y="${f(hy)}" width="${f(hw)}" height="${f(hh)}" fill="${wall}"/><path d="M${f(hx - 10)},${f(hy)} L${f(hx + hw / 2)},${f(hy - hh * 0.55)} L${f(hx + hw + 10)},${f(hy)}Z" fill="#6B5B57"/>`;
+    o += `<rect x="${f(hx + hw * 0.15)}" y="${f(hy + hh * 0.3)}" width="${f(hw * 0.18)}" height="${f(hh * 0.25)}" fill="#3B4A5A"/><rect x="${f(hx + hw * 0.62)}" y="${f(hy + hh * 0.35)}" width="${f(hw * 0.16)}" height="${f(hh * 0.65)}" fill="#5B4636"/>`;
+  }
+  return o + `<rect x="${f(x)}" y="${f(y)}" width="${f(w)}" height="${f(h)}" fill="#C9A27A" opacity=".16"/><rect x="${f(x)}" y="${f(y)}" width="${f(w)}" height="${f(h)}" fill="url(#halftone)" opacity=".35"/></g>`;
+}
+// Banded agate slice: nested wobbly rings.
+function agate(cx, cy, R, r, P) {
+  const bands = [P.paper, P.turq, P.coral, P.lav, P.peach, P.red, P.paper, P.pink, P.turq, P.orange, P.paper];
+  let o = "";
+  const ph = Array.from({ length: 5 }, () => r() * 6.28), amp = Array.from({ length: 5 }, () => 0.03 + r() * 0.06);
+  for (let b = 0; b < 16; b++) {
+    const rr = R * (1 - b / 17), pts = [];
+    for (let i = 0; i < 72; i++) { const a = (i / 72) * Math.PI * 2; const k = 1 + amp.reduce((s, m, j) => s + m * Math.sin(a * (j + 2) + ph[j] + b * 0.15), 0); pts.push(`${f(cx + Math.cos(a) * rr * k)},${f(cy + Math.sin(a) * rr * k * 0.82)}`); }
+    o += `<path d="M${pts.join("L")}Z" fill="${bands[b % bands.length]}" stroke="${P.ink}" stroke-opacity=".12" stroke-width="1.5"/>`;
+  }
+  return `<g filter="url(#shadow)">${o}</g>`;
+}
+// Iridescent bloom: layered petals in holographic gradients.
+function bloom(cx, cy, R, r, P) {
+  let o = "";
+  for (let layer = 0; layer < 3; layer++) {
+    const n = 6 + layer * 2, rr = R * (1 - layer * 0.26), off = r() * 6.28;
+    for (let i = 0; i < n; i++) {
+      const a = off + (i / n) * Math.PI * 2, px = cx + Math.cos(a) * rr * 0.45, py = cy + Math.sin(a) * rr * 0.45;
+      o += `<ellipse cx="${f(px)}" cy="${f(py)}" rx="${f(rr * 0.5)}" ry="${f(rr * 0.3)}" transform="rotate(${f((a * 180) / Math.PI)} ${f(px)} ${f(py)})" fill="${["url(#iri)", "url(#iri2)", P.pink, P.red][(i + layer) % 4]}" fill-opacity="${f(0.7 + r() * 0.3)}" stroke="#fff" stroke-opacity=".35" stroke-width="2"/>`;
+    }
+  }
+  return `<g filter="url(#shadow)">${o}<circle cx="${f(cx)}" cy="${f(cy)}" r="${f(R * 0.12)}" fill="${P.gold}"/></g>`;
+}
+// Cut-out found-word strips (real words from the person's prayer, never garbled).
+function wordStrips(words, x, y, r, maxW) {
+  let o = "", yy = y;
+  for (const w of words) {
+    const size = 46 + r() * 10, tw = Math.min(maxW, w.length * size * 0.56 + 28), rot = (r() - 0.5) * 7;
+    const xx = x + (r() - 0.3) * 40;
+    o += `<g transform="rotate(${f(rot)} ${f(xx + tw / 2)} ${f(yy)})" filter="url(#shadow)"><rect x="${f(xx)}" y="${f(yy - size * 0.95)}" width="${f(tw)}" height="${f(size * 1.35)}" fill="${r() > 0.75 ? "#F3E6C8" : "#FBF7EE"}"/><text x="${f(xx + 14)}" y="${f(yy)}" font-family="Georgia, 'Times New Roman', serif" font-size="${f(size)}" fill="#1B1420">${w.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]))}</text></g>`;
+    yy += size * 1.65;
+  }
+  return o;
+}
+export function wordsFrom(text = "", max = 6) {
+  // a complete short phrase: the shortest sentence, or the closing words of a long one
+  const sents = text.replace(/[“”"]/g, "").split(/(?<=[.!?])\s+/).map((x) => x.trim().replace(/[.!?]+$/, "")).filter(Boolean);
+  if (!sents.length) return [];
+  let ws = sents.sort((a, b) => a.split(" ").length - b.split(" ").length)[0].split(/\s+/);
+  if (ws.length > 10) {
+    const tail = ws.join(" ").split(",").pop().trim().split(/\s+/);
+    ws = tail.length >= 2 && tail.length <= 8 ? tail : ws.slice(-6);
+  }
+  const out = [];
+  for (let i = 0; i < ws.length && out.length < max; ) { const n = ws[i].length > 6 ? 1 : 2; out.push(ws.slice(i, i + n).join(" ")); i += n; }
+  return out;
+}
+
 // ---------- main ----------
-export function proceduralArtwork({ brief, themes = [], seed = Date.now(), aspect = "portrait" }) {
+export function proceduralArtwork({ brief, themes = [], seed = Date.now(), aspect = "portrait", words = [] }) {
   const style = loadStyle();
   const P = palette(style);
   const r = rng(seed);
@@ -166,7 +253,8 @@ export function proceduralArtwork({ brief, themes = [], seed = Date.now(), aspec
   const comp = brief?.composition || "halo_icon";
   const theme = themes.find((t) => MOTIFS[t]) || "peace";
   const second = themes.filter((t) => MOTIFS[t] && t !== theme)[0];
-  const glassPal = [P.pink, P.turq, P.orange, P.coral, P.peach, P.gold];
+  const glassPal = [P.pink, P.turq, P.red, P.coral, P.lav, P.peach];
+  const flood = [P.red, P.pink, P.red, P.coral, P.pink, P.turq, "#FF8FB5"];
   const night = r() > 0.4;
   const ground = night ? P.night : P.paper;
   const cx = W / 2, cy = H * (aspect === "square" ? 0.5 : 0.46);
@@ -251,6 +339,32 @@ export function proceduralArtwork({ brief, themes = [], seed = Date.now(), aspec
       });
       break;
     }
+    case "flooded_snapshot": {
+      const x = W * 0.08, y = H * 0.07, w = W * 0.84, h = H * 0.86;
+      L.push(snapshot(x, y, w, h, r, P));
+      const top = y + h * (0.38 + r() * 0.12), pts = [[x - 4, y + h + 4], [x - 4, top + 40]];
+      for (let i = 0; i <= 10; i++) pts.push([x + (w * i) / 10, top + (r() - 0.5) * 120]);
+      pts.push([x + w + 4, top + 30], [x + w + 4, y + h + 4]);
+      L.push(impasto(tornPoly(pts, r, 22), [x - 10, top - 80, w + 20, y + h - top + 100], flood, r, 1.3));
+      L.push(`<path d="${tornRect(x + w * (0.2 + r() * 0.4), top + h * 0.18, w * 0.22, h * 0.12, r, 18, (r() - 0.5) * 0.4)}" fill="${P.turq}" opacity=".95"/>`);
+      L.push(drawMotif(theme, x + w * (0.3 + r() * 0.4), y + h * 0.22, motifSize * 0.45));
+      break;
+    }
+    case "crystal_bloom": {
+      L.push(impasto(`M0,0H${W}V${H}H0Z`, [0, 0, W, H], [P.turq, "#7FD9D3", P.peach, P.pink, P.lav], r, 0.7));
+      const blooms = 2 + Math.floor(r() * 3);
+      for (let i = 0; i < blooms; i++) L.push(bloom(W * (0.2 + r() * 0.6), H * (0.18 + (i / blooms) * 0.7), W * (0.22 + r() * 0.14), r, P));
+      for (let i = 0; i < 9; i++) L.push(crystal(W * r(), H * (0.3 + r() * 0.7), 30 + r() * 50, i % 2 ? "url(#iri)" : "url(#iri2)", r, (r() - 0.5) * 1.2));
+      L.push(drawMotif(theme, cx, cy, motifSize * 0.55));
+      break;
+    }
+    case "agate_bands": {
+      L.push(impasto(tornRect(-20, H * 0.55, W + 40, H * 0.5, r, 24), [0, H * 0.5, W, H * 0.5], [P.lav, P.pink, P.turq], r, 0.6));
+      L.push(agate(cx, cy, W * 0.4, r, P));
+      L.push(`<circle cx="${cx}" cy="${cy}" r="${f(motifSize * 0.8)}" fill="${ground}" stroke="${P.ink}" stroke-opacity=".4" stroke-width="4"/>`);
+      L.push(drawMotif(theme, cx, cy, motifSize * 0.6));
+      break;
+    }
     default: { // halo_icon
       for (let i = 0; i < 24; i++) { const a = (i / 24) * Math.PI * 2; L.push(`<path d="${tornPoly([[cx, cy], [cx + Math.cos(a - 0.06) * W * 0.8, cy + Math.sin(a - 0.06) * W * 0.8], [cx + Math.cos(a + 0.06) * W * 0.8, cy + Math.sin(a + 0.06) * W * 0.8]], r, 8)}" fill="${glassPal[i % 6]}" opacity=".55"/>`); }
       L.push(`<path d="${tornCircle(cx, cy, W * 0.36, r, 10)}" fill="${P.paper}" filter="url(#shadow)"/>`);
@@ -260,6 +374,7 @@ export function proceduralArtwork({ brief, themes = [], seed = Date.now(), aspec
     }
   }
 
+  if (words.length) L.push(wordStrips(words, W * (r() > 0.5 ? 0.52 : 0.08), H * (0.62 + r() * 0.08), r, W * 0.42));
   // scattered gems and stars
   for (let i = 0; i < 6; i++) L.push(crystal(60 + r() * (W - 120), 60 + r() * (H - 120), 14 + r() * 18, glassPal[Math.floor(r() * 6)], r, r() * 3));
   for (let i = 0; i < 10; i++) L.push(`<path d="${star(r() * W, r() * H, 6 + r() * 12)}" fill="${night ? P.peach : P.ink}" opacity=".8"/>`);
