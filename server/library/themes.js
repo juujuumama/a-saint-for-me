@@ -38,11 +38,11 @@ export const THEMES = [
 
 // Lightweight keyword detection for the offline composer (no AI key configured).
 const KEYWORDS = {
-  motherhood: ["mama", "pregnant", "ivf", "infertil", "breastfeed", "nursing", "my baby", "mom", "mother", "motherhood", "baby", "pregnan", "newborn", "postpartum", "daughter", "son"],
-  parenting: ["my kids", "my child", "school", "custody", "kid", "child", "children", "parent", "toddler", "teen"],
+  motherhood: ["mama", "pregnant", "ivf", "infertil", "breastfeed", "nursing", "my baby", "baby", "motherhood", "newborn", "postpartum", "as a mom", "being a mom", "i'm a mom", "im a mom", "new mom", "miscarriage"],
+  parenting: ["my son", "my daughter", "my kids", "my children", "my kids", "my child", "school", "custody", "kid", "child", "children", "parent", "toddler", "teen"],
   marriage: ["my husband", "my wife", "cheat", "affair", "husband", "wife", "marriage", "married", "spouse", "divorce"],
   relationships: ["boyfriend", "girlfriend", "partner", "relationship", "breakup", "broke up", "dating", "friend"],
-  family: ["family", "sister", "brother", "father", "dad", "in-law", "estranged"],
+  family: ["my mom", "my mother", "my dad", "my father", "my parents", "my grandma", "my grandmother", "my grandpa", "my sister", "my brother", "family", "sister", "brother", "father", "dad", "in-law", "estranged"],
   finances: ["paycheck", "afford", "savings", "loan", "credit card", "food stamps", "money", "rent", "bills", "debt", "afford", "financial", "broke", "evict"],
   work: ["coworker", "promotion", "my shift", "quit", "job", "work", "boss", "career", "laid off", "fired", "interview", "unemploy"],
   addiction: ["using again", "staying clean", "pills", "weed", "aa ", "na ", "addict", "sober", "sobriety", "relapse", "drink", "alcohol", "drug", "recovery", "gambl"],

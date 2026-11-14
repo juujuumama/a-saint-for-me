@@ -314,3 +314,6 @@ body { font-size: 15px; }
 @media (min-width: 900px) { .art-col > .artframe, .art-col > .collectible { width: min(100%, 380px); } .diptych { grid-template-columns: 400px minmax(0, 1fr); } }
 .art-col .art-label, .art-col .art-actions, .art-col .history { justify-content: center; }
 .art-col .art-label { max-width: 380px; margin-inline: auto; }
+.continue-inline { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 10px; font-size: .85rem; color: var(--ink-2); }
+.continue-inline .continue-list { margin: 0; }
+.continue-inline .continue-list button { padding: 5px 10px; font-size: .82rem; border-radius: 999px; }

@@ -94,7 +94,7 @@ export async function handle(path, method = "GET", body = {}) {
     };
     const context = { recentCompositions: db.experiences.slice(-3).flatMap((e) => e.artHistory.map((a) => a.composition)) };
     const prev = body.continueFrom && db.settings.memoryConsent && db.experiences.find((e) => e.id === body.continueFrom);
-    if (prev) { context.previous = { title: prev.intentionTitle }; if (!checkin.personName) checkin.personName = prev.checkin.personName; }
+    if (prev) { context.previous = { title: prev.intentionTitle, themes: prev.devotional.themes }; if (!checkin.personName) checkin.personName = prev.checkin.personName; }
     const devotional = { ...hydrate(composeOffline(checkin, context, STYLE)), source: "offline" };
     const e = {
       id: id(), createdAt: new Date().toISOString(), intentionTitle: devotional.intention_title, devotional,

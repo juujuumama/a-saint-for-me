@@ -66,23 +66,11 @@ async function renderHome() {
   <section class="hero">
     <div class="hero-art" style="background-image:url('${STATIC ? local.heroUrl() : "/hero.svg"}')"></div>
     <div class="hero-inner">
-      ${returning ? `<p class="welcome">Welcome back. We're glad you're here.</p>` : `<p class="eyebrow">Your daily art &amp; prayer</p>`}
       <h1>What's on your <span>heart</span> today?</h1>
-      <p class="lead">Tell us what you're carrying, what you're celebrating, or what you need help navigating. We'll help you find the prayers, saints, and words of faith for this moment.</p>
+      <p class="lead">Rooted in real prayers, Scripture, and the saints and angels of the Church. Created by Catholic artist Sierra Renee.</p>
     </div>
   </section>
   <form class="checkin" id="checkin" novalidate>
-    <div class="paths" role="group" aria-label="How would you like to pray today?">
-      <button type="button" class="path" data-mode="new" aria-pressed="true">${returning ? "Something new on my heart" : "What's on my heart"}</button>
-      ${returning ? `<button type="button" class="path" data-mode="continue" aria-pressed="false">Keep praying about something</button>` : ""}
-      <button type="button" class="path" data-mode="someone" aria-pressed="false">Pray for someone</button>
-      <button type="button" class="path" data-mode="thanks" aria-pressed="false">Give thanks</button>
-    </div>
-    <div id="continueBox" hidden></div>
-    <div id="personBox" hidden style="margin-bottom:14px">
-      <label class="field-label" for="personName">Who would you like to pray for?</label>
-      <input type="text" id="personName" maxlength="40" placeholder="A first name is plenty" autocomplete="off">
-    </div>
     <label class="field-label" for="text" id="textLabel">${returning ? "How are you feeling today?" : "In your own words"}</label>
     <div class="speak-wrap">
       <textarea id="text" maxlength="2000" placeholder="Type or tap the mic and speak. Say as much or as little as you like…"></textarea>
@@ -90,6 +78,7 @@ async function renderHome() {
         <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       </button>
     </div>
+    ${canContinue ? `<div class="continue-inline"><span>Or keep praying about:</span><div class="continue-list">${me.recentIntentions.map((r) => `<button type="button" data-id="${r.id}" aria-pressed="false">${esc(r.title)}</button>`).join("")}</div></div>` : ""}
     <p class="hint" id="micHint">Tell it the way you'd tell a friend. We'll find the saints and prayers for it.</p>
     <div class="submit-row">
       <span class="privacy-note">${ICON.lock} Private to you. The art studio never sees your words.</span>
@@ -99,41 +88,19 @@ async function renderHome() {
   </form>
   <section class="recent" id="recent" hidden></section>`;
 
-  const LABELS = {
-    new: returning ? "How are you feeling today?" : "In your own words",
-    continue: "Anything new since then? (optional)",
-    someone: "What would you like to pray for them?",
-    thanks: "What would you like to give thanks for?",
-  };
-  $$(".path").forEach((b) => b.addEventListener("click", () => {
-    state.mode = b.dataset.mode;
-    $$(".path").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
-    $("#textLabel").textContent = LABELS[state.mode];
-    $("#personBox").hidden = state.mode !== "someone";
-    const box = $("#continueBox");
-    box.hidden = state.mode !== "continue";
-    if (state.mode === "continue") {
-      box.innerHTML = canContinue
-        ? `<p class="field-label" style="font-size:1.05rem">Would you like to continue praying about…</p><div class="continue-list">${me.recentIntentions.map((r) => `<button type="button" data-id="${r.id}" aria-pressed="false">${esc(r.title)}${r.personName ? ` · for ${esc(r.personName)}` : ""}<small>${fmtDate(r.date, { month: "short", day: "numeric" })}</small></button>`).join("")}</div>`
-        : `<div class="notice" style="margin:0 0 14px">To continue an earlier intention without retelling your story, turn on <button type="button" class="btn small ghost" id="openMemory">Remember my intentions</button>. Or simply write about it below.</div>`;
-      $$(".continue-list button", box).forEach((cb) => cb.addEventListener("click", () => {
-        state.continueFrom = cb.getAttribute("aria-pressed") === "true" ? null : cb.dataset.id;
-        $$(".continue-list button", box).forEach((x) => x.setAttribute("aria-pressed", String(x.dataset.id === state.continueFrom)));
-      }));
-      $("#openMemory", box)?.addEventListener("click", openSettings);
-    }
+  $$(".continue-list button").forEach((cb) => cb.addEventListener("click", () => {
+    state.continueFrom = cb.getAttribute("aria-pressed") === "true" ? null : cb.dataset.id;
+    $$(".continue-list button").forEach((x) => x.setAttribute("aria-pressed", String(x.dataset.id === state.continueFrom)));
   }));
   setupVoice($("#text"), $("#mic"), $("#micHint"));
 
   $("#checkin").addEventListener("submit", async (e) => {
     e.preventDefault();
     const body = {
-      mode: state.mode, text: $("#text").value, personName: $("#personName").value,
+      mode: state.continueFrom ? "continue" : "new", text: $("#text").value, personName: "",
       emotions: [], circumstances: [], continueFrom: state.continueFrom,
     };
-    if (state.mode === "continue" && !state.continueFrom && !body.text.trim()) return ($("#formError").textContent = "Choose an intention to continue, or say a few words.");
-    if (state.mode === "someone" && !body.personName.trim() && !body.text.trim()) return ($("#formError").textContent = "Add a name or a few words about who you're praying for.");
-    if (state.mode === "new" && !body.text.trim()) return ($("#formError").textContent = "Share a few words (typed or spoken) to begin.");
+    if (!state.continueFrom && !body.text.trim()) return ($("#formError").textContent = "Share a few words (typed or spoken) to begin.");
     stopVoice();
     renderPreparing();
     try {

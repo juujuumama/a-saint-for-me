@@ -27,6 +27,8 @@ const PHRASES = {
 
 export function composeOffline(checkin, context = {}, style) {
   let themes = themesFromCheckin(checkin);
+  // Continuing an earlier intention: carry its themes forward when today's words add none.
+  if (context.previous?.themes?.length) themes = [...new Set([...themes, ...context.previous.themes])];
   if (checkin.mode === "thanks" && !themes.includes("gratitude")) themes.unshift("gratitude");
   if (!themes.length) themes = ["peace", "faith", "hope"];
 
@@ -38,7 +40,8 @@ export function composeOffline(checkin, context = {}, style) {
 
   const named = themes.slice(0, 3).map((t) => PHRASES[t]).filter(Boolean);
   const isThanks = themes[0] === "gratitude" || checkin.mode === "thanks";
-  const who = checkin.personName;
+  const forWhom = (checkin.text || "").match(/\bfor (my (?:mom|mother|dad|father|son|daughter|husband|wife|sister|brother|friend|best friend|grandma|grandmother|grandpa|grandfather|baby|kids|children|partner|boyfriend|girlfriend|family|aunt|uncle|cousin|niece|nephew))\b/i);
+  const who = checkin.personName || (forWhom ? forWhom[1].toLowerCase() : "");
   const body = [
     who
       ? `Loving God, I bring ${who} before You today. You know ${who} more deeply than I ever could, and You hold every part of their story.`
@@ -56,7 +59,9 @@ export function composeOffline(checkin, context = {}, style) {
   const central = motifPool[0] || "a geode holding a luminous seed";
 
   return {
-    intention_title: isThanks ? "A day of thanksgiving" : `Prayer for ${themes[0].replace(/^\w/, (c) => c.toUpperCase())}`.replace("Prayer for Overwhelm", "When it is all too much"),
+    intention_title: context.previous?.title && !checkin.text ? context.previous.title
+      : who ? `Praying for ${who}`
+      : isThanks ? "A day of thanksgiving" : `Prayer for ${themes[0].replace(/^\w/, (c) => c.toUpperCase())}`.replace("Prayer for Overwhelm", "When it is all too much"),
     opening: isThanks
       ? "What a gift to pause and give thanks. Here is a prayer and some companions for your gratitude today."
       : "Thank you for trusting this moment with prayer. You are not alone in what you are carrying.",

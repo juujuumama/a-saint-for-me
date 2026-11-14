@@ -113,7 +113,7 @@ app.post("/api/devotional", async (req, res) => {
     const prev = store.findExperience(req.uid, String(b.continueFrom));
     if (prev && u.settings.memoryConsent) {
       continuedFrom = prev.id;
-      context.previous = { title: prev.intentionTitle, date: new Date(prev.createdAt).toDateString(), summary: prev.checkin.text || null };
+      context.previous = { title: prev.intentionTitle, date: new Date(prev.createdAt).toDateString(), summary: prev.checkin.text || null, themes: prev.devotional.themes };
       if (!checkin.personName && prev.checkin.personName) checkin.personName = prev.checkin.personName;
     }
   }
