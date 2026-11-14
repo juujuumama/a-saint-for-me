@@ -2,7 +2,7 @@
 // Produces an original SVG collage in the house style (torn paper, stained glass,
 // crystals, celestial forms, halftone & archival textures), driven by the art
 // brief's themes and composition and a per-artwork seed. Never identical twice.
-import { loadStyle } from "./style.js";
+// Pure module (no Node APIs): runs on the server and in the browser. Pass the style config in.
 
 function rng(seed) {
   let a = seed >>> 0;
@@ -329,8 +329,7 @@ function saintFigure(saint, cx, hy, R, H, r, P) {
 }
 
 // ---------- main ----------
-export function proceduralArtwork({ brief, themes = [], seed = Date.now(), aspect = "portrait", words = [], saint = null }) {
-  const style = loadStyle();
+export function proceduralArtwork({ brief, themes = [], seed = Date.now(), aspect = "portrait", words = [], saint = null, style }) {
   const P = palette(style);
   const r = rng(seed);
   const W = 1024, H = aspect === "square" ? 1024 : 1536;
@@ -511,8 +510,7 @@ const ICONS = {
   wheat: (P) => `<path d="M50 94 V20" stroke="${P.gold}" stroke-width="4"/>${[26, 38, 50, 62].map((y) => `<ellipse cx="42" cy="${y}" rx="8" ry="4" transform="rotate(-35 42 ${y})" fill="${P.gold}"/><ellipse cx="58" cy="${y}" rx="8" ry="4" transform="rotate(35 58 ${y})" fill="${P.gold}"/>`).join("")}`,
 };
 
-export function saintEmblem(saint, seed = 1) {
-  const style = loadStyle();
+export function saintEmblem(saint, seed = 1, style) {
   const P = palette(style);
   const r = rng(seed + saint.id.length * 97);
   const [c1, c2] = saint.emblem?.colors || [P.turq, P.pink];

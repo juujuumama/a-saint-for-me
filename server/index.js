@@ -197,7 +197,7 @@ app.get("/api/saints/:id/emblem.svg", (req, res) => {
   const s = saintById(req.params.id);
   if (!s) return res.status(404).end();
   res.type("image/svg+xml").setHeader("Cache-Control", "public, max-age=86400");
-  res.send(saintEmblem(s));
+  res.send(saintEmblem(s, 1, loadStyle()));
 });
 
 // ---------- founder Style Studio (token-protected) ----------
@@ -281,7 +281,7 @@ app.get("/hero.svg", (req, res) => {
   const comps = ["rose_window", "orbital", "halo_icon", "constellation", "horizon_strata"];
   const themes = ["gratitude", "peace", "hope", "faith", "motherhood", "inspiration"];
   res.type("image/svg+xml").setHeader("Cache-Control", "public, max-age=3600");
-  res.send(proceduralArtwork({ brief: { composition: comps[day % comps.length] }, themes: [themes[day % themes.length]], seed: day, aspect: "square" }));
+  res.send(proceduralArtwork({ brief: { composition: comps[day % comps.length] }, themes: [themes[day % themes.length]], seed: day, aspect: "square", style: loadStyle() }));
 });
 
 // ---------- static ----------

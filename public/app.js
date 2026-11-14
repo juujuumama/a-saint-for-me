@@ -5,7 +5,13 @@ const esc = (s = "") => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<
 const main = $("#main");
 const store = { get: (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } }, set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} } };
 
+// Browser-only edition (GitHub Pages): same API, served from this device.
+const STATIC = Boolean(window.ASFM_STATIC);
+let local = null;
+const L = (path) => (STATIC ? `#${path}` : path);
+const currentPath = () => (STATIC ? location.hash.slice(1) || "/" : location.pathname);
 async function api(path, opts = {}) {
+  if (STATIC) { local ||= await import("./local-api.js"); return local.handle(path, opts.method || "GET", opts.body || {}); }
   const res = await fetch(path, { headers: { "Content-Type": "application/json" }, credentials: "same-origin", ...opts, body: opts.body ? JSON.stringify(opts.body) : undefined });
   const json = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(json.error || "Something went wrong.");
@@ -24,8 +30,13 @@ const ICON = {
 const CHIP_COLORS = ["var(--pink)", "var(--turq)", "var(--orange)", "var(--peach)", "var(--coral)"];
 
 // ---------------- router ----------------
-function navigate(path, replace = false) { (replace ? history.replaceState : history.pushState).call(history, {}, "", path); route(); }
+function navigate(path, replace = false) {
+  if (STATIC) { const h = path === "/" ? "" : path; if (location.hash.slice(1) === h) route(); else location.hash = h; return; }
+  (replace ? history.replaceState : history.pushState).call(history, {}, "", path); route();
+}
+if (STATIC) addEventListener("hashchange", route);
 document.addEventListener("click", (e) => {
+  if (STATIC) return; // hash links route themselves
   const a = e.target.closest("a[data-link]");
   if (a && !e.metaKey && !e.ctrlKey && a.origin === location.origin) { e.preventDefault(); navigate(a.pathname); }
 });
@@ -33,7 +44,7 @@ addEventListener("popstate", route);
 let pollTimer = null;
 function route() {
   clearTimeout(pollTimer);
-  const p = location.pathname;
+  const p = currentPath();
   $$("[data-nav]").forEach((n) => n.removeAttribute("aria-current"));
   if (p.startsWith("/e/")) return renderExperience(p.slice(3));
   if (p === "/journey") { $('[data-nav="journey"]').setAttribute("aria-current", "page"); return renderJourney(); }
@@ -53,7 +64,7 @@ async function renderHome() {
 
   main.innerHTML = `
   <section class="hero">
-    <div class="hero-art" style="background-image:url('/hero.svg')"></div>
+    <div class="hero-art" style="background-image:url('${STATIC ? local.heroUrl() : "/hero.svg"}')"></div>
     <div class="hero-inner">
       ${returning ? `<p class="welcome">Welcome back. We're glad you're here.</p>` : `<p class="eyebrow">Your daily art &amp; prayer</p>`}
       <h1>What's on your <span>heart</span> today?</h1>
@@ -132,8 +143,8 @@ async function renderHome() {
     renderPreparing();
     try {
       const exp = await api("/api/devotional", { method: "POST", body });
-      history.pushState({}, "", `/e/${exp.id}`);
-      renderExperience(exp.id, exp);
+      if (STATIC) navigate(`/e/${exp.id}`);
+      else { history.pushState({}, "", `/e/${exp.id}`); renderExperience(exp.id, exp); }
     } catch (err) { await renderHome(); $("#formError").textContent = err.message; }
   });
 
@@ -142,7 +153,7 @@ async function renderHome() {
     const items = experiences.filter((x) => x.art.current).slice(0, 8);
     if (!items.length) return;
     const r = $("#recent"); r.hidden = false;
-    r.innerHTML = `<div class="section-title"><h2>From your recent days</h2><a href="/journey" data-link>See your collection →</a></div>
+    r.innerHTML = `<div class="section-title"><h2>From your recent days</h2><a href="${L("/journey")}" data-link>See your collection →</a></div>
       <div class="strip">${items.map(tile).join("")}</div>`;
   }).catch(() => {});
 }
@@ -158,7 +169,7 @@ function renderPreparing() {
 let VIEW = store.get("asfm:view", "prayer");
 async function renderExperience(id, preloaded) {
   let exp;
-  try { exp = preloaded || (await api(`/api/experiences/${id}`)); } catch { main.innerHTML = `<div class="empty"><h2>We couldn't find that devotional.</h2><p><a href="/" data-link>Return to today</a></p></div>`; return; }
+  try { exp = preloaded || (await api(`/api/experiences/${id}`)); } catch { main.innerHTML = `<div class="empty"><h2>We couldn't find that devotional.</h2><p><a href="${L("/")}" data-link>Return to today</a></p></div>`; return; }
   const d = exp.devotional;
   document.title = `${exp.intentionTitle} · A Saint for Me`;
   const paras = d.prayer.body.split(/\n\s*\n/).map((p) => `<p>${esc(p.trim())}</p>`).join("");
@@ -210,7 +221,7 @@ async function renderExperience(id, preloaded) {
     ${v.kind === "devotion" ? `<p>${esc(v.description)}</p><p><a href="${esc(v.url)}" target="_blank" rel="noopener">Learn more</a></p>` : ""}
     <p class="suggest">${esc(v.suggestion)}</p></div>`).join("")}
 
-  <section class="card reflection"><p>${esc(d.reflection)}</p><a class="btn" href="/journey" data-link>Visit my collection</a></section>`;
+  <section class="card reflection"><p>${esc(d.reflection)}</p><a class="btn" href="${L("/journey")}" data-link>Visit my collection</a></section>`;
 
   $("#savePrayer").addEventListener("click", async () => {
     exp = await api(`/api/experiences/${exp.id}/save`, { method: "POST", body: { prayerSaved: !exp.prayerSaved } });
@@ -272,7 +283,7 @@ function renderArt(exp) {
 function poll(id) {
   clearTimeout(pollTimer);
   pollTimer = setTimeout(async () => {
-    if (location.pathname !== `/e/${id}`) return;
+    if (currentPath() !== `/e/${id}`) return;
     try {
       const exp = await api(`/api/experiences/${id}`);
       if (exp.art.status === "queued" || exp.art.status === "generating") return poll(id);
@@ -364,7 +375,7 @@ function openShare(exp) {
 
 // ---------------- JOURNEY ----------------
 function tile(x) {
-  return `<a class="tile" href="/e/${x.id}" data-link>
+  return `<a class="tile" href="${L(`/e/${x.id}`)}" data-link>
     <div class="img">${x.art.current ? `<img src="${x.art.current.url}" alt="" loading="lazy">` : ""}</div>
     <div class="info"><strong>${esc(x.intentionTitle)}</strong><small>${fmtDate(x.createdAt, { month: "short", day: "numeric", year: "numeric" })} ${x.saved ? '<span class="heart" aria-label="Saved">♥</span>' : ""}${x.prayerSaved ? " · prayer saved" : ""}</small></div></a>`;
 }
@@ -376,7 +387,7 @@ async function renderJourney() {
     <div class="journey-head"><div><p class="eyebrow" style="color:var(--accent)">Your prayer journey</p><h1>My Devotional Collection</h1></div>
       <div class="tabs" role="group" aria-label="Filter">${[["all", "All days"], ["saved", "Saved art"], ["prayers", "Saved prayers"]].map(([v, l]) => `<button data-f="${v}" aria-pressed="${JFILTER === v}">${l}</button>`).join("")}</div></div>
     ${experiences.length ? `<div class="gallery">${experiences.map(tile).join("")}</div>`
-      : `<div class="empty"><h2>${JFILTER === "all" ? "Your collection begins today" : "Nothing saved here yet"}</h2><p>Each devotional you receive keeps its artwork, prayer and saints together here, whether you visit every day or once in a while.</p><a class="btn primary" href="/" data-link>What's on your heart?</a></div>`}`;
+      : `<div class="empty"><h2>${JFILTER === "all" ? "Your collection begins today" : "Nothing saved here yet"}</h2><p>Each devotional you receive keeps its artwork, prayer and saints together here, whether you visit every day or once in a while.</p><a class="btn primary" href="${L("/")}" data-link>What's on your heart?</a></div>`}`;
   $$(".tabs button").forEach((b) => b.addEventListener("click", () => { JFILTER = b.dataset.f; renderJourney(); }));
 }
 
@@ -390,7 +401,7 @@ $("#settingsBtn").addEventListener("click", openSettings);
 $("#memoryToggle").addEventListener("change", async (e) => {
   await api("/api/me/settings", { method: "POST", body: { memoryConsent: e.target.checked } });
   toast(e.target.checked ? "We'll remember your intentions" : "Memory off. Your words have been forgotten.");
-  if (location.pathname === "/") renderHome();
+  if (currentPath() === "/") renderHome();
 });
 $("#deleteAll").addEventListener("click", async () => {
   if (!confirm("Delete all your devotionals, artwork and settings? This can't be undone.")) return;

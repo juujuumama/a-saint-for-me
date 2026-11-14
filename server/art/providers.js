@@ -7,6 +7,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { proceduralArtwork } from "./procedural.js";
+import { loadStyle } from "./style.js";
 
 const CONFIG_FILE = path.resolve(process.env.PROVIDERS_FILE || "config/providers.json");
 
@@ -49,7 +50,7 @@ async function fail(res, name) {
 
 const ADAPTERS = {
   async procedural(p, job) {
-    const svg = proceduralArtwork({ brief: job.brief, themes: job.themes, seed: job.seed, aspect: job.aspect, words: job.words || [], saint: job.saint || null });
+    const svg = proceduralArtwork({ brief: job.brief, themes: job.themes, seed: job.seed, aspect: job.aspect, words: job.words || [], saint: job.saint || null, style: loadStyle() });
     return { buffer: Buffer.from(svg), mime: "image/svg+xml", ext: "svg" };
   },
 
