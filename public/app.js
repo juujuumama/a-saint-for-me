@@ -411,7 +411,9 @@ async function renderJourney() {
 // ---------------- ABOUT ----------------
 async function renderAbout() {
   document.title = "About · A Saint for Me";
-  const [symbols, sample] = await Promise.all([api("/api/symbols").catch(() => []), api("/api/kit-sample").catch(() => ({ images: [] }))]);
+  const showcase = (STATIC ? "showcase/" : "/showcase/");
+  const [symbols, shots] = await Promise.all([api("/api/symbols").catch(() => []), fetch(showcase + "showcase.json").then((r) => r.json()).catch(() => [])]);
+  const sample = { images: shots.map((f) => showcase + f) };
   const order = ["palm", "lily", "roses", "chains_broken", "flame", "heart", "tears", "book", "sword", "scales", "fish", "hand", "rays", "broom", "bread", "wheat", "sun", "rings", "lamp", "ladder", "thorn", "castle", "water", "jar", "cross", "rosary", "medallion", "tools", "dove", "star", "moon"];
   const byKey = Object.fromEntries(symbols.map((x) => [x.key, x.svg]));
   const cap = (t) => t.charAt(0).toUpperCase() + t.slice(1);
@@ -422,7 +424,7 @@ async function renderAbout() {
       <h1>A daily prayer, and a piece of art made for it</h1>
       <p class="lead">Share what's on your heart, in your own words or out loud. A Saint for Me answers with a personal prayer, saints to walk with you, Scripture, prayers of the Church, and a one-of-a-kind collage built from the original artwork of Sierra Renee (juujuumama).</p>
     </header>
-    ${sample.images.length ? `<div class="about-strip">${sample.images.map((u) => `<img src="${u}" alt="" loading="lazy">`).join("")}</div>` : ""}
+    ${sample.images.length ? `<div class="about-strip">${sample.images.map((u) => `<img src="${u}" alt="A saint or angel collage made by the app" loading="lazy">`).join("")}</div>` : ""}
 
     <div class="about-cols">
     <section class="about-sec">

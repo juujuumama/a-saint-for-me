@@ -385,3 +385,5 @@ body { font-size: 15px; }
   .symbol-grid:not(.open) .symbol:nth-child(n+9) { display: none; }
   .symbol-more { display: inline-flex; }
 }
+@media (min-width: 900px) { .about-strip img { aspect-ratio: 2/3; } }
+.about-strip img { aspect-ratio: 2/3; }
