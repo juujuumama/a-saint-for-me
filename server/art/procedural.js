@@ -568,7 +568,12 @@ function kitArtwork({ themes = [], seed, aspect = "portrait", words = [], saint 
   L.push(...figure);
 
   // 9. A few gems, then her found-word strips on top
-  for (let i = 0; i < 4; i++) L.push(crystal(60 + r() * (W - 120), 80 + r() * (H - 160), 16 + r() * 18, i % 2 ? "url(#iri)" : "url(#iri2)", r, r() * 3));
+  for (let i = 0; i < 4; i++) {
+    // keep gems off the figure (head, halo, robe centre)
+    let gx = 60 + r() * (W - 120), gy = 80 + r() * (H - 160);
+    if (saint && Math.abs(gx - cx) < W * 0.3) gx = gx < cx ? cx - W * 0.3 - r() * W * 0.1 : cx + W * 0.3 + r() * W * 0.1;
+    L.push(crystal(gx, gy, 16 + r() * 18, i % 2 ? "url(#iri)" : "url(#iri2)", r, r() * 3));
+  }
   if (words.length) L.push(wordStrips(words, W * (r() > 0.5 ? 0.58 : 0.05), H * 0.82, r, W * 0.4));
 
   // 10. A deckled paper mat and grain unify it as one hand-made piece
@@ -586,19 +591,19 @@ const ICONS = {
   book: (P) => `<path d="M10 25 L48 32 L48 85 L10 78Z" fill="${P.paper}"/><path d="M90 25 L52 32 L52 85 L90 78Z" fill="${P.peach}"/>`,
   lily: (P) => `<path d="M50 58 L50 94" stroke="${P.turq}" stroke-width="5"/><path d="M50 12 C59 28 59 44 50 56 C41 44 41 28 50 12Z M50 56 C38 40 22 38 14 42 C25 51 38 56 50 58Z M50 56 C62 40 78 38 86 42 C75 51 62 56 50 58Z" fill="${P.paper}"/>`,
   roses: (P) => [[35, 40], [65, 42], [50, 66]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="17" fill="${P.pink}"/><path d="M${x - 8} ${y} a8 8 0 1 1 8 8 a5 5 0 1 1 -4 -6" stroke="${P.ink}" stroke-opacity=".4" stroke-width="2" fill="none"/>`).join(""),
-  tears: (P) => [[30, 30, 0.6], [55, 45, 0.8], [40, 68, 0.5]].map(([x, y, k]) => `<path transform="translate(${x - 50 * k} ${y - 50 * k}) scale(${k})" d="M50 20 C60 40 64 50 64 58 C64 68 57 74 50 74 C43 74 36 68 36 58 C36 50 40 40 50 20Z" fill="${P.turq}"/>`).join(""),
+  tears: (P) => `<path d="M22 34 Q50 52 78 34" stroke="${P.ink}" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M30 38 l-4 7 M42 43 l-2 8 M58 43 l2 8 M70 38 l4 7" stroke="${P.ink}" stroke-width="4" stroke-linecap="round"/>${[[38, 62, 0.42], [60, 74, 0.5]].map(([x, y, k]) => `<path transform="translate(${x - 50 * k} ${y - 50 * k}) scale(${k})" d="M50 8 C64 34 70 48 70 60 C70 74 61 82 50 82 C39 82 30 74 30 60 C30 48 36 34 50 8Z" fill="${P.turq}"/>`).join("")}`,
   tools: (P) => `<rect x="46" y="30" width="8" height="60" fill="${P.peach}"/><rect x="28" y="18" width="44" height="16" rx="3" fill="${P.ink}"/>`,
   rings: (P) => `<circle cx="40" cy="50" r="22" fill="none" stroke="${P.gold}" stroke-width="7"/><circle cx="60" cy="50" r="22" fill="none" stroke="${P.gold}" stroke-width="7"/>`,
-  thorn: (P) => `<circle cx="50" cy="50" r="28" fill="none" stroke="${P.ink}" stroke-width="6"/>${Array.from({ length: 12 }, (_, i) => { const a = (i / 12) * Math.PI * 2; return `<path d="M${f(50 + Math.cos(a) * 28)} ${f(50 + Math.sin(a) * 28)} L${f(50 + Math.cos(a + 0.15) * 40)} ${f(50 + Math.sin(a + 0.15) * 40)}" stroke="${P.ink}" stroke-width="4"/>`; }).join("")}`,
+  thorn: (P) => `<ellipse cx="50" cy="52" rx="38" ry="18" fill="none" stroke="#5B4636" stroke-width="7"/><ellipse cx="50" cy="52" rx="38" ry="18" fill="none" stroke="#8B6A4E" stroke-width="3" stroke-dasharray="6 5"/>${Array.from({ length: 14 }, (_, i) => { const a = (i / 14) * Math.PI * 2, x = 50 + Math.cos(a) * 38, y = 52 + Math.sin(a) * 18, dx = Math.cos(a) * 12, dy = Math.sin(a) * 8 - 6; return `<path d="M${f(x - 3)} ${f(y)} L${f(x + dx)} ${f(y + dy)} L${f(x + 3)} ${f(y)}Z" fill="#5B4636"/>`; }).join("")}`,
   key: (P) => `<circle cx="30" cy="50" r="16" fill="none" stroke="${P.gold}" stroke-width="7"/><path d="M46 50 H88 M74 50 V64 M84 50 V60" stroke="${P.gold}" stroke-width="7"/>`,
-  chains_broken: (P) => `<ellipse cx="28" cy="58" rx="16" ry="10" fill="none" stroke="${P.ink}" stroke-width="6" transform="rotate(-20 28 58)"/><ellipse cx="72" cy="42" rx="16" ry="10" fill="none" stroke="${P.ink}" stroke-width="6" transform="rotate(-20 72 42)"/><path d="${star(50, 50, 12, 4, 4)}" fill="${P.gold}"/>`,
-  palm: (P) => `<path d="M30 92 C40 60 55 35 75 12" stroke="${P.turq}" stroke-width="4" fill="none"/>${Array.from({ length: 8 }, (_, i) => { const t = i / 8, x = 30 + 45 * t, y = 92 - 80 * t; return `<path d="M${f(x)} ${f(y)} l-16 -6 M${f(x)} ${f(y)} l14 6" stroke="${P.turq}" stroke-width="4"/>`; }).join("")}`,
+  chains_broken: (P) => `<g fill="none" stroke="#4A4552" stroke-width="7"><ellipse cx="16" cy="76" rx="11" ry="7" transform="rotate(-40 16 76)"/><ellipse cx="29" cy="64" rx="11" ry="7" transform="rotate(-40 29 64)" stroke="#6E6878"/><path d="M38 52 a11 7 -40 0 1 6 -8"/><ellipse cx="84" cy="24" rx="11" ry="7" transform="rotate(-40 84 24)"/><ellipse cx="71" cy="36" rx="11" ry="7" transform="rotate(-40 71 36)" stroke="#6E6878"/><path d="M62 48 a11 7 -40 0 1 -6 8"/></g><path d="M50 50 l-12 -4 M50 50 l4 -13 M50 50 l12 4 M50 50 l-4 13" stroke="${P.gold}" stroke-width="4" stroke-linecap="round"/>`,
+  palm: (P) => `<path d="M30 96 C40 70 50 46 66 20" stroke="#245E3B" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M66 6 C92 22 86 62 50 78 C42 70 40 64 40 58 C40 34 52 16 66 6Z" fill="#2F8A55"/><path d="M66 10 C58 34 54 52 46 72" stroke="#A8E0B8" stroke-width="3" fill="none"/>${[18, 28, 38, 48, 58].map((y, i) => `<path d="M${62 - i * 3} ${y} l${16 - i} -6 M${60 - i * 3} ${y + 4} l-${12 - i} -2" stroke="#F6EBDD" stroke-width="2.5" stroke-linecap="round"/>`).join("")}`,
   broom: (P) => `<path d="M70 10 L45 62" stroke="${P.peach}" stroke-width="6"/><path d="M45 60 L20 90 L60 90 L52 62Z" fill="${P.gold}"/>`,
   dove: (P) => `<path d="M15 55 C30 40 45 42 55 48 L80 30 C78 45 70 55 62 58 C70 62 80 62 88 60 C78 72 60 75 45 70 C35 67 25 62 15 55Z" fill="${P.paper}"/>`,
   bread: (P) => `<ellipse cx="50" cy="55" rx="38" ry="22" fill="${P.orange}"/><path d="M32 48 l8 12 M48 44 l8 14 M64 46 l8 12" stroke="${P.paper}" stroke-width="4"/>`,
   sun: (P) => `${Array.from({ length: 12 }, (_, i) => { const a = (i / 12) * Math.PI * 2; return `<path d="M${f(50 + Math.cos(a) * 26)} ${f(50 + Math.sin(a) * 26)} L${f(50 + Math.cos(a) * 44)} ${f(50 + Math.sin(a) * 44)}" stroke="${P.orange}" stroke-width="6" stroke-linecap="round"/>`; }).join("")}<circle cx="50" cy="50" r="20" fill="${P.gold}"/>`,
   ladder: (P) => `<path d="M34 8 V92 M66 8 V92" stroke="${P.paper}" stroke-width="5"/>${[20, 38, 56, 74].map((y) => `<path d="M34 ${y} H66" stroke="${P.paper}" stroke-width="5"/>`).join("")}`,
-  medallion: (P) => `<circle cx="50" cy="50" r="34" fill="${P.gold}"/><circle cx="50" cy="50" r="24" fill="${P.turq}"/><path d="${star(50, 50, 14, 5, 4)}" fill="${P.paper}"/>`,
+  medallion: (P) => `<path d="M50 6 V18" stroke="${P.gold}" stroke-width="4"/><ellipse cx="50" cy="56" rx="32" ry="38" fill="${P.gold}"/><ellipse cx="50" cy="56" rx="24" ry="30" fill="#F6E7C1"/><path d="M50 36 V78 M38 50 H62" stroke="${P.coral}" stroke-width="7" stroke-linecap="round"/>`,
   lamp: (P) => `<path d="M18 66 C30 80 70 80 82 66 L70 58 H30Z" fill="${P.gold}"/><path d="M50 22 C58 36 58 48 50 54 C42 48 42 36 50 22Z" fill="${P.orange}"/>`,
   rosary: (P) => `${Array.from({ length: 14 }, (_, i) => { const a = (i / 14) * Math.PI * 2 - Math.PI / 2; return `<circle cx="${f(50 + Math.cos(a) * 26)}" cy="${f(42 + Math.sin(a) * 26)}" r="4.5" fill="${P.pink}"/>`; }).join("")}<path d="M50 70 V94 M42 80 H58" stroke="${P.gold}" stroke-width="5"/>`,
   cross: (P) => `<path d="M50 10 V92 M28 34 H72" stroke="${P.gold}" stroke-width="10" stroke-linecap="square"/>`,
@@ -611,7 +616,7 @@ const ICONS = {
   sword: (P) => `<path d="M50 6 L57 20 L55 64 H45 L43 20Z" fill="#E8EEF4" stroke="#140F1F" stroke-opacity=".3" stroke-width="2"/><rect x="28" y="62" width="44" height="8" rx="3" fill="${P.gold}"/><rect x="46" y="70" width="8" height="18" fill="#6B4A35"/><circle cx="50" cy="92" r="5" fill="${P.gold}"/>`,
   scales: (P) => `<path d="M50 12 V86 M30 86 H70 M18 30 H82" stroke="${P.gold}" stroke-width="5" stroke-linecap="round"/><path d="M18 30 L8 56 H28Z M82 30 L72 56 H92Z" fill="${P.gold}" opacity=".85"/>`,
   fish: (P) => `<path d="M14 50 C30 26 62 26 76 50 C62 74 30 74 14 50Z" fill="${P.turq}"/><path d="M74 50 L94 34 V66Z" fill="${P.turq}"/><circle cx="30" cy="46" r="4" fill="#140F1F"/>`,
-  wheat: (P) => `<path d="M50 94 V20" stroke="${P.gold}" stroke-width="4"/>${[26, 38, 50, 62].map((y) => `<ellipse cx="42" cy="${y}" rx="8" ry="4" transform="rotate(-35 42 ${y})" fill="${P.gold}"/><ellipse cx="58" cy="${y}" rx="8" ry="4" transform="rotate(35 58 ${y})" fill="${P.gold}"/>`).join("")}`,
+  wheat: (P) => `<path d="M50 96 V30" stroke="#B5852A" stroke-width="5"/>${[22, 34, 46, 58].map((y) => `<ellipse cx="40" cy="${y}" rx="11" ry="6" transform="rotate(-35 40 ${y})" fill="${P.gold}"/><ellipse cx="60" cy="${y}" rx="11" ry="6" transform="rotate(35 60 ${y})" fill="${P.gold}"/>`).join("")}<ellipse cx="50" cy="12" rx="6" ry="10" fill="${P.gold}"/>`,
 };
 
 export function saintEmblem(saint, seed = 1, style) {

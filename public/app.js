@@ -122,6 +122,21 @@ async function renderHome() {
   }).catch(() => {});
 }
 
+// What the symbol in each saint's artwork means.
+const SYMBOLS = {
+  palm: "a palm branch, the sign of a martyr", lily: "a lily, a sign of purity", roses: "roses, a sign of love",
+  chains_broken: "broken chains, for freedom from slavery and addiction", flame: "a flame, the fire of the Holy Spirit",
+  heart: "a heart, for love of God", tears: "tears, for years of faithful prayer", book: "a book, for wisdom and teaching",
+  sword: "a sword, for protection against evil", scales: "scales, for justice", fish: "a fish, from the healing story in Tobit",
+  hand: "an open hand", rays: "the pale and red rays of Divine Mercy", broom: "a broom, for humble service",
+  bread: "bread, for charity to the poor", wheat: "wheat, for God's provision", sun: "a sun, for God's light",
+  rings: "wedding rings, for marriage", lamp: "a lamp, light in darkness", ladder: "a ladder, the soul's climb to God",
+  thorn: "a crown of thorns, sharing in Christ's suffering", castle: "a castle, from her book The Interior Castle",
+  water: "water, from the spring at Lourdes", jar: "an alabaster jar of ointment", cross: "a cross", rosary: "a rosary",
+  medallion: "a medallion bearing Christ's image", tools: "carpenter's tools", star: "a star", moon: "a crescent moon", dove: "a dove, the Holy Spirit",
+};
+const symbolNote = (s) => { const k = (s.emblem?.symbols || [])[0]; return SYMBOLS[k] ? `In the artwork: ${SYMBOLS[k]}.` : ""; };
+
 // Voice-to-text using the browser's built-in speech recognition, where available.
 let recognizer = null;
 function stopVoice() { try { recognizer?.stop(); } catch {} recognizer = null; }
@@ -199,6 +214,7 @@ async function renderExperience(id, preloaded) {
       <div>
         <h3>${esc(s.name)}</h3>
         <p class="facts">${esc(s.years)} · Feast ${esc(s.feast)} · Patron of ${esc(s.patronages.slice(0, 2).join(", "))}</p>
+        ${symbolNote(s) ? `<p class="symbol-note">✦ ${esc(symbolNote(s))}</p>` : ""}
         <p class="why">${esc(s.why)}</p>
         <details><summary>Their story</summary><p>${esc(s.story)}</p></details>
       </div>
