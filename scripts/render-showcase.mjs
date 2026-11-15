@@ -26,7 +26,7 @@ for (const [i, [id, themes, seed]] of PICKS.entries()) {
   const saint = saintById(id);
   const pick = pickKit(manifest, { themes, seed, saint });
   const kit = Object.fromEntries(Object.entries(pick).map(([k, v]) => [k, v && { ...v, href: uri(v.file) }]));
-  const svg = proceduralArtwork({ brief: {}, themes, seed, saint, style, kit, words: i % 3 === 1 ? wordsFrom("Be still, and know that I am God.") : [] });
+  const svg = proceduralArtwork({ brief: {}, themes, seed, saint, style, kit, words: wordsFrom(["Be still, and know that I am God.", "You are not alone.", "Peace I leave with you.", "One step is enough.", "Do not be afraid.", "Love does not end.", "Hope is a seed, not a feeling. Plant it anyway.", "Every good gift comes from above."][i]) });
   await page.setContent(`<style>body{margin:0}</style><img src="data:image/svg+xml;base64,${Buffer.from(svg).toString("base64")}" width="512" height="768">`);
   await page.waitForTimeout(600);
   const file = `saint-${i + 1}.jpg`;

@@ -62,7 +62,8 @@ function makeArt(e) {
   const angelDay = (d.themes || []).some((t) => ["fear", "anxiety", "loneliness", "overwhelm"].includes(t));
   const saint = (angelDay && d.saints.find((x) => x.kind === "angel")) || d.saints[0];
   const sources = [d.reflection, d.scripture?.[0]?.text, d.scripture?.[1]?.text].filter(Boolean);
-  const words = seed % 4 === 0 ? [] : wordsFrom(sources[seed % sources.length]);
+  const rotated = sources.map((_, k) => sources[(seed + k) % sources.length]);
+    const words = rotated.map(wordsFrom).find((w) => w.length) || wordsFrom("Be still, and know that I am God.");
   e.artHistory = [...(e.artHistory || []), { seed, composition, aspect: "portrait", saintId: saint?.id, words, title: d.art_brief.title }];
   e.art = { status: "ready", current: e.artHistory.length - 1 };
 }

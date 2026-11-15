@@ -35,7 +35,8 @@ export async function createArtwork(exp, { aspect = "portrait", providerId } = {
   try {
     // Found-word strips: from the day's reflection or Scripture (never from what the person wrote).
     const d = exp.devotional, sources = [d.reflection, d.scripture?.[0]?.text, d.scripture?.[1]?.text].filter(Boolean);
-    const words = seed % 4 === 0 ? [] : wordsFrom(sources[seed % sources.length]);
+    const rotated = sources.map((_, k) => sources[(seed + k) % sources.length]);
+    const words = rotated.map(wordsFrom).find((w) => w.length) || wordsFrom("Be still, and know that I am God.");
     const out = await generateImage({ ...built, brief, themes: exp.devotional.themes, seed, aspect, words, saint, references: activeReferences() }, { providerId });
     const file = `${newId(9)}.${out.ext}`;
     fs.writeFileSync(path.join(ART_DIR, file), out.buffer);

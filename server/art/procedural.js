@@ -230,18 +230,18 @@ function wordStrips(words, x, y, r, maxW) {
   }
   return o;
 }
-export function wordsFrom(text = "", max = 6) {
-  // a complete short phrase: the shortest sentence, or the closing words of a long one
+export function wordsFrom(text = "") {
+  // A complete short phrase: the shortest whole sentence,
+  // packed into strips of up to ~16 characters. Returns [] if it needs more than 3 strips.
   const sents = text.replace(/[“”"]/g, "").split(/(?<=[.!?])\s+/).map((x) => x.trim().replace(/[.!?]+$/, "")).filter(Boolean);
   if (!sents.length) return [];
-  let ws = sents.sort((a, b) => a.split(" ").length - b.split(" ").length)[0].split(/\s+/);
-  if (ws.length > 10) {
-    const tail = ws.join(" ").split(",").pop().trim().split(/\s+/);
-    ws = tail.length >= 2 && tail.length <= 8 ? tail : ws.slice(-6);
+  const phrase = sents.sort((x, y) => x.length - y.length)[0]; // whole sentences only
+  const lines = [];
+  for (const w of phrase.split(/\s+/)) {
+    const last = lines[lines.length - 1];
+    if (last && (last + " " + w).length <= 16) lines[lines.length - 1] = last + " " + w; else lines.push(w);
   }
-  const out = [];
-  for (let i = 0; i < ws.length && out.length < max; ) { const n = ws[i].length > 6 ? 1 : 2; out.push(ws.slice(i, i + n).join(" ")); i += n; }
-  return out;
+  return lines.length <= 3 ? lines : [];
 }
 
 
@@ -567,14 +567,8 @@ function kitArtwork({ themes = [], seed, aspect = "portrait", words = [], saint 
   }
   L.push(...figure);
 
-  // 9. A few gems, then her found-word strips on top
-  for (let i = 0; i < 4; i++) {
-    // keep gems off the figure (head, halo, robe centre)
-    let gx = 60 + r() * (W - 120), gy = 80 + r() * (H - 160);
-    if (saint && Math.abs(gx - cx) < W * 0.3) gx = gx < cx ? cx - W * 0.3 - r() * W * 0.1 : cx + W * 0.3 + r() * W * 0.1;
-    L.push(crystal(gx, gy, 16 + r() * 18, i % 2 ? "url(#iri)" : "url(#iri2)", r, r() * 3));
-  }
-  if (words.length) L.push(wordStrips(words, W * (r() > 0.5 ? 0.58 : 0.05), H * 0.82, r, W * 0.4));
+  // 9. Her found-word strips on top
+  if (words.length) L.push(wordStrips(words, W * (r() > 0.5 ? 0.56 : 0.05), H - 70 - (words.length - 1) * 86, r, W * 0.42));
 
   // 10. A deckled paper mat and grain unify it as one hand-made piece
   if (r() < 0.6) { const m = 30; L.push(`<path fill-rule="evenodd" d="M-10,-10H${W + 10}V${H + 10}H-10Z ${tornRect(m, m, W - m * 2, H - m * 2, r, 10)}" fill="#FBF6EC" filter="url(#shadow)"/>`); }
