@@ -466,7 +466,6 @@ async function renderAbout() {
       <p class="row"><a class="btn" href="https://www.juujuumama.art/work" target="_blank" rel="noopener">See her original works</a> <a class="btn ghost" href="https://www.juujuumama.art" target="_blank" rel="noopener">juujuumama.art</a></p>
     </section>
 
-    <section class="card reflection"><p>Whatever you're carrying today, you don't have to carry it alone.</p><a class="btn" href="${L("/")}" data-link>What's on your heart?</a></section>
   </article>`;
   $("#symbolMore")?.addEventListener("click", (e) => {
     const open = $("#symbolGrid").classList.toggle("open");
