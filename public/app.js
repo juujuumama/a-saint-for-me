@@ -49,7 +49,6 @@ function route() {
   if (p.startsWith("/e/")) return renderExperience(p.slice(3));
   if (p === "/about") { $('[data-nav="about"]').setAttribute("aria-current", "page"); return renderAbout(); }
   if (p === "/journey") { $('[data-nav="journey"]').setAttribute("aria-current", "page"); return renderJourney(); }
-  $('[data-nav="today"]').setAttribute("aria-current", "page");
   renderHome();
 }
 
