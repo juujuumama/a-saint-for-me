@@ -515,6 +515,14 @@ async function renderAbout() {
     </header>
     ${sample.images.length ? `<div class="about-strip">${sample.images.map((u) => `<img src="${u}" alt="A saint or angel collage made by the app" loading="lazy">`).join("")}</div>` : ""}
 
+    <section class="about-sec why">
+      <h2>Why I made this</h2>
+      <p>I've struggled to pray consistently my whole life. I believe, and I've always wanted a deeper prayer life, but routines never stuck, and the words didn't always feel connected to what I was actually going through.</p>
+      <p>Making art is where I feel most like myself. So I made A Saint for Me for me first: a way to bring what's really on my heart to prayer, and to meet it with saints, Scripture and something beautiful cut from my own work. It turned prayer into something I look forward to.</p>
+      <p>If you've ever felt like you're not "good" at praying, this is for you too.</p>
+      <p class="why-sign">— Sierra</p>
+    </section>
+
     <div class="about-cols">
     <section class="about-sec">
       <h2>How it works</h2>
