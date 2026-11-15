@@ -35,8 +35,10 @@ export function faceCandidates(faces = [], saint) {
   const [tone, pres] = SAINT_META[saint.id] || ["none", "any"];
   const presOk = (fc) => fc.pres === "any" || pres === "any" || fc.pres === pres;
   const exact = faces.filter((fc) => fc.tone === tone && presOk(fc));
-  if (exact.length) return exact;
   const byPres = faces.filter(presOk);
+  // Few close matches (e.g. light-skinned men are rare in the artist's work):
+  // widen to every portrait of the same presentation so faces don't repeat.
+  if (exact.length >= 8) return exact;
   return byPres.length ? byPres : faces;
 }
 
@@ -50,7 +52,7 @@ export function pickKit(manifest, { themes = [], seed = 1, saint = null } = {}) 
   const role = (x) => manifest.textures.filter((t) => t.role === x);
   const pick = (arr, not = []) => { const pool = arr.filter((t) => !not.includes(t)); return pool[Math.floor(r() * pool.length)] || arr[0]; };
   const robe = pick(role("robe"));
-  const mantle = pick(role("robe"), [robe]);
+  const mantle = r() < 0.4 ? null : pick(role("robe"), [robe]); // null = solid jewel-tone mantle
   const crystal = pick(role("crystal"));
   const wing = pick([...role("crystal"), ...role("robe")], [crystal, robe, mantle]);
   const paint = pick(role("paint"));

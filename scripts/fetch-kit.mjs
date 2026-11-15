@@ -1,83 +1,45 @@
 // Builds the art kit in public/kit/ from Sierra Renee's published work on juujuumama.art.
-// Each entry: n = index into the site's image list (every 3rd image, as sampled),
-// crop = [x, y, w, h] as fractions of the original (used to avoid faces in textures).
-// Re-run any time:  node scripts/fetch-kit.mjs
+// Numbers are 1-based positions in the site's sorted image list (see the contact sheets);
+// each piece is stored under its stable image id, so reordering on the site is harmless.
+// Faces come from scripts/kit-faces.json (face center, eye line and chin found by a face
+// detector, then reviewed and labeled by hand).
+//   node scripts/fetch-kit.mjs
 import fs from "node:fs";
 import path from "node:path";
 
 const OUT = path.resolve("public/kit");
-const BACKGROUNDS = [
-  { n: 2, themes: ["gratitude", "peace", "hope", "inspiration"] },
-  { n: 11, themes: ["marriage", "relationships", "gratitude", "anger"] },
-  { n: 21, themes: ["decisions", "loneliness", "confusion", "hope"] },
-  { n: 22, themes: ["family", "parenting", "overwhelm", "motherhood"] },
-  { n: 23, themes: ["peace", "faith", "health"] },
-  { n: 26, themes: ["grief", "sadness", "hope", "addiction"] },
-  { n: 31, themes: ["family", "gratitude", "hope", "faith"] },
-  { n: 40, themes: ["parenting", "motherhood", "work", "overwhelm"] },
-  { n: 48, themes: ["hope", "growth", "inspiration", "decisions"] },
-  { n: 53, themes: ["peace", "health", "faith", "gratitude"] },
-  { n: 64, themes: ["gratitude", "motherhood", "peace"] },
-  { n: 83, themes: ["gratitude", "inspiration", "hope", "growth"] },
-  { n: 85, themes: ["fear", "anxiety", "hope", "grief"] },
-  { n: 89, themes: ["family", "motherhood", "gratitude", "parenting"] },
-  { n: 97, themes: ["marriage", "relationships", "grief", "gratitude"] },
-  { n: 99, themes: ["relationships", "marriage", "anger", "sadness"] },
-  { n: 108, themes: ["growth", "health", "addiction", "work"] },
-  { n: 114, themes: ["relationships", "marriage", "loneliness", "gratitude"] },
-  { n: 117, themes: ["work", "finances", "family"] },
-  { n: 122, themes: ["gratitude", "work", "finances", "inspiration"] },
-  { n: 143, themes: ["peace", "anxiety", "faith", "sadness", "fear"] },
-  { n: 9, themes: ["faith", "decisions", "peace", "grief"] },
-];
+const T = {
+  floral: ["gratitude", "peace", "hope", "inspiration", "marriage", "relationships", "motherhood"],
+  wave: ["grief", "fear", "family", "hope", "work", "overwhelm", "anxiety", "sadness", "parenting", "finances"],
+  land: ["peace", "decisions", "loneliness", "faith", "confusion", "hope", "growth"],
+  tarot: ["faith", "decisions", "grief", "peace", "confusion"],
+  crystal: ["health", "peace", "anxiety", "faith", "addiction", "growth"],
+};
+const BACKGROUNDS = {
+  floral: [4, 6, 25, 33, 40, 49, 68, 74, 110, 137, 159, 164, 166, 176, 190, 192, 199, 212, 218, 220, 222, 223, 244, 249, 291, 297, 311, 325, 328, 350, 361, 368, 391, 394, 418, 422, 424, 429, 437],
+  wave: [10, 34, 37, 44, 55, 56, 59, 66, 77, 78, 86, 120, 181, 189, 193, 205, 208, 224, 242, 255, 286, 289, 293, 299, 351, 364, 397, 416],
+  land: [5, 9, 41, 43, 63, 93, 144, 150, 206, 257, 267, 268, 288, 303, 314, 326, 342, 380, 435],
+  tarot: [27, 121, 221, 302],
+  crystal: [71, 162, 390, 395, 381],
+};
 const TEXTURES = [
-  { n: 28, role: "robe", crop: [0, 0.5, 1, 0.5] },
-  { n: 32, role: "accent", crop: [0.1, 0.25, 0.8, 0.7] },
-  { n: 75, role: "accent", crop: [0.2, 0.35, 0.6, 0.5] },
-  { n: 52, role: "robe", crop: [0, 0.6, 1, 0.4] },
-  { n: 70, role: "robe", crop: [0, 0.62, 1, 0.38] },
-  { n: 91, role: "robe", crop: [0, 0.65, 1, 0.35] },
-  { n: 94, role: "robe", crop: [0, 0.62, 1, 0.38] },
-  { n: 120, role: "robe", crop: [0, 0.6, 1, 0.4] },
-  { n: 132, role: "robe", crop: [0, 0.35, 1, 0.65] },
-  { n: 43, role: "robe", crop: [0, 0.62, 1, 0.38] },
-  { n: 79, role: "paint", crop: [0, 0, 1, 1] },
-  { n: 85, role: "paint", crop: [0, 0.5, 1, 0.5] },
-  { n: 54, role: "crystal", crop: [0, 0.5, 1, 0.5] },
-  { n: 127, role: "crystal", crop: [0.25, 0.1, 0.5, 0.6] },
-  { n: 130, role: "crystal", crop: [0.15, 0.3, 0.7, 0.6] },
-  { n: 53, role: "crystal", crop: [0, 0, 1, 1] },
+  // [image, role, crop x,y,w,h]
+  [84, "robe", [0, 0.5, 1, 0.5]], [96, "accent", [0.1, 0.25, 0.8, 0.7]], [225, "accent", [0.2, 0.35, 0.6, 0.5]],
+  [156, "robe", [0, 0.6, 1, 0.4]], [210, "robe", [0, 0.62, 1, 0.38]], [273, "robe", [0, 0.65, 1, 0.35]],
+  [282, "robe", [0, 0.62, 1, 0.38]], [360, "robe", [0, 0.6, 1, 0.4]], [396, "robe", [0, 0.35, 1, 0.65]],
+  [129, "robe", [0, 0.62, 1, 0.38]], [13, "robe", [0, 0.62, 1, 0.38]], [50, "robe", [0, 0.6, 1, 0.4]],
+  [70, "robe", [0, 0.5, 1, 0.5]], [101, "robe", [0, 0.6, 1, 0.4]], [104, "robe", [0, 0.55, 1, 0.45]],
+  [130, "robe", [0, 0.62, 1, 0.38]], [131, "robe", [0, 0.62, 1, 0.38]], [158, "robe", [0, 0.62, 1, 0.38]],
+  [161, "robe", [0, 0.62, 1, 0.38]], [182, "robe", [0, 0.62, 1, 0.38]], [226, "robe", [0, 0.62, 1, 0.38]],
+  [230, "robe", [0, 0.62, 1, 0.38]], [235, "robe", [0, 0.55, 1, 0.45]], [322, "robe", [0, 0.6, 1, 0.4]],
+  [338, "robe", [0, 0.5, 1, 0.5]], [356, "robe", [0, 0.62, 1, 0.38]], [386, "robe", [0, 0.6, 1, 0.4]],
+  [404, "robe", [0, 0.6, 1, 0.4]], [431, "robe", [0, 0.5, 1, 0.5]], [438, "robe", [0, 0.6, 1, 0.4]],
+  [237, "paint", [0, 0, 1, 1]], [255, "paint", [0, 0.5, 1, 0.5]], [193, "paint", [0, 0, 1, 0.6]], [205, "paint", [0, 0.55, 1, 0.45]],
+  [162, "crystal", [0, 0.5, 1, 0.5]], [381, "crystal", [0.25, 0.1, 0.5, 0.6]], [390, "crystal", [0.15, 0.3, 0.7, 0.6]],
+  [159, "crystal", [0, 0, 1, 1]], [395, "crystal", [0, 0.45, 1, 0.55]], [71, "crystal", [0.1, 0.35, 0.8, 0.6]],
 ];
+const FACES = JSON.parse(fs.readFileSync(path.resolve("scripts/kit-faces.json"), "utf8"));
 
-// Faces from the artist's portraits, used as saints' and angels' heads.
-// tone: "dark" | "medium"; pres: "fem" | "masc" | "any" (used to match saints respectfully).
-const FACES = [
-  // fx = face center x, eye = eye line y, chin = chin y (fractions of the original image)
-  { n: 1, fx: 0.5, eye: 0.46, chin: 0.58, tone: "dark", pres: "any" },
-  { n: 10, fx: 0.33, eye: 0.31, chin: 0.47, tone: "dark", pres: "fem" },
-  { n: 14, fx: 0.36, eye: 0.215, chin: 0.3, tone: "light", pres: "fem" },
-  { n: 17, fx: 0.34, eye: 0.53, chin: 0.7, tone: "medium", pres: "fem" },
-  { n: 24, fx: 0.48, eye: 0.6, chin: 0.8, tone: "medium", pres: "fem" },
-  { n: 25, fx: 0.52, eye: 0.4, chin: 0.57, tone: "dark", pres: "any" },
-  { n: 34, fx: 0.4, eye: 0.24, chin: 0.33, tone: "dark", pres: "masc" },
-  { n: 36, fx: 0.44, eye: 0.2, chin: 0.31, tone: "light", pres: "fem" },
-  { n: 39, fx: 0.62, eye: 0.36, chin: 0.55, tone: "dark", pres: "fem" },
-  { n: 44, fx: 0.33, eye: 0.37, chin: 0.5, tone: "medium", pres: "fem" },
-  { n: 55, fx: 0.48, eye: 0.35, chin: 0.75, tone: "dark", pres: "fem" },
-  { n: 65, fx: 0.6, eye: 0.29, chin: 0.45, tone: "dark", pres: "masc" },
-  { n: 86, fx: 0.62, eye: 0.27, chin: 0.38, tone: "light", pres: "fem" },
-  { n: 100, fx: 0.28, eye: 0.44, chin: 0.62, tone: "dark", pres: "fem" },
-  { n: 107, fx: 0.5, eye: 0.34, chin: 0.45, tone: "dark", pres: "fem" },
-  { n: 109, fx: 0.42, eye: 0.31, chin: 0.52, tone: "dark", pres: "fem" },
-  { n: 129, fx: 0.5, eye: 0.45, chin: 0.67, tone: "dark", pres: "masc" },
-  { n: 134, fx: 0.73, eye: 0.24, chin: 0.42, tone: "medium", pres: "fem" },
-  { n: 135, fx: 0.5, eye: 0.25, chin: 0.4, tone: "light", pres: "fem" },
-  // robot faces: used for angels only
-  { n: 14, fx: 0.62, eye: 0.19, chin: 0.27, tone: "robot", pres: "any" },
-  { n: 36, fx: 0.65, eye: 0.2, chin: 0.3, tone: "robot", pres: "any" },
-  { n: 44, fx: 0.57, eye: 0.22, chin: 0.35, tone: "robot", pres: "any" },
-  { n: 86, fx: 0.43, eye: 0.21, chin: 0.33, tone: "robot", pres: "any" },
-];
 // Head oval is 0.8 wide : 1 tall. Eyes sit at 47% of its height, chin at 87%,
 // so every face lands in the same place under a veil, hood or halo.
 function faceCrop({ fx, eye, chin }, W, H) {
@@ -90,29 +52,44 @@ function faceCrop({ fx, eye, chin }, W, H) {
 
 const html = await (await fetch("https://www.juujuumama.art/", { headers: { "User-Agent": "Mozilla/5.0" } })).text();
 const all = [...new Set(html.match(/https:\/\/cdn\.sanity\.io\/images\/[A-Za-z0-9_/-]+\.(?:jpe?g|png|webp)/g))].sort();
-const sampled = all.filter((_, i) => (i + 1) % 3 === 0); // matches the contact sheets used to choose
+const idOf = (url) => url.split("/").pop().split("-")[0].slice(0, 10);
+const byId = new Map(all.map((u) => [idOf(u), u]));
 fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(OUT, { recursive: true });
 
-async function get(entry, kind, width, quality) {
-  const url = sampled[entry.n - 1];
+async function get(url, kind, crop, width, quality, tag = "") {
   const [, W, H] = url.match(/-(\d+)x(\d+)\./).map(Number);
-  const [cx, cy, cw, ch] = entry.eye ? faceCrop(entry, W, H) : entry.crop || [0, 0, 1, 1];
+  const [cx, cy, cw, ch] = crop;
   const rect = [Math.round(cx * W), Math.round(cy * H), Math.round(cw * W), Math.round(ch * H)].join(",");
-  const file = `${kind}${entry.tone === "robot" ? "-robot" : ""}-${String(entry.n).padStart(3, "0")}.jpg`;
-  const res = await fetch(`${url}?rect=${rect}&w=${width}&fm=jpg&q=${quality}`);
-  if (!res.ok) throw new Error(`${file}: ${res.status}`);
-  fs.writeFileSync(path.join(OUT, file), Buffer.from(await res.arrayBuffer()));
+  const file = `${kind}-${idOf(url)}${tag}.jpg`;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const res = await fetch(`${url}?rect=${rect}&w=${width}&fm=jpg&q=${quality}`);
+    if (res.ok) { fs.writeFileSync(path.join(OUT, file), Buffer.from(await res.arrayBuffer())); break; }
+    if (attempt === 2) { console.warn(`skipped ${file}: ${res.status}`); return null; }
+  }
   return { file, w: width, h: Math.round((width * ch * H) / (cw * W)) };
 }
+async function piece(...args) {
+  const p = await get(...args);
+  return p;
+}
+async function inBatches(items, fn, size = 8) {
+  const out = [];
+  for (let i = 0; i < items.length; i += size) out.push(...(await Promise.all(items.slice(i, i + size).map(fn))));
+  return out;
+}
 
-const manifest = {
-  source: "Artwork by Sierra Renee (juujuumama.art). All rights reserved by the artist.",
-  backgrounds: [], textures: [], faces: [],
-};
-for (const b of BACKGROUNDS) manifest.backgrounds.push({ ...(await get(b, "bg", 760, 74)), themes: b.themes });
-for (const t of TEXTURES) manifest.textures.push({ ...(await get(t, "tx", 480, 72)), role: t.role });
-for (const fc of FACES) manifest.faces.push({ ...(await get(fc, "face", 360, 80)), tone: fc.tone, pres: fc.pres });
-fs.writeFileSync(path.join(OUT, "kit.json"), JSON.stringify(manifest, null, 2));
+const manifest = { source: "Artwork by Sierra Renee (juujuumama.art). All rights reserved by the artist.", backgrounds: [], textures: [], faces: [] };
+const bgItems = Object.entries(BACKGROUNDS).flatMap(([group, ns]) => ns.map((n) => ({ n, group })));
+manifest.backgrounds = (await inBatches(bgItems, async ({ n, group }) => { const p = await get(all[n - 1], "bg", [0, 0, 1, 1], 760, 72); return p && { ...p, themes: T[group], group }; })).filter(Boolean);
+manifest.textures = (await inBatches(TEXTURES, async ([n, role, crop]) => { const p = await get(all[n - 1], "tx", crop, 480, 72); return p && { ...p, role }; })).filter(Boolean);
+manifest.faces = (await inBatches(FACES, async (fc, i) => {
+  const url = byId.get(fc.id);
+  if (!url) { console.warn("missing face image", fc.id); return null; }
+  const [, W, H] = url.match(/-(\d+)x(\d+)\./).map(Number);
+  const p = await get(url, "face", faceCrop(fc, W, H), 300, 80, `-${i}`);
+  return p && { ...p, tone: fc.tone, pres: fc.pres };
+})).filter(Boolean);
+fs.writeFileSync(path.join(OUT, "kit.json"), JSON.stringify(manifest));
 const bytes = fs.readdirSync(OUT).reduce((s, f) => s + fs.statSync(path.join(OUT, f)).size, 0);
-console.log(`kit: ${manifest.backgrounds.length} backgrounds, ${manifest.textures.length} textures, ${manifest.faces.length} faces, ${(bytes / 1024 / 1024).toFixed(2)} MB`);
+console.log(`kit: ${manifest.backgrounds.length} backgrounds, ${manifest.textures.length} textures, ${manifest.faces.length} faces, ${(bytes / 1024 / 1024).toFixed(1)} MB`);

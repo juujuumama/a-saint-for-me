@@ -540,7 +540,7 @@ function kitArtwork({ themes = [], seed, aspect = "portrait", words = [], saint 
 
     // 6. Mantle and robe cut from her textures
     const mantleD = `M${f(cx - R * 0.5)},${f(by)} C${f(cx - R * 1.6)},${f(by + R * 0.2)} ${f(cx - sw)},${f(by + R * 0.9)} ${f(cx - sw)},${f(by + R * 2.4)} L${f(cx - sw - R * 0.3)},${f(bottom)} L${f(cx + sw + R * 0.3)},${f(bottom)} L${f(cx + sw)},${f(by + R * 2.4)} C${f(cx + sw)},${f(by + R * 0.9)} ${f(cx + R * 1.6)},${f(by + R * 0.2)} ${f(cx + R * 0.5)},${f(by)}Z`;
-    figure.push(`<path d="${mantleD}" fill="${tile(kit.mantle, 2.0)}" ${CUT} filter="url(#shadow)"/>`);
+    figure.push(`<path d="${mantleD}" fill="${kit.mantle ? tile(kit.mantle, 2.0) : ["#24305E", "#5B1F3E", "#1F5C5A", "#3B2A55", "#7A1F2B"][Math.floor(r() * 5)]}" ${CUT} filter="url(#shadow)"/>`);
     figure.push(`<path d="M${f(cx - R * 0.58)},${f(by)} L${f(cx + R * 0.58)},${f(by)} L${f(cx + R * 1.55)},${f(bottom)} L${f(cx - R * 1.55)},${f(bottom)}Z" fill="${tile(kit.robe, 1.3)}" ${CUT}/>`);
     figure.push(`<path d="M${f(cx - R * 0.58)},${f(by)} L${f(cx - R * 1.55)},${f(bottom)} M${f(cx + R * 0.58)},${f(by)} L${f(cx + R * 1.55)},${f(bottom)}" stroke="${P.gold}" stroke-width="${f(R * 0.07)}"/>`);
 

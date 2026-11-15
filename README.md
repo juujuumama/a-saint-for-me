@@ -118,7 +118,13 @@ People can regenerate the artwork without regenerating the prayer, keep every ve
 
 ## The art kit (Sierra Renee's own work)
 
-The free artist builds each image from `public/kit/`: backgrounds, textures and portrait faces cropped from Sierra Renee's published work on juujuumama.art. All rights are reserved by the artist. `server/art/kit.js` chooses the pieces for each artwork (deterministic per seed), and `kitArtwork()` in `server/art/procedural.js` cuts and layers them into a saint or angel collage: one of her works as the ground, a torn paint flood, a crystal halo, robes and wings cut from her textures, and a face from her portraits.
+The free artist builds each image from `public/kit/`, made from Sierra Renee's published work on juujuumama.art (all rights reserved by the artist):
+- **95 backgrounds**: red wave scenes, florals and opals, pastel landscapes, tarot arches and crystals.
+- **39 textures**: knit, tufted, agate, glitter and paint, cut into robes, halos and wings.
+- **145 faces**: 132 portraits plus 13 robot faces.
 
-- **Every saint gets a face from her portraits.** The closest match comes first, by skin tone and presentation, then presentation alone, then any of her portraits as artistic interpretation (`faceCandidates` in `kit.js`). Angels can take any face, and about half the time get one of her robot faces (robot faces are never used for saints).
-- **Changing the kit.** Edit the lists in `scripts/fetch-kit.mjs` (image number plus crop box), then run `node scripts/fetch-kit.mjs`. Or drop your own JPGs into `public/kit/` and add them to `kit.json`.
+`server/art/kit.js` chooses the pieces for each artwork, the same way every time for a given seed. `kitArtwork()` in `server/art/procedural.js` cuts and layers them into a saint or angel collage.
+
+- **Faces** were found with a face detector across all 438 works, then reviewed and labeled by hand (`scripts/kit-faces.json`). Crops are computed from each face's eye line and chin, so every face sits the same way under a veil, hood or halo.
+- **Face matching:** the closest match comes first, by skin tone and presentation. When fewer than 8 close matches exist, any of her portraits with the same presentation can be used. Angels can take any face, and about half the time get a robot face. Robot faces are never used for saints.
+- **Changing the kit:** edit the lists in `scripts/fetch-kit.mjs` (positions in the site's image list) or `scripts/kit-faces.json`, then run `node scripts/fetch-kit.mjs`.
