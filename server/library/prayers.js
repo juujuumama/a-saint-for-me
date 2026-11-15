@@ -18,6 +18,26 @@ export const INTENTS = [
     reflection: ["Reaching out is brave. The National Domestic Violence Hotline (1-800-799-7233) is free and confidential, any hour.", "You are not alone, and you are not to blame. Tell one safe person today."],
   },
   {
+    id: "difficult", themes: ["family", "relationships", "anger"],
+    hooks: { monica: "who loved a difficult family with patience", rita: "who kept her peace in a hard home" },
+    keywords: ["narcissis", "toxic", "manipulat", "gaslight", "selfish", "self-centered", "self centered", "guilt trip", "guilt-trip", "boundaries", "boundary", "controlling mother", "controlling father", "controlling mom", "controlling dad", "my in-laws", "mother-in-law", "father-in-law", "never apologizes", "always about them", "always about her", "always about him", "walk on eggshells", "walking on eggshells", "emotionally draining", "difficult person", "difficult family", "my difficult"],
+    saints: ["monica", "rita", "teresa_avila"], scripture: ["rom12_18", "mt10_16", "prov4_23"], devotions: ["surrender_novena", "peace_prayer", "memorare"],
+    title: ["A prayer for dealing with a difficult person", "A prayer for boundaries and peace"],
+    titleOther: "A prayer about {who}",
+    opening: ["Loving a selfish or manipulative person is exhausting. Honoring your family doesn't mean accepting mistreatment.", "It's okay to protect your peace. Boundaries can be an act of love, for them and for you."],
+    openingOther: ["Loving {who} when {they} {are} hard to be around takes so much. Let's bring it to God honestly.", "Honoring family doesn't mean accepting mistreatment. Let's ask for wisdom with {who}."],
+    self: [
+      "Lord, You see how this person treats me, and how much it costs me. Give me clear eyes to see what is true when I'm being twisted or blamed, and the courage to set boundaries without guilt. Teach me to love without losing myself, to be kind without being used, and to let go of the hope that I can change them.",
+      "Jesus, You knew when to speak and when to walk away. Give me that wisdom. Guard my heart, quiet the voice that says I'm the problem, and help me respond with calm instead of reacting. Heal the old wounds this relationship keeps reopening, and bless them in the ways only You can.",
+      "Holy Spirit, I'm tired of walking on eggshells. Show me where my responsibility ends and theirs begins. Help me honor them without enabling them, forgive without pretending nothing happened, and find peace that doesn't depend on their approval.",
+    ],
+    other: [
+      "Lord, You know {who} and everything that has made {them} the way {they} {are}. Soften {their} heart and open {their} eyes to how {their} words and actions affect others. And give me wisdom with {them}: clear boundaries, a calm spirit, and the freedom to love {them} without being controlled.",
+      "Jesus, I lift up {who} to You. Heal what is wounded in {them}, the hurt that makes {them} hurt others. Protect my heart and my peace, help me speak the truth in love, and let me stop carrying responsibility for {their} choices.",
+    ],
+    reflection: ["A boundary isn't a punishment. It's telling the truth about what you can carry.", "You can pray for someone and still keep your distance. Both can be love."],
+  },
+  {
     id: "suicideloss", themes: ["grief", "sadness"],
     keywords: ["died by suicide", "took his own life", "took her own life", "took their own life", "killed himself", "killed herself", "lost to suicide", "committed suicide", "suicide loss"],
     saints: ["monica", "elizabeth_seton", "dymphna"], scripture: ["rom8_38", "ps34_18", "rev21_4"], devotions: ["eternal_rest", "divine_mercy_chaplet", "rosary_seven_sorrows"],
@@ -118,7 +138,7 @@ export const INTENTS = [
       "Holy Spirit, Comforter, breathe peace into my body and calm into my thoughts. Untangle what I cannot untangle. Remind me that I am more than how I feel today, and that Your love for me does not change with my moods.",
     ],
     other: [
-      "Lord, You see the heaviness {who} is carrying. Lift the weight from {their} mind and heart. Surround {them} with people who listen, lead {them} to the help {they} need, and let {them} know {they} are deeply loved.",
+      "Lord, You see the heaviness {who} is carrying. Lift the weight from {their} mind and heart. Surround {them} with people who listen, lead {them} to the help that fits {them}, and let {them} know {they} {are} deeply loved.",
       "Jesus, hold {who} in this dark season. Give {them} rest, quiet {their} fears, and send small lights into {their} days. Give me patience and wisdom as I love {them}.",
     ],
     reflection: ["Asking for help is an act of hope. If today is hard, reach out to one person.", "You don't have to feel better to be held. Breathe slowly, and let that be your prayer."],
@@ -284,7 +304,7 @@ export const INTENTS = [
       "Jesus, You make all things new. Break the chains I cannot break, heal the wounds I've been trying to numb, and fill the empty places with Your love. Thank You for every sober day, and give me one more.",
     ],
     other: [
-      "Lord, You see {who} in {their} struggle. Break the hold of this addiction, protect {them} from harm, and lead {them} to the help {they} need. Give me wisdom to love {them} without enabling, and peace when I can't fix it.",
+      "Lord, You see {who} in {their} struggle. Break the hold of this addiction, protect {them} from harm, and lead {them} to the help that fits {them}. Give me wisdom to love {them} without enabling, and peace when I can't fix it.",
     ],
     reflection: ["Just for today. That's enough. Tomorrow has its own grace.", "Your past isn't the whole story. Today is a new page."],
   },
@@ -582,14 +602,14 @@ export function pronounsFor(who = "") {
   if (MASC.test(w)) return { they: "he", them: "him", their: "his", are: "is" };
   return { they: "they", them: "them", their: "their", are: "are" };
 }
-const RELATION = /\bmy (mom|mother|mama|dad|father|papa|grandma|grandmother|grandpa|grandfather|sister|brother|son|daughter|husband|wife|boyfriend|girlfriend|fianc[eé]e?|partner|friend|best friend|aunt|uncle|cousin|niece|nephew|baby|kids|children|family|parents|stepmom|stepdad|godmother|godfather|coworker|neighbor)\b/i;
+const RELATION = /\bmy (mother-in-law|father-in-law|in-laws|sister-in-law|brother-in-law|mom|mother|mama|dad|father|papa|grandma|grandmother|grandpa|grandfather|sister|brother|son|daughter|husband|wife|boyfriend|girlfriend|fianc[eé]e?|partner|friend|best friend|aunt|uncle|cousin|niece|nephew|baby|kids|children|family|parents|stepmom|stepdad|godmother|godfather|coworker|neighbor)\b/i;
 
 // Find who the prayer is for, when the person is praying for someone else.
 export function detectWho(text = "", intentId) {
   const m = text.match(RELATION);
   if (!m) return "";
   const forSomeone = /\bpray(ing)? for (my|her|him|them|our)\b/i.test(text);
-  const theirStory = ["cancer", "illness", "faithchild", "grief", "protection", "pregnancy", "addiction", "mental", "dying", "sickchild", "prison", "immigration", "suicideloss"].includes(intentId);
+  const theirStory = ["difficult", "cancer", "illness", "faithchild", "grief", "protection", "pregnancy", "addiction", "mental", "dying", "sickchild", "prison", "immigration", "suicideloss"].includes(intentId);
   // "my husband left me" is the speaker's story, not a prayer for him
   const selfStory = /\b(left me|cheated on me|hurt me|lied to me|broke up with me)\b/i.test(text);
   return (forSomeone || theirStory) && !selfStory ? `my ${m[1].toLowerCase()}` : "";

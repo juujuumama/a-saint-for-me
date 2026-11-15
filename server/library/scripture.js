@@ -61,6 +61,9 @@ export const SCRIPTURE = [
   { id: "josh24_15", ref: "Joshua 24:15", url: usccb("joshua", 24, 15), themes: ["family", "gratitude", "faith"], text: "As for me and my house, we will serve the Lord." },
   { id: "prov17_17", ref: "Proverbs 17:17", url: usccb("proverbs", 17, 17), themes: ["relationships", "loneliness"], text: "A friend loves at all times." },
   { id: "ps27_10", ref: "Psalm 27:10", url: usccb("psalms", 27, 10), themes: ["family", "loneliness", "sadness"], text: "When my father and my mother forsake me, then the Lord will take me up." },
+  { id: "rom12_18", ref: "Romans 12:18", url: usccb("romans", 12, 18), themes: ["relationships", "family", "anger", "peace"], text: "If it is possible, as much as it is up to you, be at peace with all men." },
+  { id: "mt10_16", ref: "Matthew 10:16", url: usccb("matthew", 10, 16), themes: ["relationships", "decisions", "fear"], text: "Be wise as serpents, and harmless as doves." },
+  { id: "prov4_23", ref: "Proverbs 4:23", url: usccb("proverbs", 4, 23), themes: ["relationships", "growth", "peace"], text: "Keep your heart with all diligence, for out of it is the wellspring of life." },
 ];
 
 export const SCRIPTURE_IDS = SCRIPTURE.map((s) => s.id);
