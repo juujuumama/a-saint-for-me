@@ -463,7 +463,7 @@ async function renderAbout() {
       <p><strong>Sierra Renee</strong> (juujuumama) is a Catholic, multidisciplinary artist rooted in Afrofuturism and surrealism. She works in hand-cut collage, acrylic and mixed media, and AI models she trains on her own art to represent Black features, hair and adornment truthfully.</p>
       <p>Raised in the Hudson Valley in a Black, Italian and Puerto Rican family, she has shown her work from Tokyo, London and Lisbon to Times Square. Every collage here is cut from her original work.</p>
       </div>
-      <p class="row"><a class="btn" href="https://www.juujuumama.art/work" target="_blank" rel="noopener">See her original works</a> <a class="btn ghost" href="https://www.juujuumama.art" target="_blank" rel="noopener">juujuumama.art</a></p>
+      <p><a class="btn" href="https://www.juujuumama.art/work" target="_blank" rel="noopener">See her work at juujuumama.art</a></p>
     </section>
 
   </article>`;
