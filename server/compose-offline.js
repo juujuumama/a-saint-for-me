@@ -4,6 +4,7 @@ import { SAINTS, saintById } from "./library/saints.js";
 import { SCRIPTURE, scriptureById } from "./library/scripture.js";
 import { DEVOTIONS, devotionById } from "./library/devotions.js";
 import { themesFromCheckin } from "./library/themes.js";
+import { INTENTS, SAINT_HOOKS, FEELING_LINES, INVOCATIONS, CLOSINGS, detectIntent, detectWho, fill } from "./library/prayers.js";
 
 // ---------- Offline composer ----------
 function scoreBy(items, themes) {
@@ -25,33 +26,56 @@ const PHRASES = {
   inspiration: "the fire You have lit in me", fear: "what I am afraid of",
 };
 
+const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
+const CONNECTIONS = [
+  "A word to rest in today, slowly, more than once.",
+  "Read it slowly. Let one phrase stay with you through the day.",
+  "Try praying this line when your mind starts to race.",
+  "Write it somewhere you'll see it today.",
+];
+
 export function composeOffline(checkin, context = {}, style) {
   let themes = themesFromCheckin(checkin);
   // Continuing an earlier intention: carry its themes forward when today's words add none.
   if (context.previous?.themes?.length) themes = [...new Set([...themes, ...context.previous.themes])];
   if (checkin.mode === "thanks" && !themes.includes("gratitude")) themes.unshift("gratitude");
+
+  const text = checkin.text || "";
+  const intent = detectIntent(text, themes) || (checkin.mode === "thanks" ? INTENTS.find((i) => i.id === "gratitude") : null);
+  if (intent) themes = [...new Set([...intent.themes, ...themes])];
   if (!themes.length) themes = ["peace", "faith", "hope"];
+  const isThanks = intent?.id === "gratitude";
 
-  const saints = scoreBy(SAINTS, themes).slice(0, 3);
-  const scripture = scoreBy(SCRIPTURE, themes).slice(0, 2);
-  const prayers = scoreBy(DEVOTIONS.filter((d) => d.kind === "prayer"), themes);
-  const other = scoreBy(DEVOTIONS.filter((d) => d.kind !== "prayer"), themes);
-  const devotions = [prayers[0], other[0], other[1]].filter(Boolean);
+  let who = checkin.personName || detectWho(text, intent?.id);
+  const otherMode = Boolean(who && (intent?.other || intent?.id === "grief"));
+  if (!otherMode) who = checkin.personName || "";
 
-  const named = themes.slice(0, 3).map((t) => PHRASES[t]).filter(Boolean);
-  const isThanks = themes[0] === "gratitude" || checkin.mode === "thanks";
-  const forWhom = (checkin.text || "").match(/\bfor (my (?:mom|mother|dad|father|son|daughter|husband|wife|sister|brother|friend|best friend|grandma|grandmother|grandpa|grandfather|baby|kids|children|partner|boyfriend|girlfriend|family|aunt|uncle|cousin|niece|nephew))\b/i);
-  const who = checkin.personName || (forWhom ? forWhom[1].toLowerCase() : "");
-  const body = [
-    who
-      ? `Loving God, I bring ${who} before You today. You know ${who} more deeply than I ever could, and You hold every part of their story.`
-      : `Loving God, You know what is on my heart before I can find the words. I come to You just as I am today.`,
-    isThanks
-      ? `Thank You for ${named.join(", ")}. Teach me to notice Your goodness, to receive it with open hands, and to share it freely.`
-      : `I place before You ${named.join(", and ")}. Where I am weary, be my rest. Where I am afraid, be my courage. Where I cannot see the way, be my light.`,
-    `${saints[0].name}${saints[1] ? ` and ${saints[1].name}` : ""}, you knew struggle and grace in your own lives — pray for ${who ? who : "me"}, that ${who ? "they" : "I"} may trust that nothing is wasted in God's hands.`,
-    `Stay close today, Lord. Let me feel that I am held, and let me hold others with the same tenderness.`,
-  ].join("\n\n");
+  // Saints, Scripture, devotions: the intention's own picks first, then the best theme matches.
+  const pinned = (ids, lib) => (ids || []).map((id) => lib.find((x) => x.id === id)).filter(Boolean);
+  const fillUp = (first, pool, n) => [...first, ...pool.filter((x) => !first.includes(x))].slice(0, n);
+  const saints = fillUp(pinned(intent?.saints, SAINTS), scoreBy(SAINTS, themes), 3);
+  const scripture = fillUp(pinned(intent?.scripture, SCRIPTURE), scoreBy(SCRIPTURE, themes), 2);
+  const devotions = fillUp(pinned(intent?.devotions, DEVOTIONS), [...scoreBy(DEVOTIONS.filter((d) => d.kind === "prayer"), themes).slice(0, 1), ...scoreBy(DEVOTIONS.filter((d) => d.kind !== "prayer"), themes)], 3);
+
+  // The prayer
+  const lead = saints[0];
+  const feeling = themes.find((t) => FEELING_LINES[t] && !(intent?.themes || []).includes(t));
+  const paras = [];
+  if (intent) {
+    const petition = otherMode ? fill(rand(intent.other || intent.self), who) : rand(intent.self);
+    paras.push(petition);
+  } else {
+    const named = themes.slice(0, 3).map((t) => PHRASES[t]).filter(Boolean);
+    paras.push(`${rand(INVOCATIONS.self)} You know what is on my heart before I can find the words. I place before You ${named.join(", and ")}. Where I am weary, be my rest. Where I am afraid, be my courage. Where I cannot see the way, be my light.`);
+  }
+  if (feeling && !otherMode) paras[0] += " " + rand(FEELING_LINES[feeling]);
+  const hook = SAINT_HOOKS[lead.id];
+  paras.push(`${lead.name.replace(/\s*\(.*\)/, "")}${hook ? `, ${hook},` : ","} pray for ${otherMode ? `${who} and for me` : "me"}.`);
+  paras.push(otherMode ? fill(rand(CLOSINGS.other), who) : rand(CLOSINGS.self));
+  const body = paras.join("\n\n");
+
+  const title = otherMode && intent?.titleOther ? fill(intent.titleOther, who) : intent ? rand(intent.title) : "A prayer for today";
+  const opening = otherMode && intent?.openingOther ? fill(rand(intent.openingOther), who) : intent ? rand(intent.opening) : "Thank you for trusting this moment with prayer. You are not alone in what you are carrying.";
 
   const motifPool = themes.flatMap((t) => style.motifs.byTheme[t] || []);
   const pick = (arr, n) => [...arr].sort(() => Math.random() - 0.5).slice(0, n);
@@ -59,21 +83,18 @@ export function composeOffline(checkin, context = {}, style) {
   const central = motifPool[0] || "a geode holding a luminous seed";
 
   return {
-    intention_title: context.previous?.title && !checkin.text ? context.previous.title
-      : who ? `Praying for ${who}`
-      : isThanks ? "A day of thanksgiving" : `Prayer for ${themes[0].replace(/^\w/, (c) => c.toUpperCase())}`.replace("Prayer for Overwhelm", "When it is all too much"),
-    opening: isThanks
-      ? "What a gift to pause and give thanks. Here is a prayer and some companions for your gratitude today."
-      : "Thank you for trusting this moment with prayer. You are not alone in what you are carrying.",
+    intention_title: context.previous?.title && !text ? context.previous.title
+      : otherMode ? `Praying for ${who}` : title.replace(/^A prayer /, "Prayer "),
+    opening,
     themes,
-    saints: saints.map((s) => ({ id: s.id, why: `${s.name} is a patron of ${s.patronages.slice(0, 2).join(" and ")}. ${s.story.split(". ")[0]}.` })),
-    prayer: { title: who ? `A prayer for ${who}` : isThanks ? "A prayer of thanksgiving" : "A prayer for today", body, closing: "Through Christ our Lord. Amen." },
-    scripture: scripture.map((s) => ({ id: s.id, connection: "A word to rest in today, slowly, more than once." })),
-    devotions: devotions.map((d) => ({ id: d.id, suggestion: d.kind === "rosary" ? "If a whole Rosary feels like too much today, one decade is a beautiful prayer." : "Pray it slowly, perhaps once in the morning and once at night." })),
-    reflection: pickReflection(themes, isThanks),
+    saints: saints.map((s) => ({ id: s.id, why: `${SAINT_HOOKS[s.id] ? `${s.name.replace(/\s*\(.*\)/, "")}, ${SAINT_HOOKS[s.id]}, is a patron of ${s.patronages.slice(0, 2).join(" and ")}.` : `${s.name} is a patron of ${s.patronages.slice(0, 2).join(" and ")}.`} ${s.story.split(". ")[0]}.` })),
+    prayer: { title, body, closing: "Through Christ our Lord. Amen." },
+    scripture: scripture.map((s, i) => ({ id: s.id, connection: CONNECTIONS[(i + Math.floor(Math.random() * 4)) % CONNECTIONS.length] })),
+    devotions: devotions.map((d) => ({ id: d.id, suggestion: d.kind === "rosary" ? "If a whole Rosary feels like too much today, one decade is a beautiful prayer." : d.kind === "devotion" ? "Consider it this week, when you have a quiet moment." : "Pray it slowly, perhaps once in the morning and once at night." })),
+    reflection: intent?.reflection ? rand(intent.reflection) : pickReflection(themes, isThanks),
     art_brief: {
       title: isThanks ? "Overflowing Light" : "Held in the Night Garden",
-      concept: `A symbolic meditation on ${named[0] || "being held by God"}.`,
+      concept: `A symbolic meditation on ${PHRASES[themes[0]] || "being held by God"}.`,
       central_symbol: central,
       motifs: pick(motifPool.slice(1).concat(style.motifs.universal), 4),
       composition: archetypes[Math.floor(Math.random() * archetypes.length)] || "halo_icon",

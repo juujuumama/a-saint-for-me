@@ -46,6 +46,7 @@ check-in ──► Claude (structured output) ──► devotional + symbolic ar
 | Traditional prayers, Rosary mysteries, devotions | `server/library/devotions.js` |
 | Check-in vocabulary and theme detection | `server/library/themes.js` |
 | Devotional engine (Claude + offline composer) | `server/devotional.js` |
+| Hand-written prayer library: 25 common intentions, saint lines, feeling lines | `server/library/prayers.js` |
 | **House style configuration** | `config/style.json` |
 | Style → prompt builder | `server/art/style.js` |
 | **Image provider config** (hot-reloaded) | `config/providers.json` |
@@ -108,7 +109,7 @@ Changes apply to the next artwork, with no rebuild or restart. Keys live only in
 People can regenerate the artwork without regenerating the prayer, keep every version, and choose their favorite. Cards render in the browser as artwork only, artwork with prayer, or a collectible card, in portrait (1080×1350) or square (1080×1080), and can be downloaded or shared.
 
 ## Before launch: checklist
-- [ ] **Theological review** of `saints.js`, `devotions.js` and the system prompt in `devotional.js`, by a priest or catechist. Consider seeking an ecclesiastical review if you plan to market it as Catholic.
+- [ ] **Theological review** of `saints.js`, `devotions.js`, `prayers.js` and the system prompt in `devotional.js`, by a priest or catechist. Consider seeking an ecclesiastical review if you plan to market it as Catholic.
 - [ ] **Bible text:** quotes are adapted from the public-domain World English Bible. For a commercial launch, consider licensing the NABRE (USCCB) or RSV-2CE.
 - [ ] **Accounts:** replace the anonymous cookie with real sign-in so collections survive across devices.
 - [ ] **Database:** swap `server/store.js`, a JSON file, for Postgres or SQLite, and art storage for S3/R2.
