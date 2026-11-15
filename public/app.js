@@ -68,7 +68,7 @@ async function renderHome() {
     <div class="hero-grid">
     <div class="hero-inner">
       <h1>What's on your <span>heart</span> today?</h1>
-      <p class="lead">Rooted in real prayers, Scripture, and the saints and angels of the Church. Created by Catholic artist Sierra Renee.</p>
+      <p class="lead">Share what you're feeling and receive a personal prayer, the saints and Scripture for it, and a one-of-a-kind collage made from the original works of Catholic artist Sierra Renee (juujuumama).</p>
     </div>
   <form class="checkin" id="checkin" novalidate>
     <label class="sr-only" for="text">What's on your heart today?</label>

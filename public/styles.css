@@ -328,7 +328,7 @@ body { font-size: 15px; }
   .hero-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); align-items: center; gap: clamp(24px, 4vw, 56px); padding: clamp(28px, 4vw, 52px); }
   .hero-inner { padding: 0; max-width: none; }
   .hero h1 { font-size: clamp(2.6rem, 4.6vw, 4rem); }
-  .hero p.lead { font-size: 1.08rem; max-width: 30ch; }
+  .hero p.lead { font-size: 1.08rem; max-width: 36ch; }
   .hero .checkin { margin: 0; padding: 26px; box-shadow: 0 30px 60px -30px rgba(0,0,0,.55); }
   .hero .speak-wrap textarea { min-height: 170px; }
   .hero::after { background: linear-gradient(90deg, rgba(36,22,58,.15), rgba(36,22,58,.75) 55%, rgba(36,22,58,.88)); }
