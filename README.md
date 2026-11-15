@@ -46,7 +46,7 @@ check-in ──► Claude (structured output) ──► devotional + symbolic ar
 | Traditional prayers, Rosary mysteries, devotions | `server/library/devotions.js` |
 | Check-in vocabulary and theme detection | `server/library/themes.js` |
 | Devotional engine (Claude + offline composer) | `server/devotional.js` |
-| Hand-written prayer library: 38 common intentions, saint lines, feeling lines | `server/library/prayers.js` |
+| Hand-written prayer library: 47 intentions, including joyful news, saint lines, feeling lines | `server/library/prayers.js` |
 | **House style configuration** | `config/style.json` |
 | Style → prompt builder | `server/art/style.js` |
 | **Image provider config** (hot-reloaded) | `config/providers.json` |

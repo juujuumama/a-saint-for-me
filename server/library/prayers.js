@@ -502,7 +502,7 @@ export const INTENTS = [
     reflection: ["Retrace your steps slowly. Peace helps you see.", "When you find it, say thank you, and maybe give a little to the poor, as St. Anthony's friends do."],
   },
   {
-    id: "milestone", themes: ["gratitude", "faith", "family"],
+    id: "milestone", celebrate: true, themes: ["gratitude", "faith", "family"],
     keywords: ["baptism", "baptized", "christening", "first communion", "confirmation", "getting married", "our wedding", "my wedding", "ordination", "new home", "new house", "moving into", "birthday", "graduat", "rcia", "ocia", "becoming catholic", "entering the church", "new job starts", "anniversary"],
     saints: ["joseph", "zelie_louis", "therese"], scripture: ["josh24_15", "ps118_24", "jer29_11"], devotions: ["gratitude_te_deum", "glory_be", "rosary_joyful"],
     title: ["A prayer for a new beginning", "A prayer of blessing", "A prayer for a special day"],
@@ -526,8 +526,143 @@ export const INTENTS = [
     reflection: ["Do one small, concrete act of peace or justice today.", "Peace starts close to home: in a word, a choice, a kindness."],
   },
   {
-    id: "gratitude", themes: ["gratitude"],
-    keywords: ["thank", "grateful", "blessed", "celebrat", "good news", "answered prayer", "got engaged", "got married", "promotion", "got the job", "healed", "baby was born", "anniversary"],
+    id: "joy_pregnancy", joy: true, themes: ["gratitude", "motherhood", "hope"],
+    keywords: ["i'm pregnant", "im pregnant", "i am pregnant", "we're pregnant", "we are pregnant", "we're expecting", "we are expecting", "positive pregnancy test", "positive test", "found out i'm pregnant", "is pregnant", "going to be a mom", "going to be a dad", "going to be parents", "going to be a grandma", "going to be a grandpa", "going to be an aunt", "going to be an uncle", "grandbaby on the way", "baby on the way"],
+    saints: ["gerard", "anne", "gianna"], scripture: ["ps139_13", "lk1_46", "jer29_11"], devotions: ["rosary_joyful", "glory_be", "memorare"],
+    title: ["A prayer of joy for new life", "A prayer for a little one on the way"],
+    titleOther: "A prayer of joy for {who} and the baby",
+    opening: ["Congratulations! New life is one of God's greatest gifts. Let's give thanks.", "What wonderful news. Let's celebrate this little one with God, nerves and all."],
+    openingOther: ["What joyful news! Let's give thanks for {who} and the little one on the way.", "Congratulations! Let's pray for {who} and this new life."],
+    self: [
+      "Creator God, thank You for this new little life! My heart is full of wonder, and maybe some nerves too. Knit this child together in health, watch over my body, and prepare me to love them with Your own tenderness. Thank You for trusting me with this gift.",
+      "Lord, my soul magnifies You, like Mary's did when she carried Jesus. Thank You for this baby. Calm my worries, guard this pregnancy, and fill the months ahead with joy and peace as we wait to meet them.",
+    ],
+    other: [
+      "Creator God, thank You for the joyful news about {who}! Bless {them} and the baby {they} {are} carrying with health and peace. Guard this pregnancy, calm any worries, and fill {their} home with joy in the months ahead.",
+    ],
+    reflection: ["Write down how you felt when you found out. Someday you'll want to share it with them.", "Every heartbeat is a small miracle. Let yourself marvel today."],
+  },
+  {
+    id: "joy_baby", joy: true, themes: ["gratitude", "motherhood", "family"],
+    keywords: ["baby was born", "gave birth", "had the baby", "had her baby", "had our baby", "our son was born", "our daughter was born", "welcomed our", "new grandbaby", "became a grandma", "became a grandpa", "became an aunt", "became an uncle", "is here!"],
+    saints: ["anne", "gerard", "zelie_louis"], scripture: ["ps139_13", "lk1_46", "josh24_15"], devotions: ["rosary_joyful", "glory_be"],
+    title: ["A prayer of thanks for a new baby"],
+    titleOther: "A prayer of thanks for {who}'s baby",
+    opening: ["Welcome to the world, little one! Let's give thanks.", "A new life is here. What a gift!"],
+    openingOther: ["What joyful news for {who}! Let's thank God for this baby.", "Let's welcome this little one with a prayer of thanks."],
+    self: [
+      "Thank You, Lord, for this precious new life! Thank You for bringing mother and baby safely through. Bless this child with health, faith and a long life full of love, and bless our family as we grow around them.",
+    ],
+    other: [
+      "Thank You, Lord, for the new baby in {who}'s life! Bless this child with health and every grace, give {them} rest and joy in these first days, and surround the whole family with Your love.",
+    ],
+    reflection: ["Say a blessing over the baby today, even a simple one: 'God bless you, little one.'", "New parents need care too. Bring a meal or a kind word if you can."],
+  },
+  {
+    id: "joy_work", joy: true, themes: ["gratitude", "work", "inspiration"], hooks: { cajetan: "who trusted God's providence" },
+    variants: [{
+      when: "\\b(raise|promot|bonus)",
+      title: ["A prayer of thanks for a raise", "A prayer of thanks for a promotion"],
+      self: [
+        "Thank You, Lord, for this recognition and this provision! Thank You for the people I work with and for the strength You've given me. Help me carry new responsibility with humility, use this increase wisely and generously, and keep my work in its right place in my life.",
+        "St. Joseph, worker and provider, rejoice with me! Lord, thank You for blessing my work. Let me lead and serve with kindness, remember those who are still struggling, and share what I've been given.",
+      ],
+    }],
+    keywords: ["got the job", "got a job", "got hired", "i'm hired", "new job", "job offer", "got an offer", "promotion", "promoted", "got a raise", "a raise", "pay raise", "new position", "dream job", "first job", "started my business", "landed"],
+    saints: ["joseph", "cajetan", "katharine_drexel"], scripture: ["jer29_11", "ps118_24", "phil4_19"], devotions: ["glory_be", "gratitude_te_deum", "examen"],
+    title: ["A prayer of thanks for good news at work", "A prayer for a new job"],
+    opening: ["Congratulations! Let's thank God for this open door.", "Your hard work and God's providence met today. Let's celebrate."],
+    self: [
+      "Thank You, Lord, for this good news! Thank You for opening this door and for everyone who helped me get here. Bless this new chapter of my work. Give me wisdom, humility and joy, and let me use what I earn and what I learn to do good for others.",
+      "St. Joseph, worker, rejoice with me! Lord, I'm grateful and a little nervous. Help me start well, learn quickly and treat everyone around me with kindness. Let this work be a blessing to my family and a way to serve You.",
+    ],
+    reflection: ["Celebrate! Then thank someone who helped you along the way.", "Consider sharing a small part of this blessing with someone in need."],
+  },
+  {
+    id: "joy_school", joy: true, themes: ["gratitude", "decisions", "inspiration"],
+    keywords: ["got into", "accepted to", "accepted into", "acceptance letter", "got accepted", "scholarship", "passed my exam", "passed the exam", "passed the bar", "passed my boards", "passed my test", "made the team", "made honor roll", "dean's list", "got my license"],
+    saints: ["ignatius", "therese", "thomas_more"], scripture: ["jer29_11", "ps118_24", "eph2_10"], devotions: ["glory_be", "gratitude_te_deum"],
+    title: ["A prayer of thanks for good news"],
+    opening: ["Congratulations! All that work paid off. Let's thank God.", "What a wonderful achievement. Let's celebrate with gratitude."],
+    self: [
+      "Thank You, Lord, for this good news! Thank You for the gifts You've given me and for everyone who supported me. Bless what comes next. Help me keep learning with humility and use what I've been given for good.",
+    ],
+    reflection: ["Thank a teacher, parent or friend who helped you get here.", "You were made for good works. This is one of them."],
+  },
+  {
+    id: "joy_love", joy: true, themes: ["gratitude", "relationships", "marriage"],
+    variants: [{
+      when: "engaged|said yes|proposed",
+      title: ["A prayer for our engagement"],
+      self: [
+        "Thank You, Lord, for our engagement! Thank You for bringing us together and for this promise. Prepare our hearts for the sacrament of marriage. Teach us to love each other with patience, honesty and faithfulness, and be the center of the home we're going to build.",
+        "Jesus, You blessed the wedding at Cana. Bless us as we prepare to marry. Keep our focus on our marriage more than our wedding day, help us grow in faith together, and fill our engagement with joy and peace.",
+      ],
+    }],
+    keywords: ["got engaged", "we're engaged", "we are engaged", "i'm engaged", "she said yes", "he said yes", "he proposed", "she proposed", "met someone", "fell in love", "new relationship", "found the one", "falling in love"],
+    saints: ["zelie_louis", "raphael", "francis"], scripture: ["1cor13_4", "ps118_24", "col3_13"], devotions: ["rosary_luminous", "glory_be"],
+    title: ["A prayer of thanks for love", "A prayer for a new love"],
+    opening: ["Congratulations! Love is worth celebrating. Let's give thanks.", "What joyful news. Let's invite God into this love."],
+    self: [
+      "Thank You, Lord, for this love! Thank You for bringing us together. Be at the center of our relationship. Teach us patience, kindness and honesty, and let our love grow deeper and more faithful through every season.",
+      "God of love, my heart is full. Bless this person You've brought into my life. Guide us as we discern our future, keep us close to You and to each other, and let our love be a sign of Yours.",
+    ],
+    reflection: ["Pray together, even briefly. It's one of the best gifts you can give your love.", "Love is patient and kind. Practice both today."],
+  },
+  {
+    id: "joy_health", joy: true, themes: ["gratitude", "health", "hope"],
+    keywords: ["cancer free", "cancer-free", "in remission", "remission", "clear scan", "scan was clear", "scans were clear", "results came back good", "results were good", "good results", "results were normal", "surgery went well", "successful surgery", "benign", "came home from the hospital", "home from the hospital", "recovering well", "is recovering", "got better", "feeling better", "no more chemo", "last chemo", "rang the bell"],
+    saints: ["raphael", "peregrine", "bernadette"], scripture: ["jer17_14", "ps118_24", "mk5_34"], devotions: ["gratitude_te_deum", "glory_be", "anima_christi"],
+    title: ["A prayer of thanks for healing", "A prayer of thanks for good news"],
+    titleOther: "A prayer of thanks for {who}'s healing",
+    opening: ["What wonderful news! Let's thank the Lord who heals.", "Answered prayers deserve thanksgiving. Let's celebrate."],
+    openingOther: ["What wonderful news about {who}! Let's give thanks.", "Let's thank God for {who}'s healing."],
+    self: [
+      "Thank You, Lord, for this healing and this good news! Thank You for every doctor, nurse and friend who carried me. Strengthen my body as I keep recovering, and let me never forget what You've done.",
+    ],
+    other: [
+      "Thank You, Lord, for the good news about {who}! Thank You for every person who cared for {them}. Keep strengthening {them}, give {them} rest and joy, and let us never forget Your goodness in this.",
+      "Divine Physician, You heard our prayers for {who}. We are so grateful. Continue {their} healing, carry {them} through recovery, and let this gift draw us all closer to You.",
+    ],
+    reflection: ["Thank the people who prayed with you. Let them share the joy.", "Remember this day the next time you're afraid."],
+  },
+  {
+    id: "joy_sober", joy: true, themes: ["gratitude", "addiction", "growth"],
+    keywords: ["year sober", "years sober", "months sober", "days sober", "sober anniversary", "sobriety anniversary", "sober birthday", "clean for a year", "years clean", "months clean", "got my chip", "my coin"],
+    saints: ["matt_talbot", "augustine", "moses_black"], scripture: ["2cor5_17", "lam3_22", "ps118_24"], devotions: ["glory_be", "act_of_hope"],
+    title: ["A prayer of thanks for sobriety"],
+    opening: ["Congratulations! Every sober day is a gift and a victory. Let's give thanks.", "Look how far you've come, one day at a time. Let's celebrate with God."],
+    self: [
+      "Thank You, Lord, for every sober day! I couldn't have done this without You and the people You sent me. Keep me humble and grateful, protect me from complacency, and let my story give hope to someone still struggling.",
+    ],
+    reflection: ["Celebrate this, and tell someone who's still struggling that it's possible.", "Just for today, again. Gratitude keeps recovery strong."],
+  },
+  {
+    id: "joy_answered", joy: true, themes: ["gratitude", "faith", "hope"],
+    keywords: ["answered prayer", "prayers were answered", "prayer was answered", "prayers answered", "god came through", "it's a miracle", "a miracle", "finally happened", "everything worked out", "it all worked out", "good news!"],
+    saints: ["therese", "jude", "anthony"], scripture: ["ps118_24", "lk1_46", "1thes5_16"], devotions: ["gratitude_te_deum", "glory_be"],
+    title: ["A prayer of thanks for an answered prayer"],
+    opening: ["God heard you! Let's give thanks.", "Answered prayers deserve thanksgiving. What a joy."],
+    self: [
+      "Thank You, Lord! You heard my prayer and answered it. I'm amazed and grateful. Let me never forget Your faithfulness, and let this joy make me braver in prayer and more generous to others.",
+    ],
+    reflection: ["Tell someone how God answered you. Your story might be the hope they need.", "Write this down. Faith is built from remembered answers."],
+  },
+  {
+    id: "joy_newchapter", joy: true, themes: ["inspiration", "decisions", "hope"],
+    keywords: ["excited but nervous", "nervous but excited", "excited and nervous", "nervous and excited", "scared but excited", "excited but scared", "new chapter", "first day", "starting a new", "starting college", "starting school", "big move", "new city", "new adventure", "moving abroad", "can't wait", "cant wait"],
+    saints: ["raphael", "ignatius", "francis"], scripture: ["jer29_11", "dt31_6", "prov3_5"], devotions: ["suscipe", "glory_be"],
+    title: ["A prayer for a new chapter", "A prayer for a fresh start"],
+    opening: ["Excited and nervous is a holy combination. It means something good is beginning.", "New beginnings are worth blessing. Let's ask God to go ahead of you."],
+    self: [
+      "Lord, I'm excited and a little nervous about what's ahead. Thank You for this new chapter. Go ahead of me and prepare the way. Give me courage for the first steps, open my heart to new people, and let me feel Your presence in every new place.",
+      "St. Raphael, guide of journeys, walk with me. Lord, bless this beginning. Turn my nerves into trust and my excitement into gratitude, and help me grow into who You're calling me to be.",
+    ],
+    reflection: ["Nerves are just excitement that hasn't found its footing yet. You'll find it.", "Take a moment to notice what you're grateful for at the start of this."],
+  },
+  {
+    id: "gratitude", celebrate: true, themes: ["gratitude"],
+    keywords: ["thank", "grateful", "blessed", "celebrat", "good news", "got married", "anniversary", "so happy", "so excited", "thrilled", "praise god"],
     saints: ["francis", "therese", "katharine_drexel"], scripture: ["ps118_24", "1thes5_16", "lk1_46"], devotions: ["gratitude_te_deum", "glory_be"],
     title: ["A prayer of thanksgiving", "A prayer of joy"],
     opening: ["What a gift to stop and give thanks. Let's celebrate with God.", "Joy shared with God is joy multiplied."],
@@ -558,6 +693,8 @@ export const SAINT_HOOKS = {
 };
 
 // Lines for feelings mentioned alongside the main intention (first person).
+export const JOY_NERVES = ["And where my joy is mixed with nerves, steady me, Lord.", "Calm the butterflies, Lord, and let me enjoy this gift."];
+
 export const FEELING_LINES = {
   fear: ["And Lord, I'm afraid. Be my courage.", "Take my fear, Lord, and give me Your peace in its place."],
   anxiety: ["Quiet my anxious thoughts, Lord, and help me breathe.", "Calm the worry that keeps circling in my mind."],
@@ -575,6 +712,15 @@ export const INVOCATIONS = {
 };
 
 export const CLOSINGS = {
+  joy: [
+    "Thank You, Lord. Let my joy become praise.",
+    "Keep me grateful, Lord, even when this becomes ordinary.",
+    "Every good gift comes from You. Glory to You!",
+  ],
+  joyOther: [
+    "Thank You, Lord, for loving {them} so well.",
+    "Let this joy overflow for {them} and for all of us. Glory to You!",
+  ],
   departed: [
     "Comfort me in the missing, Lord, until we meet again.",
     "Let my love for {them} become prayer, today and always.",
@@ -609,18 +755,22 @@ export function detectWho(text = "", intentId) {
   const m = text.match(RELATION);
   if (!m) return "";
   const forSomeone = /\bpray(ing)? for (my|her|him|them|our)\b/i.test(text);
-  const theirStory = ["difficult", "cancer", "illness", "faithchild", "grief", "protection", "pregnancy", "addiction", "mental", "dying", "sickchild", "prison", "immigration", "suicideloss"].includes(intentId);
+  const theirStory = ["joy_pregnancy", "joy_baby", "joy_health", "difficult", "cancer", "illness", "faithchild", "grief", "protection", "pregnancy", "addiction", "mental", "dying", "sickchild", "prison", "immigration", "suicideloss"].includes(intentId);
   // "my husband left me" is the speaker's story, not a prayer for him
   const selfStory = /\b(left me|cheated on me|hurt me|lied to me|broke up with me)\b/i.test(text);
   return (forSomeone || theirStory) && !selfStory ? `my ${m[1].toLowerCase()}` : "";
 }
 
+const WORRY = /\b(worried|worry|scared|afraid|anxious|anxiety|stressed|struggling|hard|hate|dread|lost|fired|laid off|sad|crying|can't|cannot|won't)\b/;
+const HAPPY = /(!|\b(excited|happy|thrilled|grateful|thankful|blessed|finally|yay|so glad|praise god|good news|congrat|celebrat|can't wait|cant wait)\b)/;
 export function detectIntent(text = "", themes = []) {
   const t = ` ${text.toLowerCase()} `;
+  const worried = WORRY.test(t), happy = HAPPY.test(t);
   let best = null;
   for (const it of INTENTS) {
     // keywords starting with "~" are generic ("my son") and count for less than specific ones ("jail")
-    const hits = it.keywords.reduce((n, k) => (k.startsWith("~") ? (t.includes(k.slice(1)) ? n + 0.5 : n) : t.includes(k) ? n + 1 : n), 0);
+    let hits = it.keywords.reduce((n, k) => (k.startsWith("~") ? (t.includes(k.slice(1)) ? n + 0.5 : n) : t.includes(k) ? n + 1 : n), 0);
+    if (it.joy && hits) hits *= worried && !happy ? 0.4 : 2;
     if (hits && (!best || hits > best.hits)) best = { it, hits };
   }
   if (best) return best.it;

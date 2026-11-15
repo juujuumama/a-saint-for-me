@@ -4,7 +4,7 @@ import { SAINTS, saintById } from "./library/saints.js";
 import { SCRIPTURE, scriptureById } from "./library/scripture.js";
 import { DEVOTIONS, devotionById } from "./library/devotions.js";
 import { themesFromCheckin } from "./library/themes.js";
-import { INTENTS, SAINT_HOOKS, FEELING_LINES, INVOCATIONS, CLOSINGS, detectIntent, detectWho, fill } from "./library/prayers.js";
+import { INTENTS, SAINT_HOOKS, FEELING_LINES, JOY_NERVES, INVOCATIONS, CLOSINGS, detectIntent, detectWho, fill } from "./library/prayers.js";
 
 // ---------- Offline composer ----------
 function scoreBy(items, themes) {
@@ -43,8 +43,11 @@ export function composeOffline(checkin, context = {}, style) {
   const text = checkin.text || "";
   const intent = detectIntent(text, themes) || (checkin.mode === "thanks" ? INTENTS.find((i) => i.id === "gratitude") : null);
   if (intent) themes = [...new Set([...intent.themes, ...themes])];
+  // A more specific version of the intention (e.g. a raise rather than a new job)
+  const variant = intent?.variants?.find((v) => new RegExp(v.when, "i").test(text));
+  const src = variant ? { ...intent, ...variant } : intent;
   if (!themes.length) themes = ["peace", "faith", "hope"];
-  const isThanks = intent?.id === "gratitude";
+  const isThanks = Boolean(intent?.joy || intent?.celebrate);
 
   let who = checkin.personName || detectWho(text, intent?.id);
   const otherMode = Boolean(who && (intent?.other || intent?.id === "grief"));
@@ -62,23 +65,27 @@ export function composeOffline(checkin, context = {}, style) {
   const feeling = themes.find((t) => FEELING_LINES[t] && !(intent?.themes || []).includes(t));
   const paras = [];
   if (intent) {
-    const petition = otherMode ? fill(rand(intent.other || intent.self), who) : rand(intent.self);
+    const petition = otherMode ? fill(rand(src.other || src.self), who) : rand(src.self);
     paras.push(petition);
   } else {
     const named = themes.slice(0, 3).map((t) => PHRASES[t]).filter(Boolean);
     paras.push(`${rand(INVOCATIONS.self)} You know what is on my heart before I can find the words. I place before You ${named.join(", and ")}. Where I am weary, be my rest. Where I am afraid, be my courage. Where I cannot see the way, be my light.`);
   }
-  if (feeling && !otherMode) paras[0] += " " + rand(FEELING_LINES[feeling]);
+  const nervous = /\b(nervous|scared|anxious|afraid|butterflies)\b/i.test(text);
+  if (isThanks) { if (nervous && !otherMode) paras[0] += " " + rand(JOY_NERVES); }
+  else if (feeling && !otherMode) paras[0] += " " + rand(FEELING_LINES[feeling]);
   // don't ask the same saint twice if the petition already names them
   const shortName = (x) => x.name.replace(/\s*\(.*\)/, "").split(",")[0];
   if (paras[0].includes(shortName(lead)) && saints[1]) lead = saints[1];
   const hook = intent?.hooks?.[lead.id] || SAINT_HOOKS[lead.id];
   paras.push(`${lead.name.replace(/\s*\(.*\)/, "")}${hook ? `, ${hook},` : ","} pray for ${otherMode ? `${who} and for me` : "me"}.`);
   const departed = otherMode && ["grief", "suicideloss"].includes(intent?.id);
-  paras.push(departed ? fill(rand(CLOSINGS.departed), who) : otherMode ? fill(rand(CLOSINGS.other), who) : rand(CLOSINGS.self));
+  paras.push(departed ? fill(rand(CLOSINGS.departed), who)
+    : isThanks ? (otherMode ? fill(rand(CLOSINGS.joyOther), who) : rand(CLOSINGS.joy))
+    : otherMode ? fill(rand(CLOSINGS.other), who) : rand(CLOSINGS.self));
   const body = paras.join("\n\n");
 
-  const title = otherMode && intent?.titleOther ? fill(intent.titleOther, who) : intent ? rand(intent.title) : "A prayer for today";
+  const title = otherMode && src?.titleOther ? fill(src.titleOther, who) : src ? rand(src.title) : "A prayer for today";
   const opening = otherMode && intent?.openingOther ? fill(rand(intent.openingOther), who) : intent ? rand(intent.opening) : "Thank you for trusting this moment with prayer. You are not alone in what you are carrying.";
 
   const motifPool = themes.flatMap((t) => style.motifs.byTheme[t] || []);
@@ -88,7 +95,7 @@ export function composeOffline(checkin, context = {}, style) {
 
   return {
     intention_title: context.previous?.title && !text ? context.previous.title
-      : otherMode ? `Praying for ${who}` : title.replace(/^A prayer /, "Prayer "),
+      : otherMode && !isThanks ? `Praying for ${who}` : title.replace(/^A prayer /, "Prayer "),
     opening,
     themes,
     saints: saints.map((s) => ({ id: s.id, why: `${SAINT_HOOKS[s.id] ? `${s.name.replace(/\s*\(.*\)/, "")}, ${SAINT_HOOKS[s.id]}, is a patron of ${s.patronages.slice(0, 2).join(" and ")}.` : `${s.name} is a patron of ${s.patronages.slice(0, 2).join(" and ")}.`} ${s.story.split(". ")[0]}.` })),
