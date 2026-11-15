@@ -342,6 +342,27 @@
   ],
   "faces": [
     {
+      "file": "face-001.jpg",
+      "w": 360,
+      "h": 450,
+      "tone": "dark",
+      "pres": "any"
+    },
+    {
+      "file": "face-010.jpg",
+      "w": 360,
+      "h": 450,
+      "tone": "dark",
+      "pres": "fem"
+    },
+    {
+      "file": "face-014.jpg",
+      "w": 360,
+      "h": 450,
+      "tone": "light",
+      "pres": "fem"
+    },
+    {
       "file": "face-017.jpg",
       "w": 360,
       "h": 450,
@@ -351,126 +372,105 @@
     {
       "file": "face-024.jpg",
       "w": 360,
-      "h": 455,
+      "h": 450,
       "tone": "medium",
       "pres": "fem"
     },
     {
       "file": "face-025.jpg",
       "w": 360,
-      "h": 489,
+      "h": 450,
       "tone": "dark",
       "pres": "any"
-    },
-    {
-      "file": "face-039.jpg",
-      "w": 360,
-      "h": 405,
-      "tone": "dark",
-      "pres": "fem"
-    },
-    {
-      "file": "face-055.jpg",
-      "w": 360,
-      "h": 440,
-      "tone": "dark",
-      "pres": "fem"
-    },
-    {
-      "file": "face-065.jpg",
-      "w": 360,
-      "h": 412,
-      "tone": "dark",
-      "pres": "masc"
-    },
-    {
-      "file": "face-100.jpg",
-      "w": 360,
-      "h": 453,
-      "tone": "dark",
-      "pres": "fem"
-    },
-    {
-      "file": "face-107.jpg",
-      "w": 360,
-      "h": 478,
-      "tone": "dark",
-      "pres": "fem"
-    },
-    {
-      "file": "face-109.jpg",
-      "w": 360,
-      "h": 429,
-      "tone": "dark",
-      "pres": "fem"
-    },
-    {
-      "file": "face-129.jpg",
-      "w": 360,
-      "h": 513,
-      "tone": "dark",
-      "pres": "masc"
-    },
-    {
-      "file": "face-134.jpg",
-      "w": 360,
-      "h": 525,
-      "tone": "medium",
-      "pres": "fem"
-    },
-    {
-      "file": "face-001.jpg",
-      "w": 360,
-      "h": 441,
-      "tone": "dark",
-      "pres": "any"
-    },
-    {
-      "file": "face-010.jpg",
-      "w": 360,
-      "h": 454,
-      "tone": "dark",
-      "pres": "fem"
-    },
-    {
-      "file": "face-014.jpg",
-      "w": 360,
-      "h": 480,
-      "tone": "light",
-      "pres": "fem"
     },
     {
       "file": "face-034.jpg",
       "w": 360,
-      "h": 442,
+      "h": 450,
       "tone": "dark",
       "pres": "masc"
     },
     {
       "file": "face-036.jpg",
       "w": 360,
-      "h": 476,
+      "h": 450,
       "tone": "light",
+      "pres": "fem"
+    },
+    {
+      "file": "face-039.jpg",
+      "w": 360,
+      "h": 450,
+      "tone": "dark",
       "pres": "fem"
     },
     {
       "file": "face-044.jpg",
       "w": 360,
-      "h": 489,
+      "h": 450,
       "tone": "medium",
       "pres": "fem"
     },
     {
+      "file": "face-055.jpg",
+      "w": 360,
+      "h": 450,
+      "tone": "dark",
+      "pres": "fem"
+    },
+    {
+      "file": "face-065.jpg",
+      "w": 360,
+      "h": 450,
+      "tone": "dark",
+      "pres": "masc"
+    },
+    {
       "file": "face-086.jpg",
       "w": 360,
-      "h": 465,
+      "h": 450,
       "tone": "light",
+      "pres": "fem"
+    },
+    {
+      "file": "face-100.jpg",
+      "w": 360,
+      "h": 450,
+      "tone": "dark",
+      "pres": "fem"
+    },
+    {
+      "file": "face-107.jpg",
+      "w": 360,
+      "h": 450,
+      "tone": "dark",
+      "pres": "fem"
+    },
+    {
+      "file": "face-109.jpg",
+      "w": 360,
+      "h": 450,
+      "tone": "dark",
+      "pres": "fem"
+    },
+    {
+      "file": "face-129.jpg",
+      "w": 360,
+      "h": 450,
+      "tone": "dark",
+      "pres": "masc"
+    },
+    {
+      "file": "face-134.jpg",
+      "w": 360,
+      "h": 450,
+      "tone": "medium",
       "pres": "fem"
     },
     {
       "file": "face-135.jpg",
       "w": 360,
-      "h": 405,
+      "h": 450,
       "tone": "light",
       "pres": "fem"
     }

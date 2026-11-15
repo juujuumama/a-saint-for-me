@@ -52,26 +52,36 @@ const TEXTURES = [
 // Faces from the artist's portraits, used as saints' and angels' heads.
 // tone: "dark" | "medium"; pres: "fem" | "masc" | "any" (used to match saints respectfully).
 const FACES = [
-  { n: 17, crop: [0.22, 0.32, 0.36, 0.45], tone: "medium", pres: "fem" },
-  { n: 24, crop: [0.33, 0.42, 0.34, 0.43], tone: "medium", pres: "fem" },
-  { n: 25, crop: [0.3, 0.2, 0.42, 0.38], tone: "dark", pres: "any" },
-  { n: 39, crop: [0.3, 0.2, 0.6, 0.45], tone: "dark", pres: "fem" },
-  { n: 55, crop: [0.12, 0.05, 0.72, 0.88], tone: "dark", pres: "fem" },
-  { n: 65, crop: [0.2, 0.1, 0.55, 0.42], tone: "dark", pres: "masc" },
-  { n: 100, crop: [0.1, 0.2, 0.62, 0.52], tone: "dark", pres: "fem" },
-  { n: 107, crop: [0.3, 0.12, 0.32, 0.34], tone: "dark", pres: "fem" },
-  { n: 109, crop: [0.12, 0.12, 0.62, 0.52], tone: "dark", pres: "fem" },
-  { n: 129, crop: [0.3, 0.32, 0.4, 0.38], tone: "dark", pres: "masc" },
-  { n: 134, crop: [0.45, 0.08, 0.45, 0.42], tone: "medium", pres: "fem" },
-  { n: 1, crop: [0.35, 0.3, 0.3, 0.26], tone: "dark", pres: "any" },
-  { n: 10, crop: [0.03, 0.12, 0.5, 0.42], tone: "dark", pres: "fem" },
-  { n: 14, crop: [0.23, 0.09, 0.27, 0.24], tone: "light", pres: "fem" },
-  { n: 34, crop: [0.21, 0.15, 0.33, 0.27], tone: "dark", pres: "masc" },
-  { n: 36, crop: [0.22, 0.07, 0.34, 0.3], tone: "light", pres: "fem" },
-  { n: 44, crop: [0.1, 0.2, 0.42, 0.38], tone: "medium", pres: "fem" },
-  { n: 86, crop: [0.46, 0.11, 0.36, 0.31], tone: "light", pres: "fem" },
-  { n: 135, crop: [0.33, 0.04, 0.32, 0.36], tone: "light", pres: "fem" },
+  // fx = face center x, eye = eye line y, chin = chin y (fractions of the original image)
+  { n: 1, fx: 0.5, eye: 0.46, chin: 0.58, tone: "dark", pres: "any" },
+  { n: 10, fx: 0.33, eye: 0.31, chin: 0.47, tone: "dark", pres: "fem" },
+  { n: 14, fx: 0.36, eye: 0.215, chin: 0.3, tone: "light", pres: "fem" },
+  { n: 17, fx: 0.34, eye: 0.53, chin: 0.7, tone: "medium", pres: "fem" },
+  { n: 24, fx: 0.48, eye: 0.6, chin: 0.8, tone: "medium", pres: "fem" },
+  { n: 25, fx: 0.52, eye: 0.4, chin: 0.57, tone: "dark", pres: "any" },
+  { n: 34, fx: 0.4, eye: 0.24, chin: 0.33, tone: "dark", pres: "masc" },
+  { n: 36, fx: 0.44, eye: 0.2, chin: 0.31, tone: "light", pres: "fem" },
+  { n: 39, fx: 0.62, eye: 0.36, chin: 0.55, tone: "dark", pres: "fem" },
+  { n: 44, fx: 0.33, eye: 0.37, chin: 0.5, tone: "medium", pres: "fem" },
+  { n: 55, fx: 0.48, eye: 0.35, chin: 0.75, tone: "dark", pres: "fem" },
+  { n: 65, fx: 0.6, eye: 0.29, chin: 0.45, tone: "dark", pres: "masc" },
+  { n: 86, fx: 0.62, eye: 0.27, chin: 0.38, tone: "light", pres: "fem" },
+  { n: 100, fx: 0.28, eye: 0.44, chin: 0.62, tone: "dark", pres: "fem" },
+  { n: 107, fx: 0.5, eye: 0.34, chin: 0.45, tone: "dark", pres: "fem" },
+  { n: 109, fx: 0.42, eye: 0.31, chin: 0.52, tone: "dark", pres: "fem" },
+  { n: 129, fx: 0.5, eye: 0.45, chin: 0.67, tone: "dark", pres: "masc" },
+  { n: 134, fx: 0.73, eye: 0.24, chin: 0.42, tone: "medium", pres: "fem" },
+  { n: 135, fx: 0.5, eye: 0.25, chin: 0.4, tone: "light", pres: "fem" },
 ];
+// Head oval is 0.8 wide : 1 tall. Eyes sit at 47% of its height, chin at 87%,
+// so every face lands in the same place under a veil, hood or halo.
+function faceCrop({ fx, eye, chin }, W, H) {
+  let ch = ((chin - eye) * H) / 0.4, cw = ch * 0.8;
+  const k = Math.min(1, W / cw, H / ch); ch *= k; cw *= k;
+  let top = eye * H - 0.47 * ch, left = fx * W - cw / 2;
+  top = Math.max(0, Math.min(H - ch, top)); left = Math.max(0, Math.min(W - cw, left));
+  return [left / W, top / H, cw / W, ch / H];
+}
 
 const html = await (await fetch("https://www.juujuumama.art/", { headers: { "User-Agent": "Mozilla/5.0" } })).text();
 const all = [...new Set(html.match(/https:\/\/cdn\.sanity\.io\/images\/[A-Za-z0-9_/-]+\.(?:jpe?g|png|webp)/g))].sort();
@@ -82,7 +92,7 @@ fs.mkdirSync(OUT, { recursive: true });
 async function get(entry, kind, width, quality) {
   const url = sampled[entry.n - 1];
   const [, W, H] = url.match(/-(\d+)x(\d+)\./).map(Number);
-  const [cx, cy, cw, ch] = entry.crop || [0, 0, 1, 1];
+  const [cx, cy, cw, ch] = entry.eye ? faceCrop(entry, W, H) : entry.crop || [0, 0, 1, 1];
   const rect = [Math.round(cx * W), Math.round(cy * H), Math.round(cw * W), Math.round(ch * H)].join(",");
   const file = `${kind}-${String(entry.n).padStart(3, "0")}.jpg`;
   const res = await fetch(`${url}?rect=${rect}&w=${width}&fm=jpg&q=${quality}`);
