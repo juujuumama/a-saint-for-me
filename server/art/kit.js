@@ -15,9 +15,6 @@ const SAINT_META = {
   francis: ["light", "masc"], mary_magdalene: ["medium", "fem"], thomas_apostle: ["medium", "masc"], anthony: ["light", "masc"],
   faustina: ["light", "fem"], kateri: ["indigenous", "fem"],
 };
-// Set to true to let the artist's portraits interpret every saint (artistic license).
-export const FACES_FOR_ALL_SAINTS = false;
-
 function rng(seed) {
   let a = seed >>> 0;
   return () => {
@@ -28,13 +25,17 @@ function rng(seed) {
   };
 }
 
-export function faceFits(face, saint) {
-  if (!saint) return false;
-  if (saint.kind === "angel" || FACES_FOR_ALL_SAINTS) return true;
+// Every saint gets a face from the artist's portraits: the closest match first
+// (tone and presentation), then presentation, then any portrait (artistic interpretation).
+export function faceCandidates(faces = [], saint) {
+  if (!faces.length) return [];
+  if (!saint || saint.kind === "angel") return faces;
   const [tone, pres] = SAINT_META[saint.id] || ["none", "any"];
-  const toneOk = face.tone === tone;
-  const presOk = face.pres === "any" || pres === "any" || face.pres === pres;
-  return toneOk && presOk;
+  const presOk = (fc) => fc.pres === "any" || pres === "any" || fc.pres === pres;
+  const exact = faces.filter((fc) => fc.tone === tone && presOk(fc));
+  if (exact.length) return exact;
+  const byPres = faces.filter(presOk);
+  return byPres.length ? byPres : faces;
 }
 
 export function pickKit(manifest, { themes = [], seed = 1, saint = null } = {}) {
@@ -51,7 +52,7 @@ export function pickKit(manifest, { themes = [], seed = 1, saint = null } = {}) 
   const crystal = pick(role("crystal"));
   const wing = pick([...role("crystal"), ...role("robe")], [crystal, robe, mantle]);
   const paint = pick(role("paint"));
-  const faces = (manifest.faces || []).filter((fc) => faceFits(fc, saint));
+  const faces = faceCandidates(manifest.faces, saint);
   const face = faces.length ? faces[Math.floor(r() * faces.length)] : null;
   return { bg, robe, mantle, crystal, wing, paint, face };
 }

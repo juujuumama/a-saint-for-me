@@ -424,6 +424,55 @@
       "h": 441,
       "tone": "dark",
       "pres": "any"
+    },
+    {
+      "file": "face-010.jpg",
+      "w": 360,
+      "h": 454,
+      "tone": "dark",
+      "pres": "fem"
+    },
+    {
+      "file": "face-014.jpg",
+      "w": 360,
+      "h": 480,
+      "tone": "light",
+      "pres": "fem"
+    },
+    {
+      "file": "face-034.jpg",
+      "w": 360,
+      "h": 442,
+      "tone": "dark",
+      "pres": "masc"
+    },
+    {
+      "file": "face-036.jpg",
+      "w": 360,
+      "h": 476,
+      "tone": "light",
+      "pres": "fem"
+    },
+    {
+      "file": "face-044.jpg",
+      "w": 360,
+      "h": 489,
+      "tone": "medium",
+      "pres": "fem"
+    },
+    {
+      "file": "face-086.jpg",
+      "w": 360,
+      "h": 465,
+      "tone": "light",
+      "pres": "fem"
+    },
+    {
+      "file": "face-135.jpg",
+      "w": 360,
+      "h": 405,
+      "tone": "light",
+      "pres": "fem"
     }
   ]
 }

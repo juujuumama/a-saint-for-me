@@ -64,6 +64,13 @@ const FACES = [
   { n: 129, crop: [0.3, 0.32, 0.4, 0.38], tone: "dark", pres: "masc" },
   { n: 134, crop: [0.45, 0.08, 0.45, 0.42], tone: "medium", pres: "fem" },
   { n: 1, crop: [0.35, 0.3, 0.3, 0.26], tone: "dark", pres: "any" },
+  { n: 10, crop: [0.03, 0.12, 0.5, 0.42], tone: "dark", pres: "fem" },
+  { n: 14, crop: [0.23, 0.09, 0.27, 0.24], tone: "light", pres: "fem" },
+  { n: 34, crop: [0.21, 0.15, 0.33, 0.27], tone: "dark", pres: "masc" },
+  { n: 36, crop: [0.22, 0.07, 0.34, 0.3], tone: "light", pres: "fem" },
+  { n: 44, crop: [0.1, 0.2, 0.42, 0.38], tone: "medium", pres: "fem" },
+  { n: 86, crop: [0.46, 0.11, 0.36, 0.31], tone: "light", pres: "fem" },
+  { n: 135, crop: [0.33, 0.04, 0.32, 0.36], tone: "light", pres: "fem" },
 ];
 
 const html = await (await fetch("https://www.juujuumama.art/", { headers: { "User-Agent": "Mozilla/5.0" } })).text();
