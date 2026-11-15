@@ -376,3 +376,12 @@ body { font-size: 15px; }
   .about-strip { grid-auto-columns: 1fr; }
   .about-strip img { aspect-ratio: 4/5; }
 }
+
+.symbol-more { display: none; margin-top: 10px; }
+@media (max-width: 899px) {
+  .symbol-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
+  .symbol { padding: 6px 8px; gap: 8px; font-size: .78rem; line-height: 1.25; border-radius: 10px; }
+  .symbol-icon { width: 30px; height: 30px; }
+  .symbol-grid:not(.open) .symbol:nth-child(n+9) { display: none; }
+  .symbol-more { display: inline-flex; }
+}

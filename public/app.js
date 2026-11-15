@@ -452,23 +452,27 @@ async function renderAbout() {
     <section class="about-sec">
       <h2>The symbols</h2>
       <p>In Catholic art, saints are recognized by what they carry. The small emblem on each figure is that saint's traditional symbol. Each saint's description tells you what theirs means.</p>
-      <div class="symbol-grid">${order.filter((k) => byKey[k] && SYMBOLS[k]).map((k) => `<div class="symbol"><span class="symbol-icon">${byKey[k]}</span><span>${esc(cap(SYMBOLS[k]))}</span></div>`).join("")}</div>
+      <div class="symbol-grid" id="symbolGrid">${order.filter((k) => byKey[k] && SYMBOLS[k]).map((k) => `<div class="symbol"><span class="symbol-icon">${byKey[k]}</span><span>${esc(cap(SYMBOLS[k]))}</span></div>`).join("")}</div>
+      <button class="btn small ghost symbol-more" id="symbolMore" aria-expanded="false">Show all 31 symbols</button>
     </section>
 
 
     <section class="about-sec artist">
       <h2>About the artist</h2>
       <div class="artist-body">
-      <p><strong>Sierra Renee</strong> is a Catholic, multidisciplinary artist working under the name <strong>juujuumama</strong>. Rooted in Afrofuturism and surrealism, her work spans hand-cut collage, acrylic and mixed media, generative AI, AI fashion and animation.</p>
-      <p>She grew up in the Hudson Valley, just north of New York City, in a multiracial family shaped by Black, Italian and Puerto Rican heritage. She has made art since childhood. Hand-cut collage, made from gem show catalogs, museum publications and found paper, is still the foundation of her visual language.</p>
-      <p>Since 2022 she has trained her own AI models on her own imagery, to push back against generative AI's narrow and often distorted renderings of Black features, hair and adornment. Gemstones, sculptural adornment and immersive worlds recur throughout her work as symbols of ancestry, transformation and self-defined value. She founded Itan West African Artistry, a community of nearly 200 artists, and her work has been exhibited from Tokyo, London and Lisbon to Miami and billboards in Times Square.</p>
-      <p>A Saint for Me brings that practice to prayer: every collage here is cut from her original work.</p>
+      <p><strong>Sierra Renee</strong> (juujuumama) is a Catholic, multidisciplinary artist rooted in Afrofuturism and surrealism. She works in hand-cut collage, acrylic and mixed media, and AI models she trains on her own art to represent Black features, hair and adornment truthfully.</p>
+      <p>Raised in the Hudson Valley in a Black, Italian and Puerto Rican family, she founded Itan West African Artistry, a community of nearly 200 artists. Her work has shown from Tokyo, London and Lisbon to Times Square. Every collage here is cut from her original work.</p>
       </div>
       <p class="row"><a class="btn" href="https://www.juujuumama.art/work" target="_blank" rel="noopener">See her original works</a> <a class="btn ghost" href="https://www.juujuumama.art" target="_blank" rel="noopener">juujuumama.art</a></p>
     </section>
 
     <section class="card reflection"><p>Whatever you're carrying today, you don't have to carry it alone.</p><a class="btn" href="${L("/")}" data-link>What's on your heart?</a></section>
   </article>`;
+  $("#symbolMore")?.addEventListener("click", (e) => {
+    const open = $("#symbolGrid").classList.toggle("open");
+    e.currentTarget.setAttribute("aria-expanded", String(open));
+    e.currentTarget.textContent = open ? "Show fewer" : "Show all 31 symbols";
+  });
   scrollTo({ top: 0 });
 }
 
