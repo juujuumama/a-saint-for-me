@@ -46,6 +46,21 @@ export const SCRIPTURE = [
   { id: "dt31_6", ref: "Deuteronomy 31:6", url: usccb("deuteronomy", 31, 6), themes: ["fear", "decisions", "loneliness"], text: "Be strong and courageous. Don't be afraid or scared of them; for the Lord your God himself is who goes with you. He will not fail you nor forsake you." },
   { id: "mk9_24", ref: "Mark 9:24", url: usccb("mark", 9, 24), themes: ["faith", "confusion", "discouragement"], text: "I believe. Help my unbelief!" },
   { id: "mt7_7", ref: "Matthew 7:7", url: usccb("matthew", 7, 7), themes: ["hope", "work", "decisions", "faith"], text: "Ask, and it will be given you. Seek, and you will find. Knock, and it will be opened for you." },
+  { id: "ps145_9", ref: "Psalm 145:9", url: usccb("psalms", 145, 9), themes: ["gratitude", "grief", "peace"], text: "The Lord is good to all. His tender mercies are over all his works." },
+  { id: "lk15_8", ref: "Luke 15:8", url: usccb("luke", 15, 8), themes: ["hope", "confusion"], text: "Or what woman, if she had ten drachma coins, if she lost one drachma coin, wouldn't light a lamp, sweep the house, and seek diligently until she found it?" },
+  { id: "mt25_36", ref: "Matthew 25:36", url: usccb("matthew", 25, 36), themes: ["family", "hope", "loneliness"], text: "I was in prison, and you came to me." },
+  { id: "lk23_43", ref: "Luke 23:43", url: usccb("luke", 23, 43), themes: ["hope", "growth", "grief"], text: "Assuredly I tell you, today you will be with me in Paradise." },
+  { id: "lev19_34", ref: "Leviticus 19:34", url: usccb("leviticus", 19, 34), themes: ["family", "loneliness", "fear"], text: "The stranger who lives as a foreigner with you shall be to you as the native-born among you, and you shall love him as yourself; for you lived as foreigners in the land of Egypt." },
+  { id: "mt5_9", ref: "Matthew 5:9", url: usccb("matthew", 5, 9), themes: ["peace", "anger"], text: "Blessed are the peacemakers, for they shall be called children of God." },
+  { id: "amos5_24", ref: "Amos 5:24", url: usccb("amos", 5, 24), themes: ["anger", "hope"], text: "But let justice roll on like rivers, and righteousness like a mighty stream." },
+  { id: "eph2_10", ref: "Ephesians 2:10", url: usccb("ephesians", 2, 10), themes: ["growth", "inspiration"], text: "For we are his workmanship, created in Christ Jesus for good works." },
+  { id: "1sam16_7", ref: "1 Samuel 16:7", url: usccb("1samuel", 16, 7), themes: ["growth", "sadness"], text: "For man looks at the outward appearance, but the Lord looks at the heart." },
+  { id: "mk10_14", ref: "Mark 10:14", url: usccb("mark", 10, 14), themes: ["parenting", "health"], text: "Allow the little children to come to me! Don't forbid them, for God's Kingdom belongs to such as these." },
+  { id: "is43_2", ref: "Isaiah 43:2", url: usccb("isaiah", 43, 2), themes: ["fear", "overwhelm", "health"], text: "When you pass through the waters, I will be with you, and through the rivers, they will not overflow you." },
+  { id: "ps116_15", ref: "Psalm 116:15", url: usccb("psalms", 116, 15), themes: ["grief"], text: "Precious in the sight of the Lord is the death of his saints." },
+  { id: "josh24_15", ref: "Joshua 24:15", url: usccb("joshua", 24, 15), themes: ["family", "gratitude", "faith"], text: "As for me and my house, we will serve the Lord." },
+  { id: "prov17_17", ref: "Proverbs 17:17", url: usccb("proverbs", 17, 17), themes: ["relationships", "loneliness"], text: "A friend loves at all times." },
+  { id: "ps27_10", ref: "Psalm 27:10", url: usccb("psalms", 27, 10), themes: ["family", "loneliness", "sadness"], text: "When my father and my mother forsake me, then the Lord will take me up." },
 ];
 
 export const SCRIPTURE_IDS = SCRIPTURE.map((s) => s.id);

@@ -25,6 +25,12 @@ export const DEVOTIONS = [
     text: "Angel of God, my guardian dear, to whom God's love commits me here, ever this day be at my side, to light and guard, to rule and guide. Amen.",
   },
   {
+    id: "st_anthony_lost", kind: "prayer", title: "Prayer to St. Anthony for Lost Things",
+    themes: ["confusion", "hope"],
+    note: "A beloved popular prayer, often said in a hurry. St. Anthony is the patron of lost things.",
+    text: "Dear St. Anthony, please come around; something is lost and cannot be found.",
+  },
+  {
     id: "anima_christi", kind: "prayer", title: "Anima Christi",
     themes: ["health", "faith", "growth", "fear"],
     text: "Soul of Christ, sanctify me. Body of Christ, save me. Blood of Christ, inebriate me. Water from the side of Christ, wash me. Passion of Christ, strengthen me. O good Jesus, hear me. Within thy wounds hide me. Permit me not to be separated from thee. From the wicked foe defend me. At the hour of my death call me, and bid me come to thee, that with thy saints I may praise thee for ever and ever. Amen.",

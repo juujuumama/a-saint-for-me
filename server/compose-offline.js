@@ -58,7 +58,7 @@ export function composeOffline(checkin, context = {}, style) {
   const devotions = fillUp(pinned(intent?.devotions, DEVOTIONS), [...scoreBy(DEVOTIONS.filter((d) => d.kind === "prayer"), themes).slice(0, 1), ...scoreBy(DEVOTIONS.filter((d) => d.kind !== "prayer"), themes)], 3);
 
   // The prayer
-  const lead = saints[0];
+  let lead = saints[0];
   const feeling = themes.find((t) => FEELING_LINES[t] && !(intent?.themes || []).includes(t));
   const paras = [];
   if (intent) {
@@ -69,9 +69,13 @@ export function composeOffline(checkin, context = {}, style) {
     paras.push(`${rand(INVOCATIONS.self)} You know what is on my heart before I can find the words. I place before You ${named.join(", and ")}. Where I am weary, be my rest. Where I am afraid, be my courage. Where I cannot see the way, be my light.`);
   }
   if (feeling && !otherMode) paras[0] += " " + rand(FEELING_LINES[feeling]);
-  const hook = SAINT_HOOKS[lead.id];
+  // don't ask the same saint twice if the petition already names them
+  const shortName = (x) => x.name.replace(/\s*\(.*\)/, "").split(",")[0];
+  if (paras[0].includes(shortName(lead)) && saints[1]) lead = saints[1];
+  const hook = intent?.hooks?.[lead.id] || SAINT_HOOKS[lead.id];
   paras.push(`${lead.name.replace(/\s*\(.*\)/, "")}${hook ? `, ${hook},` : ","} pray for ${otherMode ? `${who} and for me` : "me"}.`);
-  paras.push(otherMode ? fill(rand(CLOSINGS.other), who) : rand(CLOSINGS.self));
+  const departed = otherMode && ["grief", "suicideloss"].includes(intent?.id);
+  paras.push(departed ? fill(rand(CLOSINGS.departed), who) : otherMode ? fill(rand(CLOSINGS.other), who) : rand(CLOSINGS.self));
   const body = paras.join("\n\n");
 
   const title = otherMode && intent?.titleOther ? fill(intent.titleOther, who) : intent ? rand(intent.title) : "A prayer for today";

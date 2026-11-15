@@ -6,6 +6,7 @@ const PATTERNS = [
   /\bdon'?t want to (live|be here)\b/i, /\bself[- ]?harm/i, /\bcut(ting)? myself\b/i,
   /\boverdos/i, /\bhurt(ing)? myself\b/i, /\bno reason to live\b/i,
   /\b(he|she|they) (hits|hit|beats|beat|hurts) me\b/i, /\bnot safe at home\b/i, /\babus(e|ing|ive)\b/i,
+  /\bafraid of my (husband|wife|boyfriend|girlfriend|partner|dad|father|mom|mother)\b/i, /\bdomestic violence\b/i, /\bthreaten(s|ed) (me|to)\b/i, /\b(hits|hit|beats|chokes|choked) me\b/i,
 ];
 
 export function needsCare(text = "") {

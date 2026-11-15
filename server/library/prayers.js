@@ -6,6 +6,69 @@
 
 export const INTENTS = [
   {
+    id: "abuse", themes: ["fear", "family"],
+    keywords: ["abuse", "abusive", "abused", "hits me", "hit me", "beats me", "chokes me", "not safe at home", "afraid of my husband", "afraid of my boyfriend", "afraid of my partner", "afraid of my wife", "domestic violence", "threatens me", "controlling", "he hurts me", "she hurts me"],
+    saints: ["rita", "bakhita", "michael"], scripture: ["ps27_10", "is41_10", "ps34_18"], devotions: ["st_michael", "memorare"],
+    title: ["A prayer for safety", "A prayer for courage and safety"],
+    opening: ["It is never God's will for you to be harmed. You deserve to be safe, and reaching out for help is right and good.", "What's happening is not your fault. Your safety matters more than keeping the peace."],
+    self: [
+      "Lord, You see what is happening to me, and You do not want me to be hurt. Protect me. Give me courage to tell someone I trust, wisdom to make a plan, and safe people and places to turn to. Free me from the lie that I deserve this, and lead me into safety and peace.",
+      "God my refuge, hide me in the shadow of Your wings. Surround me and anyone in my care with Your protection. Give me strength to take the next step toward safety, and let me never confuse Your will with someone else's control.",
+    ],
+    reflection: ["Reaching out is brave. The National Domestic Violence Hotline (1-800-799-7233) is free and confidential, any hour.", "You are not alone, and you are not to blame. Tell one safe person today."],
+  },
+  {
+    id: "suicideloss", themes: ["grief", "sadness"],
+    keywords: ["died by suicide", "took his own life", "took her own life", "took their own life", "killed himself", "killed herself", "lost to suicide", "committed suicide", "suicide loss"],
+    saints: ["monica", "elizabeth_seton", "dymphna"], scripture: ["rom8_38", "ps34_18", "rev21_4"], devotions: ["eternal_rest", "divine_mercy_chaplet", "rosary_seven_sorrows"],
+    title: ["A prayer after a suicide loss"],
+    titleOther: "A prayer for {who}",
+    opening: ["Losing someone to suicide brings a grief like no other. The Church does not despair for them, and neither should you.", "There is no shame here, only love and loss. God's mercy is deeper than we can imagine."],
+    openingOther: ["The Church prays for those who have taken their own lives and trusts in God's mercy. Let's pray for {who}.", "Nothing can separate {who} from the love of God. Let's entrust {them} to that love."],
+    self: [
+      "Merciful God, I am devastated and full of questions. The Church teaches that we should not despair of the salvation of those who have taken their own lives, for You can reach them in ways known to You alone. I entrust the one I love to Your mercy. Heal my guilt and my what-ifs, and hold me in this grief.",
+    ],
+    other: [
+      "Merciful God, I entrust {who} to You. You knew {their} pain better than anyone. In ways known to You alone, reach {them} with Your mercy and bring {them} into Your peace, where there is no more suffering. Heal the guilt and the what-ifs in me, and hold all of us who loved {them}.",
+      "Lord Jesus, nothing can separate {who} from Your love, not death, not despair, not the darkness {they} could not escape. Receive {them} gently. Comfort everyone who misses {them}, and let {their} memory be held in tenderness, not shame.",
+    ],
+    reflection: ["It wasn't your fault. Grief after suicide carries questions; you don't have to answer them alone. Consider a suicide-loss support group.", "Speak their name with love. Their life was more than how it ended."],
+  },
+  {
+    id: "dying", themes: ["grief", "health", "fear"], hooks: { joseph: "patron of a happy death" },
+    keywords: ["dying", "end of life", "last days", "hospice", "palliative", "won't make it", "not going to make it", "on a ventilator", "life support", "days to live", "weeks to live", "deathbed"],
+    saints: ["joseph", "raphael", "faustina"], scripture: ["ps23_1", "jn14_27", "ps116_15"], devotions: ["divine_mercy_chaplet", "anointing_sick", "anima_christi"],
+    title: ["A prayer for a peaceful death", "A prayer at the bedside"],
+    titleOther: "A prayer for {who} at the end of life",
+    opening: ["Keeping vigil is one of the holiest things we do for each other. God is in this room.", "These are tender, sacred days. Let's ask for peace."],
+    openingOther: ["Keeping vigil for {who} is a sacred act of love. Let's pray for {them} and for you.", "St. Joseph died in the arms of Jesus and Mary. Let's ask that kind of peace for {who}."],
+    self: [
+      "Lord Jesus, I am facing the end of my life, and I am afraid and also tired. Forgive me, hold me, and give me peace. Let me make my peace with the people I love, receive the sacraments, and rest in Your mercy. Into Your hands I commend my spirit.",
+    ],
+    other: [
+      "Lord Jesus, I entrust {who} to You in these last days. Ease {their} pain, calm {their} fears, and surround {them} with peace. Let {them} receive the sacraments and feel how loved {they} {are}. When the time comes, welcome {them} home, and comfort us who must say goodbye.",
+      "St. Joseph, patron of a happy death, pray for {who}. Lord, let {their} passing be gentle, free from fear and pain. Give us words of love and forgiveness while there is time, and the grace to let {them} go into Your arms.",
+    ],
+    reflection: ["Say what matters: thank you, I love you, I forgive you, please forgive me. Ask for a priest for the Anointing of the Sick.", "Presence is enough. You don't have to find perfect words."],
+  },
+  {
+    id: "sickchild", themes: ["parenting", "health", "fear"],
+    keywords: ["nicu", "picu", "pediatric", "children's hospital", "my child is sick", "my son is sick", "my daughter is sick", "my baby is sick", "special needs", "autism", "autistic", "down syndrome", "disability", "disabilities", "developmental delay", "seizures", "my son has", "my daughter has", "my child has", "my baby has"],
+    saints: ["gianna", "raphael", "martin_porres"], scripture: ["mk10_14", "is49_15", "is43_2"], devotions: ["memorare", "anointing_sick"],
+    title: ["A prayer for my child", "A prayer for a sick child"],
+    titleOther: "A prayer for {who}",
+    opening: ["Nothing shakes a parent like a child who is suffering. God holds your child even when you can't fix it.", "You are carrying so much. Let's bring your little one to Jesus."],
+    openingOther: ["Let's bring {who} to Jesus, who welcomed the little children.", "God loves {who} even more than you do. Let's place {them} in His arms."],
+    self: [
+      "Jesus, You welcomed the little children and laid Your hands on them. Lay Your hands on my child now. Heal, comfort and protect them. Guide their doctors and therapists, give me strength for the long days and nights, and let my child always know how fiercely they are loved.",
+    ],
+    other: [
+      "Jesus, You welcomed the little children and blessed them. Bless {who} now. Heal {their} body, comfort {their} fears, and give {them} peaceful rest. Guide everyone who cares for {them}, and give our family strength, patience and hope.",
+      "Loving Father, You made {who} exactly as {they} {are}, wonderfully and with purpose. Protect {them}, help {them} flourish, and surround {them} with people who see {their} gifts. Give me wisdom, endurance and joy as I love {them}.",
+    ],
+    reflection: ["Take care of yourself too. Rest when you can, and accept help when it's offered.", "Your child is a gift, not a problem to solve. Delight in one small thing about them today."],
+  },
+  {
     id: "cancer", themes: ["health", "fear"],
     keywords: ["cancer", "chemo", "tumor", "tumour", "biopsy", "radiation", "oncolog", "surgery", "operation", "diagnos", "scan results", "mri", "malignant"],
     saints: ["peregrine", "raphael", "padre_pio"], scripture: ["jer17_14", "is41_10"], devotions: ["anointing_sick", "divine_mercy_chaplet"],
@@ -62,7 +125,7 @@ export const INTENTS = [
   },
   {
     id: "grief", themes: ["grief"],
-    keywords: ["died", "passed away", "passed on", "funeral", "death of", "lost my mom", "lost my dad", "lost my mother", "lost my father", "lost my husband", "lost my wife", "lost my son", "lost my daughter", "lost my brother", "lost my sister", "lost my grandma", "lost my grandpa", "lost my friend", "grieving", "grief", "anniversary of", "miss her", "miss him", "cemetery", "wake", "hospice", "was killed"],
+    keywords: ["died", "passed away", "passed on", "funeral", "death of", "lost my mom", "lost my dad", "lost my mother", "lost my father", "lost my husband", "lost my wife", "lost my son", "lost my daughter", "lost my brother", "lost my sister", "lost my grandma", "lost my grandpa", "lost my friend", "grieving", "grief", "anniversary of", "miss her", "miss him", "cemetery", "was killed"],
     saints: ["elizabeth_seton", "monica", "zelie_louis"], scripture: ["jn11_35", "rev21_4", "wis3_1"], devotions: ["eternal_rest", "rosary_glorious", "hail_holy_queen"],
     title: ["A prayer in grief", "A prayer for comfort", "A prayer of remembrance"],
     titleOther: "A prayer for {who}",
@@ -79,7 +142,7 @@ export const INTENTS = [
     reflection: ["Love does not end. The ones we have lost are held in the same hands that hold us.", "You may carry this for a long while. You will not carry it alone."],
   },
   {
-    id: "babyloss", themes: ["grief", "motherhood"],
+    id: "babyloss", themes: ["grief", "motherhood"], hooks: { gianna: "who gave her life for her child" },
     keywords: ["miscarriage", "miscarried", "stillbirth", "stillborn", "lost the baby", "lost our baby", "lost my baby", "pregnancy loss", "no heartbeat"],
     saints: ["zelie_louis", "gianna", "elizabeth_seton"], scripture: ["ps34_18", "is49_15", "rev21_4"], devotions: ["memorare", "rosary_seven_sorrows"],
     title: ["A prayer after losing a baby", "A prayer for a little one"],
@@ -93,7 +156,7 @@ export const INTENTS = [
   {
     id: "pregnancy", themes: ["motherhood", "hope"],
     keywords: ["pregnant", "expecting", "due date", "labor", "delivery", "c-section", "baby on the way", "trimester", "giving birth", "ultrasound"],
-    saints: ["gianna", "anne", "perpetua_felicity"], scripture: ["ps139_13", "lk1_46", "is49_15"], devotions: ["rosary_joyful", "memorare"],
+    saints: ["gerard", "gianna", "anne"], scripture: ["ps139_13", "lk1_46", "is49_15"], devotions: ["rosary_joyful", "memorare"],
     title: ["A prayer for a mother-to-be", "A prayer for a safe delivery"],
     titleOther: "A prayer for {who} and the baby",
     opening: ["New life is a holy and nerve-wracking thing. Let's bring you and your baby to God.", "What a gift to carry. Let's pray for you both."],
@@ -137,8 +200,8 @@ export const INTENTS = [
     reflection: ["Your job is to love; God's is to draw. Rest in that division of labor today.", "Augustine's mother never stopped praying. Neither should you."],
   },
   {
-    id: "parenting", themes: ["parenting", "family"],
-    keywords: ["my son", "my daughter", "my kids", "my children", "my child", "my teen", "my toddler", "my baby", "parenting", "as a mom", "as a dad", "being a mom", "being a parent", "single mom", "single dad", "custody"],
+    id: "parenting", themes: ["parenting", "family"], hooks: { joseph: "who raised Jesus with tenderness" },
+    keywords: ["~my son", "~my daughter", "~my kids", "~my children", "~my child", "~my teen", "~my toddler", "~my baby", "parenting", "as a mom", "as a dad", "being a mom", "being a parent", "single mom", "single dad", "custody"],
     saints: ["joseph", "monica", "anne"], scripture: ["is66_13", "ps139_13", "prov3_5"], devotions: ["rosary_joyful", "novena_st_joseph"],
     title: ["A prayer for my children", "A prayer for a tired parent"],
     opening: ["Parenting is holy work that rarely feels holy in the moment. You're doing more than you know.", "God loves your children even more than you do. Let's bring them to Him."],
@@ -150,7 +213,7 @@ export const INTENTS = [
   },
   {
     id: "marriage", themes: ["marriage", "relationships"],
-    keywords: ["my marriage", "my husband", "my wife", "divorce", "separated", "separation", "we fight", "fighting", "cheated", "affair", "unfaithful", "counseling", "marriage"],
+    keywords: ["my marriage", "~my husband", "~my wife", "divorce", "separated", "separation", "we fight", "fighting", "cheated", "affair", "unfaithful", "counseling", "marriage"],
     saints: ["rita", "zelie_louis", "thomas_more"], scripture: ["1cor13_4", "col3_13"], devotions: ["rosary_luminous", "peace_prayer"],
     title: ["A prayer for my marriage", "A prayer for healing in marriage"],
     opening: ["Marriage can carry deep wounds and deep grace at the same time. Let's bring yours to God.", "You're not alone in this. Christ was present at the wedding at Cana, and He's present now."],
@@ -197,7 +260,7 @@ export const INTENTS = [
     reflection: ["Do the next small thing: one application, one email, one conversation. Then rest.", "Your worth was settled before you ever had a job. It isn't up for review."],
   },
   {
-    id: "money", themes: ["finances", "anxiety"],
+    id: "money", themes: ["finances", "anxiety"], hooks: { joseph: "who provided for the Holy Family" },
     keywords: ["money", "rent", "bills", "debt", "afford", "evict", "mortgage", "broke", "paycheck", "food stamps", "can't pay", "financial", "overdraft"],
     saints: ["cajetan", "joseph", "anthony"], scripture: ["phil4_19", "mt6_26"], devotions: ["novena_st_joseph", "act_of_hope"],
     title: ["A prayer for provision", "A prayer in financial hardship"],
@@ -239,7 +302,7 @@ export const INTENTS = [
   },
   {
     id: "exam", themes: ["work", "anxiety"],
-    keywords: ["exam", "finals", "midterm", "a test", "my test", "studying", "bar exam", "boards", "grades", "college application", "school"],
+    keywords: ["exam", "finals", "midterm", "a test", "my test", "studying", "bar exam", "boards", "grades", "college application", "~school"],
     saints: ["ignatius", "thomas_more", "therese"], scripture: ["jas1_5", "phil4_6"], devotions: ["jesus_prayer", "teresa_bookmark"],
     title: ["A prayer before an exam", "A prayer for school"],
     opening: ["You've prepared more than you think. Let's quiet your nerves.", "Bring your studying and your stress to God. He cares about both."],
@@ -339,6 +402,110 @@ export const INTENTS = [
     reflection: ["Choose one thing to let go of today. The world will keep turning.", "Pray, hope, and don't worry. Padre Pio's advice still works."],
   },
   {
+    id: "prison", themes: ["family", "fear", "hope"], hooks: { joseph: "who protected his family through danger" },
+    keywords: ["prison", "jail", "incarcerat", "locked up", "arrested", "court date", "trial", "sentencing", "probation", "parole", "my lawyer", "legal trouble", "charged with", "lawsuit"],
+    saints: ["dismas", "joseph", "jude"], scripture: ["mt25_36", "lk23_43", "is41_10"], devotions: ["divine_mercy_chaplet", "memorare"],
+    title: ["A prayer in legal trouble", "A prayer before court"],
+    titleOther: "A prayer for {who}",
+    opening: ["Whatever happened, God's mercy reaches every cell and courtroom. You're not beyond it.", "Legal trouble brings fear and shame. Let's bring it honestly to God."],
+    openingOther: ["Jesus said, 'I was in prison and you came to me.' Your prayers for {who} matter.", "Let's pray for {who}, and for you as you love {them} through this."],
+    self: [
+      "Lord, I am afraid of what is coming. Be with me in every meeting and courtroom. Give me honesty, courage and a fair hearing. Where I have done wrong, help me take responsibility and make amends; where I am wronged, defend me. Whatever happens, let me know I am still Your child.",
+    ],
+    other: [
+      "Lord, You were arrested, judged and condemned, so You know this road. Be with {who}. Protect {them} from harm, give {them} hope and dignity, and let {them} feel Your mercy. Bring justice tempered with mercy, and keep our family connected and faithful while we're apart.",
+      "St. Dismas, who found mercy beside Jesus, pray for {who}. Lord, meet {them} where {they} {are}. Soften what needs softening, heal what's broken, and give {them} a future full of hope.",
+    ],
+    reflection: ["No one is defined by their worst moment. Mercy is bigger than any record.", "Write a letter, make a visit, or simply pray their name today."],
+  },
+  {
+    id: "immigration", themes: ["family", "fear", "loneliness"],
+    keywords: ["immigra", "deport", " visa", "green card", "asylum", "citizenship", " ice ", "the border", "undocumented", "my papers", "refugee", "far from home", "far from my family"],
+    saints: ["cabrini", "joseph", "raphael"], scripture: ["lev19_34", "dt31_6", "heb13_5"], devotions: ["memorare", "novena_st_joseph"],
+    title: ["A prayer for immigrants and families", "A prayer far from home"],
+    titleOther: "A prayer for {who}",
+    opening: ["The Holy Family were refugees too. God knows what it is to be far from home.", "Your fear and your hope are both welcome here."],
+    openingOther: ["The Holy Family fled to Egypt as refugees. Let's pray for {who} under their protection.", "Let's ask St. Frances Cabrini, mother of immigrants, to pray for {who}."],
+    self: [
+      "Lord, You were once a refugee in Egypt with Mary and Joseph. You know this fear and this longing for home. Protect me and my family. Open doors for our papers and our future, give us people who will treat us with dignity, and keep us together in Your care.",
+    ],
+    other: [
+      "Lord, Holy Family who fled to Egypt, watch over {who}. Protect {them} on every road and in every office and courtroom. Give {them} dignity, safety and a fair hearing, and reunite families who are apart.",
+    ],
+    reflection: ["You carry a whole history and a whole family with you. That is strength, not weakness.", "God sets the lonely in families. Look for the community that welcomes you."],
+  },
+  {
+    id: "selfworth", themes: ["growth", "sadness"],
+    keywords: ["not good enough", "hate myself", "hate my body", "body image", "i'm ugly", "im ugly", "worthless", "not enough", "insecure", "compare myself", "self-esteem", "self esteem", "my weight", "feel like a failure", "unlovable"],
+    saints: ["therese", "bernadette", "mary_magdalene"], scripture: ["ps139_13", "eph2_10", "1sam16_7"], devotions: ["litany_humility", "memorare"],
+    title: ["A prayer for self-worth", "A prayer to see myself as God does"],
+    opening: ["The voice telling you you're not enough is not God's voice.", "You are fearfully and wonderfully made, on your hardest days too."],
+    self: [
+      "Lord, I keep telling myself I'm not enough: not pretty enough, smart enough, good enough. Quiet that voice. Let me see myself the way You see me, as Your beloved, made on purpose and with love. Heal the wounds that taught me to doubt my worth, and help me treat myself with the kindness I'd give a friend.",
+      "Creator God, You formed me and called it good. Free me from comparison and from the mirror's judgment. Remind me that You look at the heart, and that my worth was settled the moment You made me.",
+    ],
+    reflection: ["Speak to yourself today the way you'd speak to someone you love.", "Your worth isn't earned or lost. It was given."],
+  },
+  {
+    id: "friendship", themes: ["relationships", "family", "sadness"],
+    keywords: ["falling out", "fell out", "estranged", "not speaking", "don't talk anymore", "cut me off", "cut off contact", "friendship", "lost a friend", "my best friend and i", "my sister and i", "my brother and i", "family drama", "family conflict", "won't talk to me"],
+    saints: ["rita", "francis", "therese"], scripture: ["prov17_17", "col3_13", "mt5_9"], devotions: ["peace_prayer", "litany_humility"],
+    title: ["A prayer for a broken relationship", "A prayer for reconciliation"],
+    opening: ["Distance from someone you love is its own grief. Let's bring it to God.", "Relationships can break and heal. Let's ask for wisdom and peace."],
+    self: [
+      "Lord, there's a distance between me and someone I love, and it hurts. Show me my part in it honestly. Give me the humility to apologize where I need to, the courage to reach out if it's right, and the peace to wait if it isn't. Heal what can be healed, and help me release what I can't control.",
+      "Jesus, peacemaker, bless this broken relationship. Soften both our hearts, help us listen, and if reconciliation comes, let it be real. If it doesn't, help me carry the love without the bitterness.",
+    ],
+    reflection: ["You can only do your part. Pray for them by name today.", "Forgiveness and reconciliation aren't the same. Both are worth praying for."],
+  },
+  {
+    id: "pet", themes: ["grief", "sadness"],
+    keywords: ["my dog", "my cat", "my pet", "put down", "put to sleep", "euthan", "the vet", "my puppy", "my kitten", "my horse", "rainbow bridge"],
+    saints: ["francis", "anthony", "kateri"], scripture: ["ps145_9", "ps34_18"], devotions: ["glory_be", "memorare"],
+    title: ["A prayer for a beloved animal", "A prayer after losing a pet"],
+    opening: ["Grief for an animal you loved is real grief. Their love was a gift from God.", "St. Francis called the animals his brothers and sisters. Your love for yours matters."],
+    self: [
+      "Creator God, thank You for the gift of my companion: the loyalty, the comfort, the joy they brought into my days. My heart hurts. Hold my grief, and let me remember them with gratitude. Your tender mercies are over all Your works.",
+      "Lord, You made every creature and called it good. I'm worried about my animal and I love them so much. Ease their pain, guide their care, and give me the wisdom and courage to do what is kind.",
+    ],
+    reflection: ["Let yourself grieve. Love doesn't come in sizes.", "Tell a favorite story about them to someone today."],
+  },
+  {
+    id: "lostthing", themes: ["confusion", "hope"],
+    keywords: ["lost my keys", "lost my wallet", "lost my phone", "lost my ring", "lost my purse", "lost my passport", "can't find my", "cant find my", "cannot find my", "misplaced", "lost something"],
+    saints: ["anthony", "jude", "joseph"], scripture: ["lk15_8", "mt7_7"], devotions: ["st_anthony_lost", "glory_be"],
+    title: ["A prayer to St. Anthony", "A prayer for something lost"],
+    opening: ["St. Anthony to the rescue. Take a breath; it helps you look, too.", "Even small worries are welcome in prayer."],
+    self: [
+      "St. Anthony, friend of the poor and finder of lost things, please help me find what I've lost. Lord, calm my frustration, clear my mind, and guide my eyes and hands. And help me remember that what matters most can never be lost in You.",
+    ],
+    reflection: ["Retrace your steps slowly. Peace helps you see.", "When you find it, say thank you, and maybe give a little to the poor, as St. Anthony's friends do."],
+  },
+  {
+    id: "milestone", themes: ["gratitude", "faith", "family"],
+    keywords: ["baptism", "baptized", "christening", "first communion", "confirmation", "getting married", "our wedding", "my wedding", "ordination", "new home", "new house", "moving into", "birthday", "graduat", "rcia", "ocia", "becoming catholic", "entering the church", "new job starts", "anniversary"],
+    saints: ["joseph", "zelie_louis", "therese"], scripture: ["josh24_15", "ps118_24", "jer29_11"], devotions: ["gratitude_te_deum", "glory_be", "rosary_joyful"],
+    title: ["A prayer for a new beginning", "A prayer of blessing", "A prayer for a special day"],
+    opening: ["What a beautiful moment to mark with prayer. Let's ask God's blessing on it.", "Milestones are holy. Let's celebrate this one with God."],
+    self: [
+      "Lord, thank You for bringing us to this day. Bless this new beginning and everyone it touches. Fill it with Your grace and joy, protect it in the years ahead, and help us remember this moment when life gets ordinary or hard.",
+      "Holy Spirit, come and bless this milestone. Pour Your gifts on everyone gathered, deepen our faith and our love, and let this day be the start of something good and lasting.",
+    ],
+    reflection: ["Write down what you're grateful for today. You'll treasure it later.", "As for me and my house, we will serve the Lord. Let that be your blessing."],
+  },
+  {
+    id: "world", themes: ["peace", "anger", "hope"],
+    keywords: [" war", "wars", "peace in", "the world", "injustice", "racism", "racist", "shooting", "violence in", "refugees", "the news", "election", "our country", "persecut", "famine", "disaster"],
+    saints: ["martin_porres", "katharine_drexel", "francis"], scripture: ["mt5_9", "amos5_24", "jn14_27"], devotions: ["peace_prayer", "rosary_glorious"],
+    title: ["A prayer for peace", "A prayer for justice"],
+    opening: ["When the world feels broken, prayer is not nothing. It's where change begins.", "Let's carry the world's pain to God, and ask what our part is."],
+    self: [
+      "Prince of Peace, look upon our wounded world. Comfort everyone suffering from war, violence and injustice. Turn hearts from hatred, give wisdom to those who lead, and protect the vulnerable. Make me an instrument of Your peace in my own small corner, and show me how to help.",
+      "God of justice, let justice roll down like waters. Heal the wounds of racism and division, give courage to peacemakers, and keep me from despair or indifference. Help me love my neighbor, especially the one who is different from me.",
+    ],
+    reflection: ["Do one small, concrete act of peace or justice today.", "Peace starts close to home: in a word, a choice, a kindness."],
+  },
+  {
     id: "gratitude", themes: ["gratitude"],
     keywords: ["thank", "grateful", "blessed", "celebrat", "good news", "answered prayer", "got engaged", "got married", "promotion", "got the job", "healed", "baby was born", "anniversary"],
     saints: ["francis", "therese", "katharine_drexel"], scripture: ["ps118_24", "1thes5_16", "lk1_46"], devotions: ["gratitude_te_deum", "glory_be"],
@@ -367,6 +534,7 @@ export const SAINT_HOOKS = {
   thomas_apostle: "who brought his doubts to Jesus", anthony: "friend of the poor", faustina: "apostle of Divine Mercy",
   kateri: "who found God in a lonely path", michael: "defender and protector", raphael: "angel of healing and safe journeys",
   gabriel: "who said, 'Do not be afraid'", guardian_angel: "who never leaves my side",
+  dismas: "who received mercy at the last hour", cabrini: "mother of immigrants", gerard: "patron of mothers and babies",
 };
 
 // Lines for feelings mentioned alongside the main intention (first person).
@@ -387,6 +555,11 @@ export const INVOCATIONS = {
 };
 
 export const CLOSINGS = {
+  departed: [
+    "Comfort me in the missing, Lord, until we meet again.",
+    "Let my love for {them} become prayer, today and always.",
+    "Eternal rest grant unto {them}, O Lord, and let perpetual light shine upon {them}.",
+  ],
   self: [
     "Stay close to me today, Lord, and let me feel that I am held.",
     "I place all of this in Your hands. Give me peace for today.",
@@ -416,7 +589,7 @@ export function detectWho(text = "", intentId) {
   const m = text.match(RELATION);
   if (!m) return "";
   const forSomeone = /\bpray(ing)? for (my|her|him|them|our)\b/i.test(text);
-  const theirStory = ["cancer", "illness", "faithchild", "grief", "protection", "pregnancy", "addiction", "mental"].includes(intentId);
+  const theirStory = ["cancer", "illness", "faithchild", "grief", "protection", "pregnancy", "addiction", "mental", "dying", "sickchild", "prison", "immigration", "suicideloss"].includes(intentId);
   // "my husband left me" is the speaker's story, not a prayer for him
   const selfStory = /\b(left me|cheated on me|hurt me|lied to me|broke up with me)\b/i.test(text);
   return (forSomeone || theirStory) && !selfStory ? `my ${m[1].toLowerCase()}` : "";
@@ -426,7 +599,8 @@ export function detectIntent(text = "", themes = []) {
   const t = ` ${text.toLowerCase()} `;
   let best = null;
   for (const it of INTENTS) {
-    const hits = it.keywords.filter((k) => t.includes(k)).length;
+    // keywords starting with "~" are generic ("my son") and count for less than specific ones ("jail")
+    const hits = it.keywords.reduce((n, k) => (k.startsWith("~") ? (t.includes(k.slice(1)) ? n + 0.5 : n) : t.includes(k) ? n + 1 : n), 0);
     if (hits && (!best || hits > best.hits)) best = { it, hits };
   }
   if (best) return best.it;

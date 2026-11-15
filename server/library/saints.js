@@ -415,6 +415,42 @@ export const SAINTS = [
     themes: ["loneliness", "health", "faith", "peace", "grief"],
     emblem: { symbols: ["lily", "cross"], colors: ["#1FC8C0", "#FF7A1A"] },
   },
+  {
+    id: "dismas",
+    name: "St. Dismas, the Good Thief",
+    years: "1st century",
+    feast: "March 25 (traditional)",
+    region: "Jerusalem",
+    patronages: ["prisoners", "people facing trial", "those who turn to God late"],
+    story:
+      "One of the two men crucified beside Jesus. Tradition gives him the name Dismas. While the other mocked, he admitted his wrongs and asked, \"Jesus, remember me when you come into your Kingdom,\" and heard the promise, \"Today you will be with me in Paradise.\" No one is beyond mercy.",
+    themes: ["growth", "faith", "hope", "fear"],
+    emblem: { symbols: ["cross"], colors: ["#7A1F2B", "#FFC9A8"] },
+  },
+  {
+    id: "cabrini",
+    name: "St. Frances Xavier Cabrini",
+    years: "1850–1917",
+    feast: "November 13 (US)",
+    region: "Lombardy, Italy; New York and Chicago, USA",
+    patronages: ["immigrants", "hospital administrators", "those far from home"],
+    story:
+      "An Italian sister who founded the Missionary Sisters of the Sacred Heart and, at Pope Leo XIII's urging, went to New York in 1889 to serve Italian immigrants. Despite poor health and a fear of water, she crossed the ocean many times and founded schools, orphanages and hospitals. She was the first US citizen to be canonized.",
+    themes: ["family", "loneliness", "work", "hope", "fear"],
+    emblem: { symbols: ["heart", "water"], colors: ["#24305E", "#FF6F61"] },
+  },
+  {
+    id: "gerard",
+    name: "St. Gerard Majella",
+    years: "1726–1755",
+    feast: "October 16",
+    region: "Southern Italy",
+    patronages: ["expectant mothers", "childbirth", "unborn children"],
+    story:
+      "A Redemptorist lay brother known for his joy, his care for the poor and the many wonders attributed to him. Shortly before he died, he left his handkerchief with a family; years later it was brought to a woman in a dangerous labor, and she and her baby survived. Mothers have asked his prayers ever since.",
+    themes: ["motherhood", "health", "hope"],
+    emblem: { symbols: ["lily", "cross"], colors: ["#FFC9A8", "#1FC8C0"] },
+  },
   // Angels: shown with wings (saints get halos only). The archangels are honored with the saints.
   {
     id: "michael",

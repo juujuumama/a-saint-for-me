@@ -257,6 +257,7 @@ const SAINT_FIG = {
   peregrine: ["mlight", "hood"], bernadette: ["mlight", "veil"], elizabeth_seton: ["light", "veil"], ignatius: ["mlight", "short"],
   francis: ["mlight", "hood"], mary_magdalene: ["medium", "long"], thomas_apostle: ["medium", "short"], anthony: ["mlight", "hood"],
   faustina: ["light", "veil"], kateri: ["brown", "long"],
+  dismas: ["medium", "short"], cabrini: ["light", "veil"], gerard: ["light", "short"],
   // angels have no ethnicity; the artist's palette of tones and styles rotates
   michael: ["*", "curls"], raphael: ["*", "long"], gabriel: ["*", "curls"], guardian_angel: ["*", "long"],
 };
