@@ -73,7 +73,7 @@ async function renderHome() {
   <form class="checkin" id="checkin" novalidate>
     <label class="sr-only" for="text">What's on your heart today?</label>
     <div class="speak-wrap">
-      <textarea id="text" maxlength="2000" placeholder="Tell it the way you'd tell a friend: type, or tap the mic and speak. We'll find the saints and prayers for it."></textarea>
+      <textarea id="text" maxlength="2000" placeholder="Type or tap the mic to share what's going on."></textarea>
       <button type="button" class="mic" id="mic" aria-label="Speak instead of typing" aria-pressed="false" hidden>
         <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       </button>
