@@ -473,6 +473,34 @@
       "h": 450,
       "tone": "light",
       "pres": "fem"
+    },
+    {
+      "file": "face-robot-014.jpg",
+      "w": 360,
+      "h": 450,
+      "tone": "robot",
+      "pres": "any"
+    },
+    {
+      "file": "face-robot-036.jpg",
+      "w": 360,
+      "h": 450,
+      "tone": "robot",
+      "pres": "any"
+    },
+    {
+      "file": "face-robot-044.jpg",
+      "w": 360,
+      "h": 450,
+      "tone": "robot",
+      "pres": "any"
+    },
+    {
+      "file": "face-robot-086.jpg",
+      "w": 360,
+      "h": 450,
+      "tone": "robot",
+      "pres": "any"
     }
   ]
 }

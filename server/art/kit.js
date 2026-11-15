@@ -29,7 +29,9 @@ function rng(seed) {
 // (tone and presentation), then presentation, then any portrait (artistic interpretation).
 export function faceCandidates(faces = [], saint) {
   if (!faces.length) return [];
+  // Angels: about half the time one of the artist's robot faces, otherwise any portrait.
   if (!saint || saint.kind === "angel") return faces;
+  faces = faces.filter((fc) => fc.tone !== "robot");
   const [tone, pres] = SAINT_META[saint.id] || ["none", "any"];
   const presOk = (fc) => fc.pres === "any" || pres === "any" || fc.pres === pres;
   const exact = faces.filter((fc) => fc.tone === tone && presOk(fc));
@@ -53,7 +55,9 @@ export function pickKit(manifest, { themes = [], seed = 1, saint = null } = {}) 
   const wing = pick([...role("crystal"), ...role("robe")], [crystal, robe, mantle]);
   const paint = pick(role("paint"));
   const faces = faceCandidates(manifest.faces, saint);
-  const face = faces.length ? faces[Math.floor(r() * faces.length)] : null;
+  const robots = faces.filter((fc) => fc.tone === "robot");
+  const pool = saint?.kind === "angel" && robots.length && r() < 0.5 ? robots : faces.filter((fc) => fc.tone !== "robot");
+  const face = pool.length ? pool[Math.floor(r() * pool.length)] : null;
   return { bg, robe, mantle, crystal, wing, paint, face };
 }
 

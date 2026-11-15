@@ -72,6 +72,11 @@ const FACES = [
   { n: 129, fx: 0.5, eye: 0.45, chin: 0.67, tone: "dark", pres: "masc" },
   { n: 134, fx: 0.73, eye: 0.24, chin: 0.42, tone: "medium", pres: "fem" },
   { n: 135, fx: 0.5, eye: 0.25, chin: 0.4, tone: "light", pres: "fem" },
+  // robot faces: used for angels only
+  { n: 14, fx: 0.62, eye: 0.19, chin: 0.27, tone: "robot", pres: "any" },
+  { n: 36, fx: 0.65, eye: 0.2, chin: 0.3, tone: "robot", pres: "any" },
+  { n: 44, fx: 0.57, eye: 0.22, chin: 0.35, tone: "robot", pres: "any" },
+  { n: 86, fx: 0.43, eye: 0.21, chin: 0.33, tone: "robot", pres: "any" },
 ];
 // Head oval is 0.8 wide : 1 tall. Eyes sit at 47% of its height, chin at 87%,
 // so every face lands in the same place under a veil, hood or halo.
@@ -94,7 +99,7 @@ async function get(entry, kind, width, quality) {
   const [, W, H] = url.match(/-(\d+)x(\d+)\./).map(Number);
   const [cx, cy, cw, ch] = entry.eye ? faceCrop(entry, W, H) : entry.crop || [0, 0, 1, 1];
   const rect = [Math.round(cx * W), Math.round(cy * H), Math.round(cw * W), Math.round(ch * H)].join(",");
-  const file = `${kind}-${String(entry.n).padStart(3, "0")}.jpg`;
+  const file = `${kind}${entry.tone === "robot" ? "-robot" : ""}-${String(entry.n).padStart(3, "0")}.jpg`;
   const res = await fetch(`${url}?rect=${rect}&w=${width}&fm=jpg&q=${quality}`);
   if (!res.ok) throw new Error(`${file}: ${res.status}`);
   fs.writeFileSync(path.join(OUT, file), Buffer.from(await res.arrayBuffer()));
