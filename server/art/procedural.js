@@ -329,7 +329,8 @@ function saintFigure(saint, cx, hy, R, H, r, P) {
 }
 
 // ---------- main ----------
-export function proceduralArtwork({ brief, themes = [], seed = Date.now(), aspect = "portrait", words = [], saint = null, style }) {
+export function proceduralArtwork({ brief, themes = [], seed = Date.now(), aspect = "portrait", words = [], saint = null, style, kit = null }) {
+  if (kit?.bg?.href) return kitArtwork({ themes, seed, aspect, words, saint, style, kit });
   const P = palette(style);
   const r = rng(seed);
   const W = 1024, H = aspect === "square" ? 1024 : 1536;
@@ -472,6 +473,109 @@ export function proceduralArtwork({ brief, themes = [], seed = Date.now(), aspec
   L.push(`<rect width="${W}" height="${H}" fill="#fff" filter="url(#paper)" opacity=".9" style="mix-blend-mode:multiply"/>`);
 
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">${defs(P, r)}${L.join("")}</svg>`;
+}
+
+
+// ---------- Collage from the artist's kit (her own work, cut and layered) ----------
+// kit = pickKit(...) result where each piece also carries `href` (a data: URI).
+function kitArtwork({ themes = [], seed, aspect = "portrait", words = [], saint = null, style, kit }) {
+  const P = palette(style), r = rng(seed);
+  const W = 1024, H = aspect === "square" ? 1024 : 1536;
+  const cx = W / 2, hy = H * (aspect === "square" ? 0.3 : 0.29), R = W * (aspect === "square" ? 0.078 : 0.094);
+  const defsExtra = [], L = [];
+  let n = 0;
+  // A texture tile, repeated like fabric; `slice` fills one box (for halos and faces).
+  const tile = (piece, scale) => { const id = `k${n++}`; const w = piece.w * scale, h = piece.h * scale; defsExtra.push(`<pattern id="${id}" patternUnits="userSpaceOnUse" width="${f(w)}" height="${f(h)}" patternTransform="rotate(${f((r() - 0.5) * 30)})"><image href="${piece.href}" width="${f(w)}" height="${f(h)}" preserveAspectRatio="xMidYMid slice"/></pattern>`); return `url(#${id})`; };
+  const slice = (piece, x, y, w, h) => { const id = `k${n++}`; defsExtra.push(`<pattern id="${id}" patternUnits="userSpaceOnUse" x="${f(x)}" y="${f(y)}" width="${f(w)}" height="${f(h)}"><image href="${piece.href}" width="${f(w)}" height="${f(h)}" preserveAspectRatio="xMidYMid slice"/></pattern>`); return `url(#${id})`; };
+  const CUT = `stroke="#FBF6EC" stroke-width="5" stroke-linejoin="round"`;
+
+  // 1. Her artwork as the ground
+  L.push(`<image href="${kit.bg.href}" width="${W}" height="${H}" preserveAspectRatio="xMidYMid slice"/>`);
+  L.push(`<rect width="${W}" height="${H}" fill="#24163A" opacity=".12"/>`);
+
+  // 2. Sometimes a torn flood of her paint rises from below
+  if (r() < 0.55) {
+    const top = H * (0.74 + r() * 0.06), pts = [[-20, H + 20], [-20, top + 30]];
+    for (let i = 0; i <= 10; i++) pts.push([(W * i) / 10, top + (r() - 0.5) * 90]);
+    pts.push([W + 20, top + 20], [W + 20, H + 20]);
+    L.push(`<path d="${tornPoly(pts, r, 20)}" fill="${tile(kit.paint, 1.9)}" ${CUT} filter="url(#shadow)"/>`);
+  }
+
+  const figure = [];
+  if (saint) {
+    const angel = saint.kind === "angel";
+    const [, head] = SAINT_FIG[saint.id] || ["medium", "short"];
+    const isVeil = head === "veil" || head === "veilWhite", hasFace = Boolean(kit.face);
+    const Rh = R * 1.3, by = hy + Rh * 1.12, bottom = H + 30, sw = R * (angel ? 2.3 : 2.75);
+    const skin = TONE[(SAINT_FIG[saint.id] || [])[0]] || "#8A5A3C";
+
+    // 3. Halo cut from her crystals, with lead lines like stained glass
+    const hr = Rh * 2.0;
+    if (r() < 0.45) { let rays = ""; for (let i = 0; i < 32; i++) { const a = (i / 32) * Math.PI * 2, l = i % 2 ? hr * 1.45 : hr * 1.22; rays += `<path d="M${f(cx + Math.cos(a - 0.045) * hr * 0.8)},${f(hy + Math.sin(a - 0.045) * hr * 0.8)} L${f(cx + Math.cos(a) * l)},${f(hy + Math.sin(a) * l)} L${f(cx + Math.cos(a + 0.045) * hr * 0.8)},${f(hy + Math.sin(a + 0.045) * hr * 0.8)}Z" fill="${i % 2 ? P.gold : "#F2D27A"}"/>`; } figure.push(`<g filter="url(#shadow)">${rays}</g>`); }
+    let lead = "";
+    for (let i = 0; i < 12; i++) { const a = (i / 12) * Math.PI * 2; lead += `<path d="M${f(cx + Math.cos(a) * hr * 0.55)},${f(hy + Math.sin(a) * hr * 0.55)} L${f(cx + Math.cos(a) * hr)},${f(hy + Math.sin(a) * hr)}" stroke="#140F1F" stroke-opacity=".55" stroke-width="3"/>`; }
+    figure.push(`<path d="${tornCircle(cx, hy, hr, r, 9)}" fill="${slice(kit.crystal, cx - hr, hy - hr, hr * 2, hr * 2)}" ${CUT} filter="url(#shadow)"/>${lead}<circle cx="${f(cx)}" cy="${f(hy)}" r="${f(hr * 0.55)}" fill="none" stroke="#140F1F" stroke-opacity=".5" stroke-width="3"/><circle cx="${f(cx)}" cy="${f(hy)}" r="${f(hr - 6)}" fill="none" stroke="${P.gold}" stroke-width="7"/>`);
+
+    // 4. Wings (angels only): feathers cut from her textures
+    if (angel) {
+      const wingFill = tile(kit.wing, 1.1); let o = "";
+      for (const side of [-1, 1]) {
+        const ox = cx + side * R * 1.4, sy = by + R * 0.2;
+        [[R * 5.4, wingFill, 11], [R * 4.0, "url(#iri)", 9], [R * 2.7, "#FBF6EC", 8]].forEach(([len, fill, cnt]) => {
+          for (let i = 0; i < cnt; i++) {
+            const a = (-172 + (i / (cnt - 1)) * 125) * (Math.PI / 180), ang = side < 0 ? a : Math.PI - a;
+            const l = len * (0.75 + 0.25 * Math.sin((i / (cnt - 1)) * Math.PI)) * (0.9 + r() * 0.15);
+            const ex = ox + Math.cos(ang) * l, ey = sy + Math.sin(ang) * l * 0.85, nx = -Math.sin(ang) * R * 0.42, ny = Math.cos(ang) * R * 0.42;
+            o += `<path d="M${f(ox)},${f(sy)} Q${f((ox + ex) / 2 + nx)},${f((sy + ey) / 2 + ny)} ${f(ex)},${f(ey)} Q${f((ox + ex) / 2 - nx)},${f((sy + ey) / 2 - ny)} ${f(ox)},${f(sy)}Z" fill="${fill}" stroke="#FBF6EC" stroke-width="3"/>`;
+          }
+        });
+      }
+      figure.unshift(`<g filter="url(#shadow)">${o}</g>`);
+    }
+
+    // 5. Veil / hood behind the head
+    const veilC = head === "veilWhite" ? "#FBF8F2" : ["#1E1A2E", "#24305E", "#3B2A55"][Math.floor(r() * 3)];
+    if (isVeil) figure.push(`<path d="M${f(cx - Rh * 1.08)},${f(hy - Rh * 0.2)} C${f(cx - Rh * 1.18)},${f(hy - Rh * 1.5)} ${f(cx + Rh * 1.18)},${f(hy - Rh * 1.5)} ${f(cx + Rh * 1.08)},${f(hy - Rh * 0.2)} L${f(cx + Rh * 1.65)},${f(by + Rh * 1.5)} L${f(cx - Rh * 1.65)},${f(by + Rh * 1.5)}Z" fill="${veilC}" ${CUT} filter="url(#shadow)"/><path d="M${f(cx - Rh * 1.08)},${f(hy - Rh * 0.2)} C${f(cx - Rh * 1.18)},${f(hy - Rh * 1.5)} ${f(cx + Rh * 1.18)},${f(hy - Rh * 1.5)} ${f(cx + Rh * 1.08)},${f(hy - Rh * 0.2)} L${f(cx + Rh * 1.65)},${f(by + Rh * 1.5)} L${f(cx - Rh * 1.65)},${f(by + Rh * 1.5)}Z" fill="url(#halftone)" opacity=".35"/>`);
+    if (head === "hood") figure.push(`<path d="M${f(cx - Rh * 1.12)},${f(hy + Rh * 0.3)} C${f(cx - Rh * 1.28)},${f(hy - Rh * 1.55)} ${f(cx + Rh * 1.28)},${f(hy - Rh * 1.55)} ${f(cx + Rh * 1.12)},${f(hy + Rh * 0.3)} L${f(cx + Rh * 1.55)},${f(by + Rh * 0.9)} L${f(cx - Rh * 1.55)},${f(by + Rh * 0.9)}Z" fill="#7A5A42" ${CUT} filter="url(#shadow)"/>`);
+
+    // 6. Mantle and robe cut from her textures
+    const mantleD = `M${f(cx - R * 0.5)},${f(by)} C${f(cx - R * 1.6)},${f(by + R * 0.2)} ${f(cx - sw)},${f(by + R * 0.9)} ${f(cx - sw)},${f(by + R * 2.4)} L${f(cx - sw - R * 0.3)},${f(bottom)} L${f(cx + sw + R * 0.3)},${f(bottom)} L${f(cx + sw)},${f(by + R * 2.4)} C${f(cx + sw)},${f(by + R * 0.9)} ${f(cx + R * 1.6)},${f(by + R * 0.2)} ${f(cx + R * 0.5)},${f(by)}Z`;
+    figure.push(`<path d="${mantleD}" fill="${tile(kit.mantle, 2.0)}" ${CUT} filter="url(#shadow)"/>`);
+    figure.push(`<path d="M${f(cx - R * 0.58)},${f(by)} L${f(cx + R * 0.58)},${f(by)} L${f(cx + R * 1.55)},${f(bottom)} L${f(cx - R * 1.55)},${f(bottom)}Z" fill="${tile(kit.robe, 1.3)}" ${CUT}/>`);
+    figure.push(`<path d="M${f(cx - R * 0.58)},${f(by)} L${f(cx - R * 1.55)},${f(bottom)} M${f(cx + R * 0.58)},${f(by)} L${f(cx + R * 1.55)},${f(bottom)}" stroke="${P.gold}" stroke-width="${f(R * 0.07)}"/>`);
+
+    // 7. Head: a face cut from her portraits, or a cut-paper silhouette
+    const fx = cx - Rh * 0.86, fy = hy - Rh * 1.08, fw = Rh * 1.72, fh = Rh * 2.16;
+    figure.push(`<rect x="${f(cx - Rh * 0.34)}" y="${f(hy + Rh * 0.7)}" width="${f(Rh * 0.68)}" height="${f(Rh * 0.6)}" fill="${skin}"/>`);
+    if (hasFace) {
+      const cid = `hc${n++}`;
+      defsExtra.push(`<clipPath id="${cid}"><ellipse cx="${f(cx)}" cy="${f(hy)}" rx="${f(Rh * 0.86)}" ry="${f(Rh * 1.08)}"/></clipPath>`);
+      figure.push(`<ellipse cx="${f(cx)}" cy="${f(hy)}" rx="${f(Rh * 0.86)}" ry="${f(Rh * 1.08)}" fill="${skin}" filter="url(#shadow)"/><image href="${kit.face.href}" x="${f(fx)}" y="${f(fy)}" width="${f(fw)}" height="${f(fh)}" preserveAspectRatio="xMidYMid slice" clip-path="url(#${cid})"/><ellipse cx="${f(cx)}" cy="${f(hy)}" rx="${f(Rh * 0.86)}" ry="${f(Rh * 1.08)}" fill="none" ${CUT}/>`);
+    } else {
+      const gid = `g${n++}`;
+      defsExtra.push(`<radialGradient id="${gid}" cx=".45" cy=".4" r=".75"><stop offset="0" stop-color="#F6DE8E"/><stop offset=".6" stop-color="#D9A441"/><stop offset="1" stop-color="#9C6B22"/></radialGradient>`);
+      figure.push(`<ellipse cx="${f(cx)}" cy="${f(hy)}" rx="${f(Rh * 0.82)}" ry="${f(Rh * 1.02)}" fill="url(#${gid})" ${CUT} filter="url(#shadow)"/><ellipse cx="${f(cx)}" cy="${f(hy)}" rx="${f(Rh * 0.82)}" ry="${f(Rh * 1.02)}" fill="url(#halftone)" opacity=".35"/><path d="M${f(cx - Rh * 0.42)},${f(hy + Rh * 0.02)} q${f(Rh * 0.15)},${f(Rh * 0.1)} ${f(Rh * 0.3)},0 M${f(cx + Rh * 0.12)},${f(hy + Rh * 0.02)} q${f(Rh * 0.15)},${f(Rh * 0.1)} ${f(Rh * 0.3)},0 M${f(cx)},${f(hy + Rh * 0.1)} l${f(-Rh * 0.06)},${f(Rh * 0.28)} l${f(Rh * 0.1)},0 M${f(cx - Rh * 0.1)},${f(hy + Rh * 0.56)} l${f(Rh * 0.2)},0" stroke="#3A2410" stroke-width="${f(Rh * 0.035)}" fill="none" stroke-linecap="round"/>${[...Array(7)].map((_, i) => `<circle cx="${f(cx - Rh * 0.3 + i * Rh * 0.1)}" cy="${f(hy + Rh * 0.36 + Math.abs(i - 3) * -Rh * 0.015)}" r="${f(Rh * 0.022)}" fill="#C0392B"/>`).join("")}`);
+    }
+    // veil band / hood rim framing the face
+    if (isVeil) figure.push(`<path d="M${f(cx - Rh * 0.95)},${f(hy - Rh * 0.25)} C${f(cx - Rh * 0.95)},${f(hy - Rh * 1.32)} ${f(cx + Rh * 0.95)},${f(hy - Rh * 1.32)} ${f(cx + Rh * 0.95)},${f(hy - Rh * 0.25)} C${f(cx + Rh * 0.78)},${f(hy - Rh * 0.85)} ${f(cx - Rh * 0.78)},${f(hy - Rh * 0.85)} ${f(cx - Rh * 0.95)},${f(hy - Rh * 0.25)}Z" fill="#FBF6EC"/>` + (head === "veilWhite" ? `<path d="M${f(cx - Rh * 0.92)},${f(hy - Rh * 0.72)} C${f(cx - Rh * 0.4)},${f(hy - Rh * 1.12)} ${f(cx + Rh * 0.4)},${f(hy - Rh * 1.12)} ${f(cx + Rh * 0.92)},${f(hy - Rh * 0.72)}" stroke="#2F5DA8" stroke-width="${f(Rh * 0.09)}" fill="none"/>` : ""));
+    if (head === "hood") figure.push(`<path d="M${f(cx - Rh * 0.98)},${f(hy + Rh * 0.25)} C${f(cx - Rh * 1.05)},${f(hy - Rh * 1.38)} ${f(cx + Rh * 1.05)},${f(hy - Rh * 1.38)} ${f(cx + Rh * 0.98)},${f(hy + Rh * 0.25)} C${f(cx + Rh * 0.84)},${f(hy - Rh * 0.85)} ${f(cx - Rh * 0.84)},${f(hy - Rh * 0.85)} ${f(cx - Rh * 0.98)},${f(hy + Rh * 0.25)}Z" fill="#7A5A42" ${CUT}/>`);
+
+    // 8. The saint's traditional symbol as a cut-out sticker
+    const sym = (saint.emblem?.symbols || ["star"]).find((x) => ICONS[x]) || "star";
+    const ix = cx, iy = by + R * 2.05, k = R * 0.0115;
+    figure.push(`<path d="${tornCircle(ix, iy, R * 0.72, r, 5)}" fill="#FBF6EC" filter="url(#shadow)"/><g transform="translate(${f(ix - 50 * k)} ${f(iy - 50 * k)}) scale(${f(k)})">${ICONS[sym](P)}</g>`);
+  }
+  L.push(...figure);
+
+  // 9. A few gems, then her found-word strips on top
+  for (let i = 0; i < 4; i++) L.push(crystal(60 + r() * (W - 120), 80 + r() * (H - 160), 16 + r() * 18, i % 2 ? "url(#iri)" : "url(#iri2)", r, r() * 3));
+  if (words.length) L.push(wordStrips(words, W * (r() > 0.5 ? 0.58 : 0.05), H * 0.82, r, W * 0.4));
+
+  // 10. A deckled paper mat and grain unify it as one hand-made piece
+  if (r() < 0.6) { const m = 30; L.push(`<path fill-rule="evenodd" d="M-10,-10H${W + 10}V${H + 10}H-10Z ${tornRect(m, m, W - m * 2, H - m * 2, r, 10)}" fill="#FBF6EC" filter="url(#shadow)"/>`); }
+  L.push(`<rect width="${W}" height="${H}" fill="#fff" filter="url(#paper)" opacity=".75" style="mix-blend-mode:multiply"/>`);
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">${defs(P, r).replace("</defs>", defsExtra.join("") + "</defs>")}${L.join("")}</svg>`;
 }
 
 // ---------- Saint emblems (symbolic, never likenesses) ----------

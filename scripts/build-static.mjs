@@ -11,6 +11,7 @@ const cp = (from, to) => fs.cpSync(path.resolve(from), path.join(out, to), { rec
 for (const f of fs.readdirSync("public")) if (f !== "studio.html") cp(`public/${f}`, f);
 cp("server/library", "lib/library");
 cp("server/art/procedural.js", "lib/art/procedural.js");
+cp("server/art/kit.js", "lib/art/kit.js");
 cp("server/compose-offline.js", "lib/compose-offline.js");
 cp("server/safety.js", "lib/safety.js");
 cp("config/style.json", "lib/style.json");

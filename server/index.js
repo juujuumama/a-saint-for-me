@@ -57,6 +57,13 @@ function publicExperience(e) {
 // ---------- check-in vocabulary ----------
 app.get("/api/options", (req, res) => res.json({ emotions: EMOTIONS, circumstances: CIRCUMSTANCES }));
 
+function heroImage() {
+  try {
+    const m = JSON.parse(fs.readFileSync(path.resolve("public/kit/kit.json"), "utf8"));
+    return `/kit/${m.backgrounds[Math.floor(Date.now() / 864e5) % m.backgrounds.length].file}`;
+  } catch { return "/hero.svg"; }
+}
+
 // ---------- me / privacy ----------
 app.get("/api/me", (req, res) => {
   const u = store.getUser(req.uid);
@@ -71,6 +78,7 @@ app.get("/api/me", (req, res) => {
     lastVisit: last?.createdAt || null,
     collectionCount: u.experiences.filter((e) => e.saved).length,
     recentIntentions: recent,
+    heroImage: heroImage(),
   });
 });
 

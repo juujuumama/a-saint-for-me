@@ -115,3 +115,10 @@ People can regenerate the artwork without regenerating the prayer, keep every ve
 - [ ] **Image moderation:** add a review or safety check on generated images, and test each provider against the iconography rules.
 - [ ] **Rate limits and cost caps** per user. A basic daily cap is in place.
 - [ ] **Privacy policy** describing exactly what is sent to Claude and to the image provider.
+
+## The art kit (Sierra Renee's own work)
+
+The free artist builds each image from `public/kit/`: backgrounds, textures and portrait faces cropped from Sierra Renee's published work on juujuumama.art. All rights are reserved by the artist. `server/art/kit.js` chooses the pieces for each artwork (deterministic per seed), and `kitArtwork()` in `server/art/procedural.js` cuts and layers them into a saint or angel collage: one of her works as the ground, a torn paint flood, a crystal halo, robes and wings cut from her textures, and a face from her portraits.
+
+- **Faces are matched respectfully.** A portrait is used for a saint only when skin tone and presentation fit the saint's origin (see `SAINT_META` in `kit.js`). Angels can take any face, and other saints get a gilded mask. Set `FACES_FOR_ALL_SAINTS = true` to let her portraits interpret every saint.
+- **Changing the kit.** Edit the lists in `scripts/fetch-kit.mjs` (image number plus crop box), then run `node scripts/fetch-kit.mjs`. Or drop your own JPGs into `public/kit/` and add them to `kit.json`.

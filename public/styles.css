@@ -337,3 +337,5 @@ body { font-size: 15px; }
 }
 @media (min-width: 900px) { .hero::after { background: linear-gradient(90deg, rgba(36,22,58,.82), rgba(36,22,58,.5) 55%, rgba(36,22,58,.62)); } .hero p.lead { color: #F3E8F5; } }
 @media (max-width: 899px) { .speak-wrap textarea { min-height: 150px; } }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.hero-art { background-size: cover; background-position: center; }

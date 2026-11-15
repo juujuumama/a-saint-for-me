@@ -6,8 +6,24 @@ import { proceduralArtwork, saintEmblem, wordsFrom } from "./lib/art/procedural.
 import { EMOTIONS, CIRCUMSTANCES } from "./lib/library/themes.js";
 import { saintById } from "./lib/library/saints.js";
 import { needsCare, CARE_RESOURCES } from "./lib/safety.js";
+import { pickKit, kitFiles } from "./lib/art/kit.js";
 
 const STYLE = await fetch(new URL("./lib/style.json", import.meta.url)).then((r) => r.json());
+const KIT = await fetch(new URL("./kit/kit.json", import.meta.url)).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+const kitData = new Map();
+async function loadFile(file) {
+  if (kitData.has(file)) return kitData.get(file);
+  const p = fetch(new URL(`./kit/${file}`, import.meta.url)).then((r) => r.blob()).then((b) => new Promise((res) => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.readAsDataURL(b); }));
+  kitData.set(file, p);
+  return p;
+}
+const saintFor = (e, a) => (a.saintId ? saintById(a.saintId) : null);
+const kitPick = (e, a) => (KIT ? pickKit(KIT, { themes: e.devotional.themes, seed: a.seed, saint: saintFor(e, a) }) : null);
+// Load the artist's kit pieces an experience needs, before drawing it.
+async function ensure(e) {
+  await Promise.all(e.artHistory.flatMap((a) => kitFiles(kitPick(e, a)).map(loadFile)));
+  for (const f of kitData.keys()) kitData.set(f, await kitData.get(f));
+}
 const KEY = "asfm:db";
 const blank = () => ({ settings: { memoryConsent: false }, experiences: [] });
 function load() { try { return JSON.parse(localStorage.getItem(KEY)) || blank(); } catch { return blank(); } }
@@ -20,8 +36,9 @@ const cache = new Map();
 function artUrl(e, a) {
   const k = `${e.id}:${a.seed}`;
   if (!cache.has(k)) {
-    const saint = a.saintId ? saintById(a.saintId) : null;
-    cache.set(k, svgUrl(proceduralArtwork({ brief: { ...e.devotional.art_brief, composition: a.composition }, themes: e.devotional.themes, seed: a.seed, aspect: a.aspect, words: a.words, saint, style: STYLE })));
+    const saint = saintFor(e, a), pick = kitPick(e, a);
+    const kit = pick && Object.fromEntries(Object.entries(pick).map(([k2, v]) => [k2, v ? { ...v, href: kitData.get(v.file) } : null]));
+    cache.set(k, svgUrl(proceduralArtwork({ brief: { ...e.devotional.art_brief, composition: a.composition }, themes: e.devotional.themes, seed: a.seed, aspect: a.aspect, words: a.words, saint, style: STYLE, kit })));
   }
   return cache.get(k);
 }
@@ -29,6 +46,7 @@ const emblems = new Map();
 const emblemUrl = (s) => emblems.get(s.id) || (emblems.set(s.id, svgUrl(saintEmblem(s, 1, STYLE))), emblems.get(s.id));
 
 export function heroUrl() {
+  if (KIT) return new URL(`./kit/${KIT.backgrounds[Math.floor(Date.now() / 864e5) % KIT.backgrounds.length].file}`, import.meta.url).href;
   const day = Math.floor(Date.now() / 864e5);
   return svgUrl(proceduralArtwork({ brief: { composition: ["rose_window", "orbital", "halo_icon", "constellation", "horizon_strata"][day % 5] }, themes: [["gratitude", "peace", "hope", "faith", "motherhood", "inspiration"][day % 6]], seed: day, aspect: "square", style: STYLE }));
 }
@@ -103,26 +121,29 @@ export async function handle(path, method = "GET", body = {}) {
     };
     makeArt(e);
     db.experiences.push(e); save();
+    await ensure(e);
     await new Promise((r) => setTimeout(r, 1400)); // a breath, so the moment doesn't feel instant
     return pub(e);
   }
-  if (m && !m[2] && method === "GET") return pub(find(m[1]));
+  if (m && !m[2] && method === "GET") { const e = find(m[1]); await ensure(e); return pub(e); }
   if (m && !m[2] && method === "DELETE") { db.experiences = db.experiences.filter((e) => e.id !== m[1]); save(); return { ok: true }; }
   if (m && m[2] === "art/regenerate") {
     const e = find(m[1]);
     if (e.artHistory.length >= 8) throw new Error("This devotional already has several artworks. Choose a favorite from its history.");
-    makeArt(e); save(); return pub(e);
+    makeArt(e); save(); await ensure(e); return pub(e);
   }
-  if (m && m[2] === "art/select") { const e = find(m[1]); if (e.artHistory[body.index]) e.art.current = Number(body.index); save(); return pub(e); }
+  if (m && m[2] === "art/select") { const e = find(m[1]); if (e.artHistory[body.index]) e.art.current = Number(body.index); save(); await ensure(e); return pub(e); }
   if (m && m[2] === "save") {
     const e = find(m[1]);
     if (typeof body.saved === "boolean") e.saved = body.saved;
     if (typeof body.prayerSaved === "boolean") e.prayerSaved = body.prayerSaved;
-    save(); return pub(e);
+    save(); await ensure(e); return pub(e);
   }
   if (p === "/api/journey") {
     const f = new URLSearchParams(q).get("filter");
-    return { experiences: db.experiences.filter((e) => (f === "saved" ? e.saved : f === "prayers" ? e.prayerSaved : true)).slice().reverse().map(pub) };
+    const list = db.experiences.filter((e) => (f === "saved" ? e.saved : f === "prayers" ? e.prayerSaved : true)).slice().reverse();
+    await Promise.all(list.map(ensure));
+    return { experiences: list.map(pub) };
   }
   throw new Error("Not available in this edition.");
 }

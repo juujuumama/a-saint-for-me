@@ -8,6 +8,18 @@ import fs from "node:fs";
 import path from "node:path";
 import { proceduralArtwork } from "./procedural.js";
 import { loadStyle } from "./style.js";
+import { pickKit } from "./kit.js";
+
+const KIT_DIR = path.resolve("public/kit");
+const kitCache = new Map();
+function loadKit(job) {
+  const mf = path.join(KIT_DIR, "kit.json");
+  if (!fs.existsSync(mf)) return null;
+  const pick = pickKit(JSON.parse(fs.readFileSync(mf, "utf8")), { themes: job.themes, seed: job.seed, saint: job.saint });
+  if (!pick) return null;
+  const href = (file) => { if (!kitCache.has(file)) kitCache.set(file, `data:image/jpeg;base64,${fs.readFileSync(path.join(KIT_DIR, file)).toString("base64")}`); return kitCache.get(file); };
+  return Object.fromEntries(Object.entries(pick).map(([k, v]) => [k, v ? { ...v, href: href(v.file) } : null]));
+}
 
 const CONFIG_FILE = path.resolve(process.env.PROVIDERS_FILE || "config/providers.json");
 
@@ -50,7 +62,7 @@ async function fail(res, name) {
 
 const ADAPTERS = {
   async procedural(p, job) {
-    const svg = proceduralArtwork({ brief: job.brief, themes: job.themes, seed: job.seed, aspect: job.aspect, words: job.words || [], saint: job.saint || null, style: loadStyle() });
+    const svg = proceduralArtwork({ brief: job.brief, themes: job.themes, seed: job.seed, aspect: job.aspect, words: job.words || [], saint: job.saint || null, style: loadStyle(), kit: loadKit(job) });
     return { buffer: Buffer.from(svg), mime: "image/svg+xml", ext: "svg" };
   },
 

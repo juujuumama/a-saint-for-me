@@ -64,14 +64,14 @@ async function renderHome() {
 
   main.innerHTML = `
   <section class="hero">
-    <div class="hero-art" style="background-image:url('${STATIC ? local.heroUrl() : "/hero.svg"}')"></div>
+    <div class="hero-art" style="background-image:url('${STATIC ? local.heroUrl() : me.heroImage || "/hero.svg"}')"></div>
     <div class="hero-grid">
     <div class="hero-inner">
       <h1>What's on your <span>heart</span> today?</h1>
       <p class="lead">Rooted in real prayers, Scripture, and the saints and angels of the Church. Created by Catholic artist Sierra Renee.</p>
     </div>
   <form class="checkin" id="checkin" novalidate>
-    <label class="field-label" for="text" id="textLabel">${returning ? "How are you feeling today?" : "In your own words"}</label>
+    <label class="sr-only" for="text">What's on your heart today?</label>
     <div class="speak-wrap">
       <textarea id="text" maxlength="2000" placeholder="Tell it the way you'd tell a friend: type, or tap the mic and speak. We'll find the saints and prayers for it."></textarea>
       <button type="button" class="mic" id="mic" aria-label="Speak instead of typing" aria-pressed="false" hidden>
@@ -81,7 +81,7 @@ async function renderHome() {
     ${canContinue ? `<div class="continue-inline"><span>Or keep praying about:</span><div class="continue-list">${me.recentIntentions.map((r) => `<button type="button" data-id="${r.id}" aria-pressed="false">${esc(r.title)}</button>`).join("")}</div></div>` : ""}
     <p class="hint" id="micHint" aria-live="polite"></p>
     <div class="submit-row">
-      <span class="privacy-note">${ICON.lock} Private to you. The art studio never sees your words.</span>
+      <span class="privacy-note">${ICON.lock} Private to you.</span>
       <button class="btn primary" id="go">Receive today's devotional</button>
     </div>
     <p class="hint" id="formError" role="alert" style="color:#C0392B"></p>
