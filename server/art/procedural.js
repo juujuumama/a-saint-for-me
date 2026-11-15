@@ -619,6 +619,14 @@ const ICONS = {
   wheat: (P) => `<path d="M50 96 V30" stroke="#B5852A" stroke-width="5"/>${[22, 34, 46, 58].map((y) => `<ellipse cx="40" cy="${y}" rx="11" ry="6" transform="rotate(-35 40 ${y})" fill="${P.gold}"/><ellipse cx="60" cy="${y}" rx="11" ry="6" transform="rotate(35 60 ${y})" fill="${P.gold}"/>`).join("")}<ellipse cx="50" cy="12" rx="6" ry="10" fill="${P.gold}"/>`,
 };
 
+// Small standalone icon for the symbol key on the About page.
+export function symbolIcon(key, style) {
+  if (!ICONS[key]) return "";
+  const P = palette(style);
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-8 -8 116 116"><circle cx="50" cy="50" r="56" fill="#EADFF0"/>${ICONS[key](P)}</svg>`;
+}
+export const SYMBOL_KEYS = () => Object.keys(ICONS);
+
 export function saintEmblem(saint, seed = 1, style) {
   const P = palette(style);
   const r = rng(seed + saint.id.length * 97);

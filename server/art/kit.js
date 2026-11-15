@@ -2,19 +2,7 @@
 // Pure and deterministic: the same seed + themes + saint always picks the same pieces,
 // so the browser edition can re-draw saved art without storing images.
 
-// Who each figure is, for matching faces respectfully:
-// tone group of the saint's likely origin, and presentation. Angels take any face.
-const SAINT_META = {
-  monica: ["dark", "fem"], gianna: ["light", "fem"], anne: ["medium", "fem"], joseph: ["medium", "masc"],
-  zelie_louis: ["light", "any"], rita: ["light", "fem"], thomas_more: ["light", "masc"], bakhita: ["dark", "fem"],
-  moses_black: ["dark", "masc"], matt_talbot: ["light", "masc"], augustine: ["dark", "masc"], martin_porres: ["dark", "masc"],
-  benedict_moor: ["dark", "masc"], perpetua_felicity: ["dark", "fem"], charles_lwanga: ["dark", "masc"], katharine_drexel: ["light", "fem"],
-  cajetan: ["light", "masc"], jude: ["medium", "masc"], dymphna: ["light", "fem"], padre_pio: ["light", "masc"],
-  therese: ["light", "fem"], teresa_avila: ["light", "fem"], john_cross: ["light", "masc"], teresa_calcutta: ["light", "fem"],
-  peregrine: ["light", "masc"], bernadette: ["light", "fem"], elizabeth_seton: ["light", "fem"], ignatius: ["light", "masc"],
-  francis: ["light", "masc"], mary_magdalene: ["medium", "fem"], thomas_apostle: ["medium", "masc"], anthony: ["light", "masc"],
-  faustina: ["light", "fem"], kateri: ["indigenous", "fem"],
-};
+// Saints are artistic interpretations: any of the artist's portraits can become any saint.
 function rng(seed) {
   let a = seed >>> 0;
   return () => {
@@ -25,21 +13,11 @@ function rng(seed) {
   };
 }
 
-// Every saint gets a face from the artist's portraits: the closest match first
-// (tone and presentation), then presentation, then any portrait (artistic interpretation).
+// Any portrait can become any saint (artistic interpretation, not likeness).
+// Robot faces are reserved for angels.
 export function faceCandidates(faces = [], saint) {
-  if (!faces.length) return [];
-  // Angels: about half the time one of the artist's robot faces, otherwise any portrait.
   if (!saint || saint.kind === "angel") return faces;
-  faces = faces.filter((fc) => fc.tone !== "robot");
-  const [tone, pres] = SAINT_META[saint.id] || ["none", "any"];
-  const presOk = (fc) => fc.pres === "any" || pres === "any" || fc.pres === pres;
-  const exact = faces.filter((fc) => fc.tone === tone && presOk(fc));
-  const byPres = faces.filter(presOk);
-  // Few close matches (e.g. light-skinned men are rare in the artist's work):
-  // widen to every portrait of the same presentation so faces don't repeat.
-  if (exact.length >= 8) return exact;
-  return byPres.length ? byPres : faces;
+  return faces.filter((fc) => fc.tone !== "robot");
 }
 
 export function pickKit(manifest, { themes = [], seed = 1, saint = null } = {}) {

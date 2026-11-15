@@ -2,7 +2,7 @@
 // running entirely on the visitor's device. Devotionals are saved in this
 // browser only; artwork is re-drawn from its seed, so storage stays tiny.
 import { composeOffline, hydrate } from "./lib/compose-offline.js";
-import { proceduralArtwork, saintEmblem, wordsFrom } from "./lib/art/procedural.js";
+import { proceduralArtwork, saintEmblem, wordsFrom, symbolIcon, SYMBOL_KEYS } from "./lib/art/procedural.js";
 import { EMOTIONS, CIRCUMSTANCES } from "./lib/library/themes.js";
 import { saintById } from "./lib/library/saints.js";
 import { needsCare, CARE_RESOURCES } from "./lib/safety.js";
@@ -88,6 +88,8 @@ const find = (x) => { const e = db.experiences.find((y) => y.id === x); if (!e) 
 export async function handle(path, method = "GET", body = {}) {
   const [p, q] = path.split("?");
   const m = p.match(/^\/api\/experiences\/([^/]+)(?:\/(.+))?$/);
+  if (p === "/api/symbols") return SYMBOL_KEYS().map((key) => ({ key, svg: symbolIcon(key, STYLE) }));
+  if (p === "/api/kit-sample") return { images: KIT ? KIT.backgrounds.filter((_, i) => i % 9 === 0).slice(0, 8).map((b) => new URL(`./kit/${b.file}`, import.meta.url).href) : [] };
   if (p === "/api/options") return { emotions: EMOTIONS, circumstances: CIRCUMSTANCES };
   if (p === "/api/me" && method === "GET") {
     const recent = db.settings.memoryConsent

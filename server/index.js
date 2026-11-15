@@ -7,7 +7,7 @@ import { composeDevotional } from "./devotional.js";
 import { createArtwork, analyzeReference } from "./art/artwork.js";
 import { loadStyle, saveStyle, buildArtPrompt } from "./art/style.js";
 import { providerStatus, saveProviderConfig, loadProviderConfig } from "./art/providers.js";
-import { saintEmblem, proceduralArtwork } from "./art/procedural.js";
+import { saintEmblem, proceduralArtwork, symbolIcon, SYMBOL_KEYS } from "./art/procedural.js";
 import { generateImage } from "./art/providers.js";
 import { saintById } from "./library/saints.js";
 import { EMOTIONS, CIRCUMSTANCES } from "./library/themes.js";
@@ -294,7 +294,18 @@ app.get("/hero.svg", (req, res) => {
 
 // ---------- static ----------
 app.use(express.static(path.resolve("public"), { extensions: ["html"] }));
-app.get(/^\/(today|journey|e\/.*)?$/, (req, res) => res.sendFile(path.resolve("public/index.html")));
+app.get("/api/kit-sample", (req, res) => {
+  try {
+    const m = JSON.parse(fs.readFileSync(path.resolve("public/kit/kit.json"), "utf8"));
+    res.json({ images: m.backgrounds.filter((_, i) => i % 9 === 0).slice(0, 8).map((b) => `/kit/${b.file}`) });
+  } catch { res.json({ images: [] }); }
+});
+app.get("/api/symbols", (req, res) => {
+  const style = loadStyle();
+  res.setHeader("Cache-Control", "public, max-age=86400");
+  res.json(SYMBOL_KEYS().map((key) => ({ key, svg: symbolIcon(key, style) })));
+});
+app.get(/^\/(today|journey|about|e\/.*)?$/, (req, res) => res.sendFile(path.resolve("public/index.html")));
 
 const PORT = Number(process.env.PORT) || 3000;
 app.listen(PORT, () => {

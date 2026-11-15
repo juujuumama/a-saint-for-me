@@ -47,6 +47,7 @@ function route() {
   const p = currentPath();
   $$("[data-nav]").forEach((n) => n.removeAttribute("aria-current"));
   if (p.startsWith("/e/")) return renderExperience(p.slice(3));
+  if (p === "/about") { $('[data-nav="about"]').setAttribute("aria-current", "page"); return renderAbout(); }
   if (p === "/journey") { $('[data-nav="journey"]').setAttribute("aria-current", "page"); return renderJourney(); }
   $('[data-nav="today"]').setAttribute("aria-current", "page");
   renderHome();
@@ -405,6 +406,63 @@ async function renderJourney() {
     ${experiences.length ? `<div class="gallery">${experiences.map(tile).join("")}</div>`
       : `<div class="empty"><h2>${JFILTER === "all" ? "Your collection begins today" : "Nothing saved here yet"}</h2><p>Each devotional you receive keeps its artwork, prayer and saints together here, whether you visit every day or once in a while.</p><a class="btn primary" href="${L("/")}" data-link>What's on your heart?</a></div>`}`;
   $$(".tabs button").forEach((b) => b.addEventListener("click", () => { JFILTER = b.dataset.f; renderJourney(); }));
+}
+
+// ---------------- ABOUT ----------------
+async function renderAbout() {
+  document.title = "About · A Saint for Me";
+  const [symbols, sample] = await Promise.all([api("/api/symbols").catch(() => []), api("/api/kit-sample").catch(() => ({ images: [] }))]);
+  const order = ["palm", "lily", "roses", "chains_broken", "flame", "heart", "tears", "book", "sword", "scales", "fish", "hand", "rays", "broom", "bread", "wheat", "sun", "rings", "lamp", "ladder", "thorn", "castle", "water", "jar", "cross", "rosary", "medallion", "tools", "dove", "star", "moon"];
+  const byKey = Object.fromEntries(symbols.map((x) => [x.key, x.svg]));
+  const cap = (t) => t.charAt(0).toUpperCase() + t.slice(1);
+  main.innerHTML = `
+  <article class="about">
+    <header class="about-head">
+      <p class="eyebrow" style="color:var(--accent)">About</p>
+      <h1>A daily prayer, and a piece of art made for it</h1>
+      <p class="lead">Share what's on your heart, in your own words or out loud. A Saint for Me answers with a personal prayer, saints to walk with you, Scripture, prayers of the Church, and a one-of-a-kind collage built from the original artwork of Sierra Renee (juujuumama).</p>
+    </header>
+    ${sample.images.length ? `<div class="about-strip">${sample.images.map((u) => `<img src="${u}" alt="" loading="lazy">`).join("")}</div>` : ""}
+
+    <section class="about-sec">
+      <h2>How it works</h2>
+      <ol class="steps">
+        <li><strong>You share.</strong> Type or speak what's going on: a worry, a loss, a celebration, someone you're praying for. There are no forms or categories to pick.</li>
+        <li><strong>We listen for what matters.</strong> The app notices the themes in your words, like grief, fear, motherhood, work or gratitude, and chooses from a library of real saints, Scripture passages and traditional Catholic prayers.</li>
+        <li><strong>A prayer is written for you.</strong> Prayers marked <em>Written for you</em> are composed for your situation. They're guided by Catholic teaching, but they aren't official prayers of the Church. Prayers marked <em>Traditional</em> are the Church's own, word for word.</li>
+        <li><strong>A collage is made for you.</strong> Every artwork is assembled from pieces of Sierra Renee's own work: her backgrounds, textures and portraits, cut and layered into a saint or angel. No two are the same, and you can ask for a new one anytime.</li>
+        <li><strong>It's yours to keep.</strong> Save the art and prayer to My Collection, download a card to share, and come back whenever you need to, every day or once a month.</li>
+      </ol>
+    </section>
+
+    <section class="about-sec">
+      <h2>About the artwork</h2>
+      <p>The saints and angels in each collage are <strong>artistic interpretations, not portraits</strong>. Any face from Sierra's work can become any saint, whatever that saint's historical gender or race. It's meant to say that holiness looks like all of us, not to show what a saint looked like. Saints wear halos. Angels have wings, and sometimes one of Sierra's robot faces, because angels aren't human.</p>
+    </section>
+
+    <section class="about-sec">
+      <h2>The symbols</h2>
+      <p>In Catholic art, saints are recognized by what they carry. The small emblem on each figure is that saint's traditional symbol. Each saint's description tells you what theirs means.</p>
+      <div class="symbol-grid">${order.filter((k) => byKey[k] && SYMBOLS[k]).map((k) => `<div class="symbol"><span class="symbol-icon">${byKey[k]}</span><span>${esc(cap(SYMBOLS[k]))}</span></div>`).join("")}</div>
+    </section>
+
+    <section class="about-sec">
+      <h2>Your privacy</h2>
+      <p>What you write stays private to you. It's never shown to anyone else, and the art is made without it. "Remember my intentions" is off unless you turn it on, and you can delete everything anytime from the shield menu. If your words suggest you might be in danger, crisis resources appear alongside your prayer.</p>
+    </section>
+
+    <section class="about-sec artist">
+      <h2>About the artist</h2>
+      <p><strong>Sierra Renee</strong> is a Catholic, multidisciplinary artist working under the name <strong>juujuumama</strong>. Rooted in Afrofuturism and surrealism, her work spans hand-cut collage, acrylic and mixed media, generative AI, AI fashion and animation.</p>
+      <p>She grew up in the Hudson Valley, just north of New York City, in a multiracial family shaped by Black, Italian and Puerto Rican heritage. She has made art since childhood. Hand-cut collage, made from gem show catalogs, museum publications and found paper, is still the foundation of her visual language.</p>
+      <p>Since 2022 she has trained her own AI models on her own imagery, to push back against generative AI's narrow and often distorted renderings of Black features, hair and adornment. Gemstones, sculptural adornment and immersive worlds recur throughout her work as symbols of ancestry, transformation and self-defined value. She founded Itan West African Artistry, a community of nearly 200 artists, and her work has been exhibited from Tokyo, London and Lisbon to Miami and billboards in Times Square.</p>
+      <p>A Saint for Me brings that practice to prayer: every collage here is cut from her original work.</p>
+      <p><a class="btn" href="https://www.juujuumama.art" target="_blank" rel="noopener">See more of her work at juujuumama.art</a></p>
+    </section>
+
+    <section class="card reflection"><p>Whatever you're carrying today, you don't have to carry it alone.</p><a class="btn" href="${L("/")}" data-link>What's on your heart?</a></section>
+  </article>`;
+  scrollTo({ top: 0 });
 }
 
 // ---------------- settings ----------------
