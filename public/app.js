@@ -5,6 +5,11 @@ const esc = (s = "") => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<
 const main = $("#main");
 const store = { get: (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } }, set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} } };
 
+// "See an example" devotional for first-time visitors (off until approved).
+const SHOW_EXAMPLE = Boolean(window.ASFM_SHOW_EXAMPLE);
+// Shown on shared cards so they lead back to the site.
+const SITE = (location.host + (window.ASFM_STATIC ? location.pathname.replace(/index\.html$/, "") : "")).replace(/\/$/, "").replace(/^www\./, "").toUpperCase();
+
 // Browser-only edition (GitHub Pages): same API, served from this device.
 const STATIC = Boolean(window.ASFM_STATIC);
 let local = null;
@@ -25,6 +30,8 @@ const ICON = {
   refresh: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   share: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   book: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h9a4 4 0 0 1 4 4v12H8a3 3 0 0 1-3-3Z M5 17a3 3 0 0 1 3-3h10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+  play: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7Z" fill="currentColor"/></svg>',
+  stop: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg>',
   lock: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>',
 };
 const CHIP_COLORS = ["var(--pink)", "var(--turq)", "var(--orange)", "var(--peach)", "var(--coral)"];
@@ -47,6 +54,7 @@ function route() {
   const p = currentPath();
   $$("[data-nav]").forEach((n) => n.removeAttribute("aria-current"));
   if (p.startsWith("/e/")) return renderExperience(p.slice(3));
+  if (p === "/example" && SHOW_EXAMPLE) return renderExample();
   if (p === "/about") { $('[data-nav="about"]').setAttribute("aria-current", "page"); return renderAbout(); }
   if (p === "/journey") { $('[data-nav="journey"]').setAttribute("aria-current", "page"); return renderJourney(); }
   renderHome();
@@ -85,9 +93,12 @@ async function renderHome() {
       <button class="btn primary" id="go">Receive today's devotional</button>
     </div>
     <p class="hint" id="formError" role="alert" style="color:#C0392B"></p>
+    ${SHOW_EXAMPLE && !returning ? `<p class="example-link">Not sure what you'll get? <a href="${L("/example")}" data-link>See an example</a></p>` : ""}
   </form>
     </div>
   </section>
+  <section class="sotd" id="sotd" hidden></section>
+  <div id="installTip"></div>
   <section class="recent" id="recent" hidden></section>`;
 
   $$(".continue-list button").forEach((cb) => cb.addEventListener("click", () => {
@@ -95,6 +106,15 @@ async function renderHome() {
     $$(".continue-list button").forEach((x) => x.setAttribute("aria-pressed", String(x.dataset.id === state.continueFrom)));
   }));
   setupVoice($("#text"), $("#mic"), $("#micHint"));
+  api("/api/saint-of-day").then((s) => {
+    const box = $("#sotd"); if (!box) return;
+    box.hidden = false;
+    box.innerHTML = `<span class="sotd-icon">${s.icon}</span>
+      <div><p class="sotd-label">${esc(s.label)}</p><h2>${esc(s.name)}</h2>
+      <p class="sotd-meta">${esc(s.years)} · Feast ${esc(s.feast)} · Patron of ${esc(s.patronages.slice(0, 2).join(", "))}</p>
+      <details><summary>Their story</summary><p>${esc(s.story)}</p>${SYMBOLS[s.symbol] ? `<p class="symbol-note">✦ In the artwork: ${esc(SYMBOLS[s.symbol])}.</p>` : ""}</details></div>`;
+  }).catch(() => {});
+  showInstallTip(returning);
 
   $("#checkin").addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -135,7 +155,39 @@ const SYMBOLS = {
   water: "water, from the spring at Lourdes", jar: "an alabaster jar of ointment", cross: "a cross", rosary: "a rosary",
   medallion: "a medallion bearing Christ's image", tools: "carpenter's tools", star: "a star", moon: "a crescent moon", dove: "a dove, the Holy Spirit",
 };
-const symbolNote = (s) => { const k = (s.emblem?.symbols || [])[0]; return SYMBOLS[k] ? `In the artwork: ${SYMBOLS[k]}.` : ""; };
+const symbolNote = (s) => { const k = (s.symbols || s.emblem?.symbols || [])[0]; return SYMBOLS[k] ? `In the artwork: ${SYMBOLS[k]}.` : ""; };
+
+// Read the prayer aloud with the device's own voice (private, free).
+function pickVoice() {
+  const vs = speechSynthesis.getVoices().filter((v) => v.lang?.startsWith((navigator.language || "en").slice(0, 2)));
+  return vs.find((v) => /natural|enhanced|premium|samantha|ava|allison|google us english/i.test(v.name)) || vs[0] || null;
+}
+function toggleListen(btn, d) {
+  if (speechSynthesis.speaking) { speechSynthesis.cancel(); return; }
+  const text = `${d.prayer.title}. ${d.prayer.body.replace(/\n+/g, " ")} ${d.prayer.closing}`;
+  const u = new SpeechSynthesisUtterance(text);
+  u.rate = 0.9; u.pitch = 1; const v = pickVoice(); if (v) u.voice = v;
+  const set = (on) => { btn.setAttribute("aria-pressed", String(on)); btn.innerHTML = on ? `${ICON.stop} Stop` : `${ICON.play} Listen`; };
+  u.onstart = () => set(true); u.onend = u.onerror = () => set(false);
+  speechSynthesis.speak(u);
+}
+addEventListener("popstate", () => { try { speechSynthesis.cancel(); } catch {} });
+addEventListener("hashchange", () => { try { speechSynthesis.cancel(); } catch {} });
+
+// "Add to Home Screen" tip, once, for returning visitors on phones.
+let deferredInstall = null;
+addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); deferredInstall = e; });
+function showInstallTip(returning) {
+  const box = $("#installTip"); if (!box) return;
+  const standalone = matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+  const phone = matchMedia("(max-width: 820px)").matches;
+  if (!returning || standalone || !phone || store.get("asfm:installTip", false)) return;
+  const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  box.innerHTML = `<div class="install-tip"><p><strong>Keep A Saint for Me on your Home Screen.</strong> ${deferredInstall ? "It opens like an app, with your collection." : ios ? "Tap the Share button, then <em>Add to Home Screen</em>." : "Open your browser menu and choose <em>Add to Home Screen</em>."}</p>
+    <div class="row">${deferredInstall ? `<button class="btn small" id="installGo">Add it</button>` : ""}<button class="btn small ghost" id="installNo">Not now</button></div></div>`;
+  $("#installNo").onclick = () => { store.set("asfm:installTip", true); box.innerHTML = ""; };
+  $("#installGo")?.addEventListener("click", async () => { deferredInstall.prompt(); await deferredInstall.userChoice.catch(() => {}); deferredInstall = null; store.set("asfm:installTip", true); box.innerHTML = ""; });
+}
 
 // Voice-to-text using the browser's built-in speech recognition, where available.
 let recognizer = null;
@@ -196,6 +248,7 @@ async function renderExperience(id, preloaded) {
         <h2>${esc(d.prayer.title)}</h2>
         <div class="prayer-body">${paras}<p class="closing">${esc(d.prayer.closing)}</p></div>
         <div class="row" style="margin-top:6px">
+          ${"speechSynthesis" in window ? `<button class="btn small ghost" id="listen" aria-pressed="false">${ICON.play} Listen</button>` : ""}
           <button class="btn small ghost" id="savePrayer">${exp.prayerSaved ? ICON.heart + " Prayer saved" : ICON.book + " Save this prayer"}</button>
         </div>
         <p class="provenance">This prayer was composed ${d.source === "claude" ? "with AI" : "from our prayer library"} for what you shared. It is not an official prayer of the Church. Traditional prayers below are marked “Traditional”.</p>
@@ -239,6 +292,7 @@ async function renderExperience(id, preloaded) {
     $$(".tabbar button").forEach((x) => x.setAttribute("aria-selected", String(x === t)));
     $$(".tabpanel").forEach((pnl) => (pnl.hidden = pnl.dataset.panel !== t.dataset.tab));
   }));
+  $("#listen")?.addEventListener("click", (e) => toggleListen(e.currentTarget, d));
   $("#savePrayer").addEventListener("click", async () => {
     exp = await api(`/api/experiences/${exp.id}/save`, { method: "POST", body: { prayerSaved: !exp.prayerSaved } });
     $("#savePrayer").innerHTML = exp.prayerSaved ? ICON.heart + " Prayer saved" : ICON.book + " Save this prayer";
@@ -275,7 +329,7 @@ function renderArt(exp) {
     </div>
     ${cur ? `<p class="art-credit">Cut from original works by Sierra Renee. <a href="https://www.juujuumama.art/work" target="_blank" rel="noopener">See the originals</a></p>` : ""}
     ${art.notice ? `<p class="notice">${esc(art.notice)}</p>` : ""}
-    <div class="art-actions">
+    <div class="art-actions" ${exp.example ? "hidden" : ""}>
       <button class="btn small" id="saveArt" ${!cur ? "disabled" : ""}>${exp.saved ? ICON.heart + " In my collection" : ICON.heartO + " Save to collection"}</button>
       <button class="btn small ghost" id="shareArt" ${!cur ? "disabled" : ""}>${ICON.share} Download or share</button>
       <button class="btn small ghost" id="regen" ${busy ? "disabled" : ""}>${ICON.refresh} New artwork</button>
@@ -328,7 +382,13 @@ async function drawCard(canvas, exp, mode, format) {
   const d = exp.devotional, img = await loadImage(exp.art.current.url);
   const serif = '"Fraunces", Georgia, serif', sans = '"Instrument Sans", system-ui, sans-serif';
   const body = d.prayer.body.replace(/\n\s*\n/g, " ");
-  if (mode === "art") { cover(ctx, img, 0, 0, W, H); return; }
+  if (mode === "art") {
+    cover(ctx, img, 0, 0, W, H);
+    ctx.font = `600 20px ${sans}`; const label = `${SITE}  ·  ART BY JUUJUUMAMA`, tw = ctx.measureText(label).width;
+    ctx.fillStyle = "rgba(251,246,236,.92)"; roundRect(ctx, W - tw - 64, H - 70, tw + 32, 40, 20); ctx.fill();
+    ctx.fillStyle = "#1E1530"; ctx.fillText(label, W - tw - 48, H - 43);
+    return;
+  }
   if (mode === "prayer") {
     cover(ctx, img, 0, 0, W, H);
     const g = ctx.createLinearGradient(0, H * 0.3, 0, H); g.addColorStop(0, "rgba(20,15,31,0)"); g.addColorStop(0.45, "rgba(20,15,31,.82)"); g.addColorStop(1, "rgba(20,15,31,.95)");
@@ -341,7 +401,8 @@ async function drawCard(canvas, exp, mode, format) {
     let y = H - pad - pl.length * 48 - 30 - lines.length * 62;
     ctx.font = `600 54px ${serif}`; for (const l of lines) { ctx.fillText(l, pad, y); y += 62; }
     y += 16; ctx.font = `italic 34px ${serif}`; for (const l of pl) { ctx.fillText(l, pad, y); y += 48; }
-    ctx.font = `600 22px ${sans}`; ctx.fillStyle = "#FFC9A8"; ctx.fillText("A SAINT FOR ME", pad, H - 44);
+    ctx.font = `600 22px ${sans}`; ctx.fillStyle = "#FFC9A8"; ctx.fillText(`A SAINT FOR ME  ·  ${SITE}`, pad, H - 44);
+    ctx.textAlign = "right"; ctx.fillStyle = "rgba(255,244,234,.7)"; ctx.fillText("ART BY JUUJUUMAMA", W - pad, H - 44); ctx.textAlign = "left";
     return;
   }
   // collectible card
@@ -360,7 +421,7 @@ async function drawCard(canvas, exp, mode, format) {
   ctx.font = `600 22px ${sans}`; ctx.fillStyle = "#8A4B6B";
   const saints = d.saints.slice(0, 3).map((s) => s.name.replace(/\s*\(.*\)/, "")).join("  ·  ").toUpperCase();
   ctx.fillText(wrap(ctx, saints, W - 160)[0], W / 2, H - 82);
-  ctx.fillStyle = "#5B4E6B"; ctx.fillText(`A SAINT FOR ME  ·  ${fmtDate(exp.createdAt, { month: "long", day: "numeric", year: "numeric" }).toUpperCase()}`, W / 2, H - 46);
+  ctx.fillStyle = "#5B4E6B"; ctx.fillText(`${SITE}  ·  ART BY JUUJUUMAMA`, W / 2, H - 46);
 }
 function roundRect(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
 
@@ -403,9 +464,37 @@ async function renderJourney() {
   main.innerHTML = `
     <div class="journey-head"><div><p class="eyebrow" style="color:var(--accent)">Your prayer journey</p><h1>My Devotional Collection</h1></div>
       <div class="tabs" role="group" aria-label="Filter">${[["all", "All days"], ["saved", "Saved art"], ["prayers", "Saved prayers"]].map(([v, l]) => `<button data-f="${v}" aria-pressed="${JFILTER === v}">${l}</button>`).join("")}</div></div>
+    <div class="backup-note">
+      <p><strong>Saved on this device.</strong> Your collection lives in this browser, so clearing your browsing data would erase it. Download a backup now and then, and save art you love to your photos with <em>Download or share</em>.</p>
+      <div class="row"><button class="btn small" id="backupDl">Download backup</button>${STATIC ? `<label class="btn small ghost">Restore from backup<input type="file" id="backupIn" accept="application/json,.json" hidden></label>` : ""}</div>
+    </div>
     ${experiences.length ? `<div class="gallery">${experiences.map(tile).join("")}</div>`
       : `<div class="empty"><h2>${JFILTER === "all" ? "Your collection begins today" : "Nothing saved here yet"}</h2><p>Each devotional you receive keeps its artwork, prayer and saints together here, whether you visit every day or once in a while.</p><a class="btn primary" href="${L("/")}" data-link>What's on your heart?</a></div>`}`;
   $$(".tabs button").forEach((b) => b.addEventListener("click", () => { JFILTER = b.dataset.f; renderJourney(); }));
+  $("#backupDl").addEventListener("click", async () => {
+    const text = STATIC ? local.exportDb() : JSON.stringify(await api("/api/journey"), null, 1);
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([text], { type: "application/json" }));
+    a.download = `a-saint-for-me-backup-${new Date().toISOString().slice(0, 10)}.json`; a.click();
+    toast("Backup downloaded");
+  });
+  $("#backupIn")?.addEventListener("change", async (e) => {
+    const f = e.target.files?.[0]; if (!f) return;
+    try { const n = local.importDb(await f.text()); toast(n ? `Restored ${n} devotional${n === 1 ? "" : "s"}` : "Everything in that backup is already here"); renderJourney(); }
+    catch (err) { toast(err.message || "Couldn't read that file."); }
+  });
+}
+
+// ---------------- EXAMPLE ----------------
+async function renderExample() {
+  const base = STATIC ? "showcase/" : "/showcase/";
+  const ex = await fetch(base + "example.json").then((r) => r.json());
+  ex.art.current.url = base + ex.art.current.file;
+  ex.devotional.saints.forEach((s) => (s.emblem = base + s.emblem));
+  ex.art.history = [];
+  await renderExperience(ex.id, ex);
+  document.title = "Example · A Saint for Me";
+  main.insertAdjacentHTML("afterbegin", `<div class="example-banner"><p><strong>This is an example.</strong> Someone wrote: <em>“${esc(ex.exampleText)}”</em> Here's what they received.</p><a class="btn small primary" href="${L("/")}" data-link>Try it yourself</a></div>`);
 }
 
 // ---------------- ABOUT ----------------

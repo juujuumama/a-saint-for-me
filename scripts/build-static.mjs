@@ -20,6 +20,9 @@ let html = fs.readFileSync(path.join(out, "index.html"), "utf8");
 html = html
   .replace('href="/styles.css"', 'href="styles.css"')
   .replace('href="/icon.svg"', 'href="icon.svg"')
+  .replace('href="/manifest.webmanifest"', 'href="manifest.webmanifest"')
+  .replace('href="/icon-180.png"', 'href="icon-180.png"')
+  .replace(/href="\/example"/g, 'href="#/example"')
   .replace('<script type="module" src="/app.js"></script>', '<script>window.ASFM_STATIC = true;</script>\n  <script type="module" src="app.js"></script>')
   .replace(/href="\/"/g, 'href="#/"')
   .replace(/href="\/journey"/g, 'href="#/journey"')

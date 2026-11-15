@@ -4,7 +4,7 @@
 import { composeOffline, hydrate } from "./lib/compose-offline.js";
 import { proceduralArtwork, saintEmblem, wordsFrom, symbolIcon, SYMBOL_KEYS } from "./lib/art/procedural.js";
 import { EMOTIONS, CIRCUMSTANCES } from "./lib/library/themes.js";
-import { saintById } from "./lib/library/saints.js";
+import { saintById, saintOfDay } from "./lib/library/saints.js";
 import { needsCare, CARE_RESOURCES } from "./lib/safety.js";
 import { pickKit, kitFiles } from "./lib/art/kit.js";
 
@@ -75,7 +75,7 @@ function pub(e) {
     personName: e.checkin.personName || null, shared: e.checkin.text || null,
     selections: { emotions: e.checkin.emotions, circumstances: e.checkin.circumstances },
     saved: e.saved, prayerSaved: e.prayerSaved, care: e.care ? CARE_RESOURCES : null,
-    devotional: { ...e.devotional, saints: e.devotional.saints.map((s) => ({ ...s, emblem: emblemUrl(s) })) },
+    devotional: { ...e.devotional, saints: e.devotional.saints.map((s) => ({ ...s, symbols: s.emblem?.symbols || [], emblem: emblemUrl(s) })) },
     art: {
       status: "ready", notice: null,
       current: cur ? { url: artUrl(e, cur), kind: "studio-sketch", provider: "procedural", title: cur.title, composition: cur.composition, aspect: cur.aspect } : null,
@@ -89,6 +89,11 @@ const find = (x) => { const e = db.experiences.find((y) => y.id === x); if (!e) 
 export async function handle(path, method = "GET", body = {}) {
   const [p, q] = path.split("?");
   const m = p.match(/^\/api\/experiences\/([^/]+)(?:\/(.+))?$/);
+  if (p === "/api/saint-of-day") {
+    const { saint, label } = saintOfDay(new Date());
+    const sym = saint.emblem?.symbols?.[0];
+    return { label, id: saint.id, name: saint.name, feast: saint.feast, years: saint.years, story: saint.story, patronages: saint.patronages, symbol: sym, icon: symbolIcon(sym, STYLE) };
+  }
   if (p === "/api/symbols") return SYMBOL_KEYS().map((key) => ({ key, svg: symbolIcon(key, STYLE) }));
   if (p === "/api/kit-sample") return { images: KIT ? KIT.backgrounds.filter((_, i) => i % 9 === 0).slice(0, 8).map((b) => new URL(`./kit/${b.file}`, import.meta.url).href) : [] };
   if (p === "/api/options") return { emotions: EMOTIONS, circumstances: CIRCUMSTANCES };
@@ -149,4 +154,16 @@ export async function handle(path, method = "GET", body = {}) {
     return { experiences: list.map(pub) };
   }
   throw new Error("Not available in this edition.");
+}
+
+// Backup: the whole collection as a small file (art is re-drawn from its seed).
+export function exportDb() { return JSON.stringify({ app: "a-saint-for-me", version: 1, exportedAt: new Date().toISOString(), ...db }); }
+export function importDb(text) {
+  const data = JSON.parse(text);
+  if (data.app !== "a-saint-for-me" || !Array.isArray(data.experiences)) throw new Error("That file isn't an A Saint for Me backup.");
+  const have = new Set(db.experiences.map((e) => e.id));
+  const added = data.experiences.filter((e) => e && e.id && !have.has(e.id) && e.devotional && Array.isArray(e.artHistory));
+  db.experiences = [...db.experiences, ...added].sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+  save();
+  return added.length;
 }

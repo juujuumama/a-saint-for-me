@@ -1,0 +1,16 @@
+{
+  "name": "A Saint for Me",
+  "short_name": "A Saint for Me",
+  "description": "Share what's on your heart and receive a personal prayer, saints, Scripture and a one-of-a-kind collage by Sierra Renee (juujuumama).",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#1A1029",
+  "theme_color": "#24163A",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

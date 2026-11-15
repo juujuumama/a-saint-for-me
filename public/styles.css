@@ -387,3 +387,20 @@ body { font-size: 15px; }
 }
 @media (min-width: 900px) { .about-strip img { aspect-ratio: 2/3; } }
 .about-strip img { aspect-ratio: 2/3; }
+
+/* Saint of the day */
+.sotd { max-width: 760px; margin: 22px auto 0; display: grid; grid-template-columns: 64px 1fr; gap: 16px; align-items: start; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; box-shadow: var(--shadow); }
+.sotd[hidden] { display: none; }
+.sotd-icon svg { width: 64px; height: 64px; display: block; }
+.sotd-label { font: 600 .72rem/1 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin: 2px 0 6px; }
+.sotd h2 { font-size: 1.3rem; margin: 0 0 2px; }
+.sotd-meta { font-size: .8rem; color: var(--ink-2); margin: 0 0 6px; }
+.sotd details p { font-size: .92rem; margin: 6px 0 0; }
+@media (min-width: 900px) { .sotd { max-width: none; } }
+/* install tip + backup + example */
+.install-tip, .backup-note { background: color-mix(in srgb, var(--turq) 12%, var(--surface)); border: 1px solid color-mix(in srgb, var(--turq) 40%, transparent); border-radius: 14px; padding: 12px 14px; margin: 14px auto 0; max-width: 760px; font-size: .9rem; }
+.install-tip p, .backup-note p { margin: 0 0 8px; }
+.backup-note { max-width: none; margin: 0 0 16px; }
+.example-link { text-align: center; font-size: .88rem; color: var(--ink-2); margin: 10px 0 0; }
+.example-banner { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between; background: color-mix(in srgb, var(--pink) 14%, var(--surface)); border: 1px solid color-mix(in srgb, var(--pink) 40%, transparent); border-radius: 14px; padding: 12px 16px; margin: 16px 0 0; }
+.example-banner p { margin: 0; font-size: .92rem; }

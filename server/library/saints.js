@@ -472,3 +472,25 @@ export const SAINTS = [
 
 export const SAINT_IDS = SAINTS.map((s) => s.id);
 export const saintById = (id) => SAINTS.find((s) => s.id === id);
+
+// Saint of the day: a feast today, else an upcoming feast this week, else a daily companion.
+const MONTHS = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
+function feastDate(feast, year) {
+  const m = String(feast || "").toLowerCase().match(/(january|february|march|april|may|june|july|august|september|october|november|december)\s+(\d{1,2})/);
+  return m ? new Date(year, MONTHS.indexOf(m[1]), Number(m[2])) : null;
+}
+export function saintOfDay(now = new Date()) {
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  let best = null;
+  for (const s of SAINTS) {
+    let d = feastDate(s.feast, today.getFullYear());
+    if (!d) continue;
+    if (d < today) d = feastDate(s.feast, today.getFullYear() + 1);
+    const days = Math.round((d - today) / 864e5);
+    if (!best || days < best.days) best = { saint: s, days };
+  }
+  if (best && best.days === 0) return { saint: best.saint, label: "Feast day today" };
+  if (best && best.days <= 6) return { saint: best.saint, label: best.days === 1 ? "Feast day tomorrow" : `Feast day in ${best.days} days` };
+  const dayIndex = Math.floor(today.getTime() / 864e5);
+  return { saint: SAINTS[dayIndex % SAINTS.length], label: "A saint to walk with today" };
+}

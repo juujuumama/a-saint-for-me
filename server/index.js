@@ -9,7 +9,7 @@ import { loadStyle, saveStyle, buildArtPrompt } from "./art/style.js";
 import { providerStatus, saveProviderConfig, loadProviderConfig } from "./art/providers.js";
 import { saintEmblem, proceduralArtwork, symbolIcon, SYMBOL_KEYS } from "./art/procedural.js";
 import { generateImage } from "./art/providers.js";
-import { saintById } from "./library/saints.js";
+import { saintById, saintOfDay } from "./library/saints.js";
 import { EMOTIONS, CIRCUMSTANCES } from "./library/themes.js";
 import { needsCare, CARE_RESOURCES } from "./safety.js";
 import * as store from "./store.js";
@@ -45,7 +45,7 @@ function publicExperience(e) {
     personName: e.checkin.personName || null, shared: e.checkin.text || null,
     selections: { emotions: e.checkin.emotions, circumstances: e.checkin.circumstances },
     saved: e.saved, prayerSaved: e.prayerSaved, care: e.care ? CARE_RESOURCES : null,
-    devotional: { ...e.devotional, saints: e.devotional.saints.map((s) => ({ ...s, emblem: `/api/saints/${s.id}/emblem.svg` })) },
+    devotional: { ...e.devotional, saints: e.devotional.saints.map((s) => ({ ...s, symbols: s.emblem?.symbols || [], emblem: `/api/saints/${s.id}/emblem.svg` })) },
     art: {
       status: e.art?.status, notice: e.art?.notice || null,
       current: cur ? { url: artUrl(cur.file), kind: cur.kind, provider: cur.provider, title: cur.title, composition: cur.composition, aspect: cur.aspect } : null,
@@ -300,12 +300,17 @@ app.get("/api/kit-sample", (req, res) => {
     res.json({ images: m.backgrounds.filter((_, i) => i % 9 === 0).slice(0, 8).map((b) => `/kit/${b.file}`) });
   } catch { res.json({ images: [] }); }
 });
+app.get("/api/saint-of-day", (req, res) => {
+  const { saint, label } = saintOfDay(new Date());
+  const sym = saint.emblem?.symbols?.[0];
+  res.json({ label, id: saint.id, name: saint.name, feast: saint.feast, years: saint.years, story: saint.story, patronages: saint.patronages, symbol: sym, icon: symbolIcon(sym, loadStyle()) });
+});
 app.get("/api/symbols", (req, res) => {
   const style = loadStyle();
   res.setHeader("Cache-Control", "public, max-age=86400");
   res.json(SYMBOL_KEYS().map((key) => ({ key, svg: symbolIcon(key, style) })));
 });
-app.get(/^\/(today|journey|about|e\/.*)?$/, (req, res) => res.sendFile(path.resolve("public/index.html")));
+app.get(/^\/(today|journey|about|example|e\/.*)?$/, (req, res) => res.sendFile(path.resolve("public/index.html")));
 
 const PORT = Number(process.env.PORT) || 3000;
 app.listen(PORT, () => {
