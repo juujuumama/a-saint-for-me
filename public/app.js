@@ -271,8 +271,9 @@ function renderArt(exp) {
     ${framed}
     <div class="art-label">
       <span><strong>${esc(cur?.title || d.art_brief.title)}</strong></span>
-      ${cur ? `<span class="badge ${cur.kind === "ai-generated" ? "ai" : ""}">${cur.kind === "ai-generated" ? "Original AI artwork" : "Studio sketch"}</span>` : ""}
+      ${cur ? `<span class="badge">${cur.kind === "ai-generated" ? "Original AI artwork" : "One-of-a-kind collage"}</span>` : ""}
     </div>
+    ${cur ? `<p class="art-credit">Cut from original works by Sierra Renee. <a href="https://www.juujuumama.art/work" target="_blank" rel="noopener">See the originals</a></p>` : ""}
     ${art.notice ? `<p class="notice">${esc(art.notice)}</p>` : ""}
     <div class="art-actions">
       <button class="btn small" id="saveArt" ${!cur ? "disabled" : ""}>${exp.saved ? ICON.heart + " In my collection" : ICON.heartO + " Save to collection"}</button>
@@ -423,6 +424,7 @@ async function renderAbout() {
     </header>
     ${sample.images.length ? `<div class="about-strip">${sample.images.map((u) => `<img src="${u}" alt="" loading="lazy">`).join("")}</div>` : ""}
 
+    <div class="about-cols">
     <section class="about-sec">
       <h2>How it works</h2>
       <ol class="steps">
@@ -434,10 +436,18 @@ async function renderAbout() {
       </ol>
     </section>
 
+    <div>
     <section class="about-sec">
       <h2>About the artwork</h2>
+      <p>Every collage is cut from Sierra Renee's original works: her red wave paintings, florals, crystals, textile pieces and portraits. <a href="https://www.juujuumama.art/work" target="_blank" rel="noopener">See the original works on juujuumama.art</a>.</p>
       <p>The saints and angels in each collage are <strong>artistic interpretations, not portraits</strong>. Any face from Sierra's work can become any saint, whatever that saint's historical gender or race. It's meant to say that holiness looks like all of us, not to show what a saint looked like. Saints wear halos. Angels have wings, and sometimes one of Sierra's robot faces, because angels aren't human.</p>
     </section>
+    <section class="about-sec">
+      <h2>Your privacy</h2>
+      <p>What you write stays private to you. It's never shown to anyone else, and the art is made without it. "Remember my intentions" is off unless you turn it on, and you can delete everything anytime from the shield menu. If your words suggest you might be in danger, crisis resources appear alongside your prayer.</p>
+    </section>
+    </div>
+    </div>
 
     <section class="about-sec">
       <h2>The symbols</h2>
@@ -445,18 +455,16 @@ async function renderAbout() {
       <div class="symbol-grid">${order.filter((k) => byKey[k] && SYMBOLS[k]).map((k) => `<div class="symbol"><span class="symbol-icon">${byKey[k]}</span><span>${esc(cap(SYMBOLS[k]))}</span></div>`).join("")}</div>
     </section>
 
-    <section class="about-sec">
-      <h2>Your privacy</h2>
-      <p>What you write stays private to you. It's never shown to anyone else, and the art is made without it. "Remember my intentions" is off unless you turn it on, and you can delete everything anytime from the shield menu. If your words suggest you might be in danger, crisis resources appear alongside your prayer.</p>
-    </section>
 
     <section class="about-sec artist">
       <h2>About the artist</h2>
+      <div class="artist-body">
       <p><strong>Sierra Renee</strong> is a Catholic, multidisciplinary artist working under the name <strong>juujuumama</strong>. Rooted in Afrofuturism and surrealism, her work spans hand-cut collage, acrylic and mixed media, generative AI, AI fashion and animation.</p>
       <p>She grew up in the Hudson Valley, just north of New York City, in a multiracial family shaped by Black, Italian and Puerto Rican heritage. She has made art since childhood. Hand-cut collage, made from gem show catalogs, museum publications and found paper, is still the foundation of her visual language.</p>
       <p>Since 2022 she has trained her own AI models on her own imagery, to push back against generative AI's narrow and often distorted renderings of Black features, hair and adornment. Gemstones, sculptural adornment and immersive worlds recur throughout her work as symbols of ancestry, transformation and self-defined value. She founded Itan West African Artistry, a community of nearly 200 artists, and her work has been exhibited from Tokyo, London and Lisbon to Miami and billboards in Times Square.</p>
       <p>A Saint for Me brings that practice to prayer: every collage here is cut from her original work.</p>
-      <p><a class="btn" href="https://www.juujuumama.art" target="_blank" rel="noopener">See more of her work at juujuumama.art</a></p>
+      </div>
+      <p class="row"><a class="btn" href="https://www.juujuumama.art/work" target="_blank" rel="noopener">See her original works</a> <a class="btn ghost" href="https://www.juujuumama.art" target="_blank" rel="noopener">juujuumama.art</a></p>
     </section>
 
     <section class="card reflection"><p>Whatever you're carrying today, you don't have to carry it alone.</p><a class="btn" href="${L("/")}" data-link>What's on your heart?</a></section>
