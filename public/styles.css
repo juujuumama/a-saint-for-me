@@ -408,3 +408,8 @@ body { font-size: 15px; }
 .about-sec.why { background: color-mix(in srgb, var(--pink) 9%, var(--surface)); border: 1px solid color-mix(in srgb, var(--pink) 30%, transparent); border-radius: var(--radius); padding: clamp(18px, 3vw, 26px); max-width: 760px; }
 .about-sec.why p { font-family: var(--serif); font-size: clamp(1rem, 1.6vw, 1.1rem); line-height: 1.6; }
 .why-sign { font-style: italic; text-align: right; margin: 4px 0 0 !important; }
+
+/* Home Screen app: keep the menu below the phone's status bar / notch */
+.topbar { padding-top: calc(10px + env(safe-area-inset-top)); padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
+.foot { padding-bottom: calc(32px + env(safe-area-inset-bottom)); }
+#toast { bottom: calc(24px + env(safe-area-inset-bottom)); }
