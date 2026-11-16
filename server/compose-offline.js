@@ -65,7 +65,7 @@ export function composeOffline(checkin, context = {}, style) {
   const feeling = themes.find((t) => FEELING_LINES[t] && !(intent?.themes || []).includes(t));
   const paras = [];
   if (intent) {
-    const petition = otherMode ? fill(rand(src.other || src.self), who) : rand(src.self);
+    const petition = otherMode ? fill(rand(src.other || src.self), who, text) : rand(src.self);
     paras.push(petition);
   } else {
     const named = themes.slice(0, 3).map((t) => PHRASES[t]).filter(Boolean);
@@ -80,13 +80,13 @@ export function composeOffline(checkin, context = {}, style) {
   const hook = intent?.hooks?.[lead.id] || SAINT_HOOKS[lead.id];
   paras.push(`${lead.name.replace(/\s*\(.*\)/, "")}${hook ? `, ${hook},` : ","} pray for ${otherMode ? `${who} and for me` : "me"}.`);
   const departed = otherMode && ["grief", "suicideloss"].includes(intent?.id);
-  paras.push(departed ? fill(rand(CLOSINGS.departed), who)
-    : isThanks ? (otherMode ? fill(rand(CLOSINGS.joyOther), who) : rand(CLOSINGS.joy))
-    : otherMode ? fill(rand(CLOSINGS.other), who) : rand(CLOSINGS.self));
+  paras.push(departed ? fill(rand(CLOSINGS.departed), who, text)
+    : isThanks ? (otherMode ? fill(rand(CLOSINGS.joyOther), who, text) : rand(CLOSINGS.joy))
+    : otherMode ? fill(rand(CLOSINGS.other), who, text) : rand(CLOSINGS.self));
   const body = paras.join("\n\n");
 
-  const title = otherMode && src?.titleOther ? fill(src.titleOther, who) : src ? rand(src.title) : "A prayer for today";
-  const opening = otherMode && intent?.openingOther ? fill(rand(intent.openingOther), who) : intent ? rand(intent.opening) : "Thank you for trusting this moment with prayer. You are not alone in what you are carrying.";
+  const title = otherMode && src?.titleOther ? fill(src.titleOther, who, text) : src ? rand(src.title) : "A prayer for today";
+  const opening = otherMode && intent?.openingOther ? fill(rand(intent.openingOther), who, text) : intent ? rand(intent.opening) : "Thank you for trusting this moment with prayer. You are not alone in what you are carrying.";
 
   const motifPool = themes.flatMap((t) => style.motifs.byTheme[t] || []);
   const pick = (arr, n) => [...arr].sort(() => Math.random() - 0.5).slice(0, n);

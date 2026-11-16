@@ -73,7 +73,7 @@ export const INTENTS = [
   },
   {
     id: "sickchild", themes: ["parenting", "health", "fear"],
-    keywords: ["nicu", "picu", "pediatric", "children's hospital", "my child is sick", "my son is sick", "my daughter is sick", "my baby is sick", "special needs", "autism", "autistic", "down syndrome", "disability", "disabilities", "developmental delay", "seizures", "my son has", "my daughter has", "my child has", "my baby has"],
+    keywords: ["nicu", "picu", "pediatric", "children's hospital", "my child is sick", "my son is sick", "my daughter is sick", "my baby is sick", "special needs", "autism", "autistic", "down syndrome", "disability", "disabilities", "developmental delay", "seizures", "~my son has", "~my daughter has", "~my child has", "~my baby has"],
     saints: ["gianna", "raphael", "martin_porres"], scripture: ["mk10_14", "is49_15", "is43_2"], devotions: ["memorare", "anointing_sick"],
     title: ["A prayer for my child", "A prayer for a sick child"],
     titleOther: "A prayer for {who}",
@@ -322,7 +322,7 @@ export const INTENTS = [
   },
   {
     id: "exam", themes: ["work", "anxiety"],
-    keywords: ["exam", "finals", "midterm", "a test", "my test", "studying", "bar exam", "boards", "grades", "college application", "~school"],
+    keywords: ["exam", "finals", "midterm", "a test", "my test", "big test", "test tomorrow", "test today", "her test", "his test", "driving test", "studying", "bar exam", "boards", "grades", "college application", "~school"],
     saints: ["ignatius", "thomas_more", "therese"], scripture: ["jas1_5", "phil4_6"], devotions: ["jesus_prayer", "teresa_bookmark"],
     title: ["A prayer before an exam", "A prayer for school"],
     opening: ["You've prepared more than you think. Let's quiet your nerves.", "Bring your studying and your stress to God. He cares about both."],
@@ -674,6 +674,135 @@ export const INTENTS = [
   },
 ];
 
+// ---------- More prayers for the most common intentions ----------
+// Research on prayer requests (Radiant Foundation 2023, Barna 2017) shows people pray
+// most for loved ones in crisis, the sick, gratitude, family needs, guidance, health,
+// forgiveness and safety. These additions deepen exactly those.
+INTENTS.unshift({
+  id: "lovedone", themes: ["family", "hope", "fear"],
+  keywords: ["~pray for my", "~please pray for", "going through a lot", "going through a hard time", "going through a tough time", "going through something", "rough time", "rough patch", "having a hard time", "a hard season", "is struggling", "are struggling", "not doing well", "isn't doing well", "in a bad place", "really hard right now"],
+  saints: ["jude", "raphael", "monica"], scripture: ["is41_10", "ps34_18", "rom8_28"], devotions: ["memorare", "novena_st_jude", "divine_mercy_chaplet"],
+  title: ["A prayer for a hard season", "A prayer when life is hard"],
+  titleOther: "A prayer for {who}",
+  opening: ["You don't have to explain everything for God to understand. Let's bring this hard season to Him.", "Hard seasons don't last forever, even when they feel like they will. You're not alone in this one."],
+  openingOther: ["Praying for someone you love is one of the most powerful things you can do. Let's pray for {who}.", "You don't need all the details. God knows exactly what {who} needs."],
+  self: [
+    "Lord, I'm going through a hard time, and I don't even have all the words for it. You know every part of it. Carry what I can't carry, give me strength for today, and send me the people and the grace I need. Remind me that this season is not the end of my story.",
+    "Jesus, I'm tired and I'm hurting. I don't need to understand everything right now. I just need You close. Stay with me in this, give me one good thing to hold onto today, and lead me gently toward better days.",
+  ],
+  other: [
+    "Lord, You know everything {who} is going through, even the parts {they} can't put into words. Surround {them} with Your love and protection. Give {them} strength for today, peace in the waiting, and people who will walk with {them}. Show me how to love {them} well.",
+    "Jesus, I lift {who} up to You. Whatever {they} {are} carrying right now, carry it with {them}. Bring comfort where there is pain, hope where there is fear, and light where things feel dark. Let {them} feel, somehow, that {they} {are} not alone.",
+    "Heavenly Father, I don't know exactly what {who} needs, but You do. Give {them} exactly that: healing, wisdom, rest, courage or peace. Hold {them} close tonight, and let my love for {them} become prayer.",
+  ],
+  reflection: ["Send them a message today, even a short one: 'Thinking of you and praying for you.'", "Hard seasons pass. Hold on to one small good thing today."],
+});
+
+const EXTRA = {
+  cancer: {
+    self: ["Lord, I hand You my fear of this illness and everything it might mean. Be my strength in treatment, my rest in exhaustion and my hope in uncertainty. Let me feel held by Your love and by the people You've placed around me."],
+    other: ["Jesus, You never turned away anyone who was suffering. Stay close to {who} through every scan, treatment and long night. Fill {them} with courage, protect {their} body, and let {them} feel surrounded by the prayers of everyone who loves {them}."],
+  },
+  illness: {
+    self: ["Heavenly Father, my body is tired and I feel discouraged. Restore my health, if it is Your will, and give me peace in the meantime. Help me rest without guilt and accept care with gratitude."],
+    other: ["Heavenly Father, watch over {who} tonight. Bring rest to {their} body and peace to {their} mind. Strengthen {them} a little more each day, and help {them} feel how many people are praying for {them}."],
+  },
+  mental: {
+    self: ["Lord, I'm not okay right now, and I'm telling You honestly. I don't have to perform for You. Meet me in the heaviness, give me enough strength to take care of myself today, and help me believe that light will come again."],
+    other: ["Holy Spirit, Comforter, be near to {who}. Calm {their} mind, lift {their} spirit, and give {them} courage to keep going and to ask for help. Let {them} know {they} {are} not a burden and {they} {are} not alone."],
+  },
+  grief: {
+    self: [
+      "Lord, I miss them so much. Some moments the grief catches me by surprise. Hold me in those moments. Thank You for the gift of their life and for the love we shared, and keep them safe with You until we are together again.",
+      "God of mercy, I don't know how to keep going without them, so I'll just ask You for today. Give me strength for this day, comfort for this night, and the hope of the resurrection to hold onto.",
+    ],
+    other: ["Eternal Father, I commend {who} to Your mercy. Thank You for {their} life and for everything {they} gave us. Wipe away every tear, bring {them} into the fullness of Your joy, and let us feel {their} love still, until we meet again."],
+  },
+  overwhelm: {
+    self: ["Lord, I'm stretched too thin. Show me what can wait, what I can ask for help with, and what truly matters today. Give me rest, even a small one, and remind me that I don't have to do everything well to be loved."],
+    other: ["Jesus, {who} is carrying so much right now. Lighten {their} load, send {them} help, and give {them} rest. Let {them} feel Your peace in the middle of everything."],
+  },
+  gratitude: {
+    self: [
+      "Lord, today I just want to say thank You. For the people I love, for the breath in my lungs, for the small mercies I usually overlook. Open my eyes to Your goodness everywhere, and let my gratitude spill over into kindness.",
+      "Gracious God, You have been so good to me. Thank You for carrying me through the hard days and blessing me with the good ones. Make me generous with what I've received, and keep me close to You in joy as in sorrow.",
+      "Praise You, Lord! My heart is full and I don't want to forget this feeling. Thank You for every gift, seen and unseen. Let me remember this joy on harder days, and help me share it freely.",
+    ],
+  },
+  parenting: {
+    self: [
+      "Lord, I'm worried about my children. You know their hearts, their struggles and their futures better than I do. Protect them when I can't, guide them when they won't listen to me, and draw them close to You. Help me trust You with them.",
+      "St. Joseph, guardian of the Holy Family, watch over my home. Lord, give me the right words for my children today, the patience to listen, and the humility to apologize when I get it wrong. Let our home be a place where they always feel loved.",
+    ],
+    other: [
+      "Lord, I bring {who} to You. You love {them} even more than I do. Protect {them}, guide {their} choices, heal whatever is hurting {them}, and draw {them} close to Your heart. Give me wisdom to know when to speak and when to simply love.",
+    ],
+  },
+  job: {
+    self: ["Lord, I've been searching and waiting, and it's discouraging. Keep me from losing heart. Lead me to the right opportunity, give me favor with the people I meet, and provide for my needs while I wait."],
+    other: ["St. Joseph, provider, pray for {who}. Lord, You know how much work matters to {them} right now. Open the right door, give {them} confidence and favor, and provide for {their} family during {their} search."],
+  },
+  money: {
+    self: ["Lord, I'm afraid of not having enough. You've provided before, and I ask You to provide again. Give me wisdom with every dollar, help from unexpected places, and peace that doesn't depend on my bank account."],
+    other: ["Father, You know what {who} needs. Provide for {them} and {their} family, open doors {they} can't see, and give {them} peace in the worry. Show me how I can help."],
+  },
+  decision: {
+    self: ["Lord, I keep going back and forth. Calm my mind so I can hear You. Show me the choice that leads toward love, faith and peace, and give me the courage to make it and the freedom to let go of the other path."],
+    other: ["Holy Spirit, give {who} wisdom in this decision. Quiet the pressure and fear, surround {them} with good counsel, and lead {them} toward the choice that brings lasting peace."],
+  },
+  exam: {
+    other: ["Holy Spirit, be with {who} during this test. Give {them} a clear mind and a calm heart, help {them} remember what {they} studied, and let {them} know that {their} worth is not a grade."],
+  },
+  protection: {
+    self: ["Lord, as I go about this day, cover me with Your protection. Keep me safe on the roads and in every place I go, guard my heart from fear, and bring me home in peace."],
+    other: ["Guardian angels, watch over {who}. Lord, protect {them} today on every road, in every place and from every danger, seen and unseen. Bring {them} home safely, and calm my worry with trust in Your care."],
+  },
+  lonely: {
+    other: ["Lord, {who} feels alone right now. Be {their} companion. Send {them} friendship, kindness and community, and show me how I can be part of that."],
+  },
+  heartbreak: {
+    other: ["Lord, {who}'s heart is hurting. Heal {their} wounds, remind {them} of {their} worth, and surround {them} with people who love {them} well. Give {them} hope for what's ahead."],
+  },
+  abuse: {
+    other: ["Lord, I'm afraid for {who}. Protect {them} from harm. Give {them} the courage to reach out, safe people and places to turn to, and a clear way to safety. Show me how to support {them} without pressure, and keep {them} close to Your heart."],
+  },
+  selfworth: {
+    other: ["Lord, {who} can't see how precious {they} {are}. Open {their} eyes to see {themself} the way You do. Heal the voices that tell {them} {they} {are} not enough, and let {them} feel deeply, unshakably loved."],
+  },
+  forgive: {
+    self: ["Lord, I want to let go of this resentment, but it keeps coming back. Each time it does, help me hand it to You again. Heal the place where I was hurt, and give me peace that doesn't depend on an apology."],
+  },
+  guilt: {
+    self: ["Lord, I keep replaying what I did. Thank You that Your mercy is bigger than my mistakes. Help me make amends where I can, learn what I need to learn, and then let me rest in Your forgiveness instead of carrying this forever."],
+  },
+  marriage: {
+    self: ["Lord, bless my marriage. Thank You for my spouse, even on the hard days. Help us choose each other again, protect us from what could pull us apart, and keep You at the center of our home."],
+  },
+  caregiving: {
+    other: ["Lord, bless {who}, who gives so much of {themself} caring for someone else. Renew {their} strength, send {them} help and rest, and let {them} feel how much {their} love matters."],
+  },
+};
+for (const [id, add] of Object.entries(EXTRA)) {
+  const it = INTENTS.find((x) => x.id === id);
+  if (!it) continue;
+  if (add.self) it.self = [...(it.self || []), ...add.self];
+  if (add.other) it.other = [...(it.other || []), ...add.other];
+}
+const MORE_OPENINGS = {
+  cancer: ["Whatever the scans say, you are held. Let's pray."],
+  illness: ["Being unwell is hard, and so is waiting to feel better. Let's bring it to God."],
+  mental: ["You reached out today, and that matters. Let's pray together."],
+  grief: ["Your love for them hasn't gone anywhere. Let's bring it, and your grief, to God."],
+  parenting: ["Every worry you carry for your children, God carries too."],
+  gratitude: ["Gratitude is one of the most beautiful prayers there is. Let's give thanks."],
+  overwhelm: ["Let's set some of this down at Jesus's feet."],
+  job: ["God sees your effort and your need. Let's ask Him for the right door."],
+};
+for (const [id, lines] of Object.entries(MORE_OPENINGS)) {
+  const it = INTENTS.find((x) => x.id === id);
+  if (it) it.opening = [...it.opening, ...lines];
+}
+
 // A short line for each saint, used as "St. X, ___, pray for me."
 export const SAINT_HOOKS = {
   monica: "who never stopped praying for her son", gianna: "who loved her family with her whole life", anne: "grandmother of Jesus",
@@ -731,22 +860,34 @@ export const CLOSINGS = {
     "I place all of this in Your hands. Give me peace for today.",
     "Thank You for hearing me. Help me trust You with what comes next.",
     "Be with me in every hour of this day.",
+    "Give me Your peace, Lord, the kind the world can't give.",
+    "Whatever today holds, let me face it with You.",
+    "Hold me close tonight, and wake me with hope.",
   ],
   other: [
     "And hold me too, Lord, as I love {them} through this.",
     "Give me patience and hope as I keep praying for {them}.",
     "Thank You for loving {them} even more than I do.",
+    "Let {them} feel, somehow, how many people are praying for {them}.",
+    "I trust {them} to Your care, Lord, tonight and always.",
+    "Show me how to be Your love for {them} this week.",
   ],
 };
 
 // Pronouns for "praying for someone" (my mom → she/her).
 const FEM = /\b(mom|mother|mama|grandma|grandmother|sister|daughter|wife|girlfriend|aunt|niece|fiancee|stepmom|godmother|mother-in-law)\b/;
 const MASC = /\b(dad|father|papa|grandpa|grandfather|brother|son|husband|boyfriend|uncle|nephew|fiance|stepdad|godfather|father-in-law)\b/;
-export function pronounsFor(who = "") {
+export function pronounsFor(who = "", text = "") {
   const w = who.toLowerCase();
-  if (FEM.test(w)) return { they: "she", them: "her", their: "her", are: "is" };
-  if (MASC.test(w)) return { they: "he", them: "him", their: "his", are: "is" };
-  return { they: "they", them: "them", their: "their", are: "are" };
+  // "my friend, she's..." — for relations that could be anyone, take a hint from the message
+  if (!FEM.test(w) && !MASC.test(w) && text) {
+    const she = /\b(she|she's|shes|her|herself)\b/i.test(text), he = /\b(he|he's|hes|him|his|himself)\b/i.test(text);
+    if (she && !he) return { they: "she", them: "her", their: "her", are: "is", themself: "herself" };
+    if (he && !she) return { they: "he", them: "him", their: "his", are: "is", themself: "himself" };
+  }
+  if (FEM.test(w)) return { they: "she", them: "her", their: "her", are: "is", themself: "herself" };
+  if (MASC.test(w)) return { they: "he", them: "him", their: "his", are: "is", themself: "himself" };
+  return { they: "they", them: "them", their: "their", are: "are", themself: "themselves" };
 }
 const RELATION = /\bmy (mother-in-law|father-in-law|in-laws|sister-in-law|brother-in-law|mom|mother|mama|dad|father|papa|grandma|grandmother|grandpa|grandfather|sister|brother|son|daughter|husband|wife|boyfriend|girlfriend|fianc[eé]e?|partner|friend|best friend|aunt|uncle|cousin|niece|nephew|baby|kids|children|family|parents|stepmom|stepdad|godmother|godfather|coworker|neighbor)\b/i;
 
@@ -755,10 +896,12 @@ export function detectWho(text = "", intentId) {
   const m = text.match(RELATION);
   if (!m) return "";
   const forSomeone = /\bpray(ing)? for (my|her|him|them|our)\b/i.test(text);
-  const theirStory = ["joy_pregnancy", "joy_baby", "joy_health", "difficult", "cancer", "illness", "faithchild", "grief", "protection", "pregnancy", "addiction", "mental", "dying", "sickchild", "prison", "immigration", "suicideloss"].includes(intentId);
+  const theirStory = ["lovedone", "joy_pregnancy", "joy_baby", "joy_health", "difficult", "cancer", "illness", "faithchild", "grief", "protection", "pregnancy", "addiction", "mental", "dying", "sickchild", "prison", "immigration", "suicideloss"].includes(intentId);
   // "my husband left me" is the speaker's story, not a prayer for him
   const selfStory = /\b(left me|cheated on me|hurt me|lied to me|broke up with me)\b/i.test(text);
-  return (forSomeone || theirStory) && !selfStory ? `my ${m[1].toLowerCase()}` : "";
+  // "my husband lost his job", "my son is struggling": the story is about them
+  const aboutThem = new RegExp(`\\bmy ${m[1]}('s)? (is|was|has|had|lost|got|needs|just|starts|started|can't|cant|won't|keeps|isn't|doesn't|has been|went)\\b`, "i").test(text);
+  return (forSomeone || theirStory || aboutThem) && !selfStory ? `my ${m[1].toLowerCase()}` : "";
 }
 
 const WORRY = /\b(worried|worry|scared|afraid|anxious|anxiety|stressed|struggling|hard|hate|dread|lost|fired|laid off|sad|crying|can't|cannot|won't)\b/;
@@ -778,7 +921,7 @@ export function detectIntent(text = "", themes = []) {
   return INTENTS.find((it) => it.themes[0] === themes[0]) || null;
 }
 
-export function fill(str, who) {
-  const p = pronounsFor(who);
-  return str.replace(/\{who\}/g, who).replace(/\{them\}/g, p.them).replace(/\{their\}/g, p.their).replace(/\{they\}/g, p.they).replace(/\{are\}/g, p.are);
+export function fill(str, who, text = "") {
+  const p = pronounsFor(who, text);
+  return str.replace(/\{who\}/g, who).replace(/\{them\}/g, p.them).replace(/\{their\}/g, p.their).replace(/\{they\}/g, p.they).replace(/\{are\}/g, p.are).replace(/\{themself\}/g, p.themself);
 }
