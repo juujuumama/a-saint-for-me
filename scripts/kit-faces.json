@@ -16,14 +16,6 @@
 "pres": "fem"
 },
 {
-"id": "032c18c1e5",
-"fx": 0.5497,
-"eye": 0.2688,
-"chin": 0.4079,
-"tone": "robot",
-"pres": "any"
-},
-{
 "id": "033c4652e1",
 "fx": 0.5029,
 "eye": 0.0967,
@@ -38,14 +30,6 @@
 "chin": 0.3539,
 "tone": "medium",
 "pres": "fem"
-},
-{
-"id": "0469e2f043",
-"fx": 0.6732,
-"eye": 0.1654,
-"chin": 0.2931,
-"tone": "robot",
-"pres": "any"
 },
 {
 "id": "04e7e49df8",
@@ -136,14 +120,6 @@
 "pres": "fem"
 },
 {
-"id": "1805435429",
-"fx": 0.5473,
-"eye": 0.2012,
-"chin": 0.2936,
-"tone": "robot",
-"pres": "any"
-},
-{
 "id": "1d236b36ad",
 "fx": 0.3357,
 "eye": 0.4972,
@@ -158,14 +134,6 @@
 "chin": 0.3557,
 "tone": "light",
 "pres": "fem"
-},
-{
-"id": "1d65c93147",
-"fx": 0.7101,
-"eye": 0.2256,
-"chin": 0.3451,
-"tone": "robot",
-"pres": "any"
 },
 {
 "id": "1dfafee2b8",
@@ -360,14 +328,6 @@
 "pres": "fem"
 },
 {
-"id": "534cccd100",
-"fx": 0.5694,
-"eye": 0.27,
-"chin": 0.4579,
-"tone": "robot",
-"pres": "any"
-},
-{
 "id": "53a5419664",
 "fx": 0.5545,
 "eye": 0.2517,
@@ -448,14 +408,6 @@
 "pres": "fem"
 },
 {
-"id": "66c2078758",
-"fx": 0.4406,
-"eye": 0.255,
-"chin": 0.3939,
-"tone": "robot",
-"pres": "any"
-},
-{
 "id": "68036e500d",
 "fx": 0.4176,
 "eye": 0.1062,
@@ -534,14 +486,6 @@
 "chin": 0.3585,
 "tone": "light",
 "pres": "fem"
-},
-{
-"id": "7bbc73e63b",
-"fx": 0.5856,
-"eye": 0.256,
-"chin": 0.3755,
-"tone": "robot",
-"pres": "any"
 },
 {
 "id": "7d5d22bbbe",
@@ -784,14 +728,6 @@
 "pres": "fem"
 },
 {
-"id": "b475f78b7a",
-"fx": 0.5725,
-"eye": 0.179,
-"chin": 0.2667,
-"tone": "robot",
-"pres": "any"
-},
-{
 "id": "b691bb6fc3",
 "fx": 0.4239,
 "eye": 0.2307,
@@ -822,14 +758,6 @@
 "chin": 0.3309,
 "tone": "medium",
 "pres": "fem"
-},
-{
-"id": "bb267aa8a4",
-"fx": 0.6043,
-"eye": 0.1672,
-"chin": 0.2888,
-"tone": "robot",
-"pres": "any"
 },
 {
 "id": "bb9b1cb0b5",
@@ -870,14 +798,6 @@
 "chin": 0.3688,
 "tone": "medium",
 "pres": "fem"
-},
-{
-"id": "c4ccb7633b",
-"fx": 0.7232,
-"eye": 0.2689,
-"chin": 0.3892,
-"tone": "robot",
-"pres": "any"
 },
 {
 "id": "c53777f0a4",
@@ -990,14 +910,6 @@
 "chin": 0.396,
 "tone": "light",
 "pres": "fem"
-},
-{
-"id": "e1d26f952e",
-"fx": 0.447,
-"eye": 0.1833,
-"chin": 0.2983,
-"tone": "robot",
-"pres": "any"
 },
 {
 "id": "e47810341a",
@@ -1126,22 +1038,6 @@
 "chin": 0.6496,
 "tone": "medium",
 "pres": "fem"
-},
-{
-"id": "fa82d4ae70",
-"fx": 0.3914,
-"eye": 0.3633,
-"chin": 0.532,
-"tone": "robot",
-"pres": "any"
-},
-{
-"id": "fa82d4ae70",
-"fx": 0.8777,
-"eye": 0.3828,
-"chin": 0.6042,
-"tone": "robot",
-"pres": "any"
 },
 {
 "id": "fb2368b845",
@@ -1316,6 +1212,278 @@
 "fx": 0.4568,
 "eye": 0.2645,
 "chin": 0.343,
+"tone": "dark",
+"pres": "any"
+},
+{
+"id": "79c8b58aa6",
+"fx": 0.4926,
+"eye": 0.1096,
+"chin": 0.1597,
+"tone": "dark",
+"pres": "any"
+},
+{
+"id": "927ee0fc95",
+"fx": 0.4993,
+"eye": 0.1164,
+"chin": 0.1684,
+"tone": "light",
+"pres": "any"
+},
+{
+"id": "a815408df4",
+"fx": 0.2679,
+"eye": 0.3417,
+"chin": 0.4744,
+"tone": "dark",
+"pres": "any"
+},
+{
+"id": "381c342620",
+"fx": 0.6283,
+"eye": 0.5802,
+"chin": 0.7408,
+"tone": "dark",
+"pres": "any"
+},
+{
+"id": "ba61b98344",
+"fx": 0.5927,
+"eye": 0.2703,
+"chin": 0.3808,
+"tone": "dark",
+"pres": "any"
+},
+{
+"id": "4a40144010",
+"fx": 0.9138,
+"eye": 0.1909,
+"chin": 0.2282,
+"tone": "light",
+"pres": "any"
+},
+{
+"id": "cdc4bef80c",
+"fx": 0.5237,
+"eye": 0.3086,
+"chin": 0.5389,
+"tone": "light",
+"pres": "any"
+},
+{
+"id": "c036591dc0",
+"fx": 0.4574,
+"eye": 0.39,
+"chin": 0.5633,
+"tone": "dark",
+"pres": "any"
+},
+{
+"id": "5d59d4fa22",
+"fx": 0.4548,
+"eye": 0.3121,
+"chin": 0.4461,
+"tone": "light",
+"pres": "any"
+},
+{
+"id": "bc9e04a3f2",
+"fx": 0.5116,
+"eye": 0.417,
+"chin": 0.4526,
+"tone": "dark",
+"pres": "any"
+},
+{
+"id": "7c55a1e883",
+"fx": 0.675,
+"eye": 0.5155,
+"chin": 0.5914,
+"tone": "dark",
+"pres": "any"
+},
+{
+"id": "2d76b5824c",
+"fx": 0.3005,
+"eye": 0.5964,
+"chin": 0.6512,
+"tone": "dark",
+"pres": "any"
+},
+{
+"id": "a765c374e1",
+"fx": 0.4285,
+"eye": 0.4408,
+"chin": 0.7446,
+"tone": "light",
+"pres": "any"
+},
+{
+"id": "d41a286752",
+"fx": 0.7856,
+"eye": 0.2619,
+"chin": 0.3353,
+"tone": "dark",
+"pres": "any"
+},
+{
+"id": "21e6b6d9d4",
+"fx": 0.68,
+"eye": 0.1946,
+"chin": 0.2828,
+"tone": "dark",
+"pres": "any"
+},
+{
+"id": "15c96139ea",
+"fx": 0.5476,
+"eye": 0.2687,
+"chin": 0.5051,
+"tone": "dark",
+"pres": "any"
+},
+{
+"id": "819531b960",
+"fx": 0.1441,
+"eye": 0.8401,
+"chin": 0.9414,
+"tone": "dark",
+"pres": "any"
+},
+{
+"id": "d6f9754b90",
+"fx": 0.5126,
+"eye": 0.3737,
+"chin": 0.5082,
+"tone": "dark",
+"pres": "any"
+},
+{
+"id": "e39f27cbd0",
+"fx": 0.5103,
+"eye": 0.1992,
+"chin": 0.3331,
+"tone": "dark",
+"pres": "any"
+},
+{
+"id": "639623c796",
+"fx": 0.727,
+"eye": 0.1401,
+"chin": 0.2087,
+"tone": "dark",
+"pres": "any"
+},
+{
+"id": "de75aca924",
+"fx": 0.677,
+"eye": 0.6919,
+"chin": 0.8337,
+"tone": "dark",
+"pres": "any"
+},
+{
+"id": "8d61cd4343",
+"fx": 0.5823,
+"eye": 0.4767,
+"chin": 0.5563,
+"tone": "dark",
+"pres": "any"
+},
+{
+"id": "de75aca924",
+"fx": 0.5281,
+"eye": 0.3542,
+"chin": 0.3992,
+"tone": "dark",
+"pres": "any"
+},
+{
+"id": "935a14673c",
+"fx": 0.5739,
+"eye": 0.3414,
+"chin": 0.5533,
+"tone": "dark",
+"pres": "any"
+},
+{
+"id": "1950532ebb",
+"fx": 0.5921,
+"eye": 0.3899,
+"chin": 0.5267,
+"tone": "dark",
+"pres": "any"
+},
+{
+"id": "33f6d4cce4",
+"fx": 0.509,
+"eye": 0.2649,
+"chin": 0.4348,
+"tone": "dark",
+"pres": "any"
+},
+{
+"id": "e2baae61f5",
+"fx": 0.6924,
+"eye": 0.2685,
+"chin": 0.3959,
+"tone": "dark",
+"pres": "any"
+},
+{
+"id": "c82ab75e0e",
+"fx": 0.4113,
+"eye": 0.3158,
+"chin": 0.6797,
+"tone": "dark",
+"pres": "any"
+},
+{
+"id": "2bdd3e7a02",
+"fx": 0.3338,
+"eye": 0.1978,
+"chin": 0.3765,
+"tone": "dark",
+"pres": "any"
+},
+{
+"id": "04da4f6817",
+"fx": 0.4906,
+"eye": 0.2684,
+"chin": 0.4415,
+"tone": "dark",
+"pres": "any"
+},
+{
+"id": "ac39f2cfaa",
+"fx": 0.5787,
+"eye": 0.452,
+"chin": 0.5322,
+"tone": "dark",
+"pres": "any"
+},
+{
+"id": "819531b960",
+"fx": 0.4575,
+"eye": 0.3263,
+"chin": 0.8052,
+"tone": "dark",
+"pres": "any"
+},
+{
+"id": "b953b662c5",
+"fx": 0.496,
+"eye": 0.4431,
+"chin": 0.8543,
+"tone": "dark",
+"pres": "any"
+},
+{
+"id": "90460aa56f",
+"fx": 0.4937,
+"eye": 0.3819,
+"chin": 0.4626,
 "tone": "dark",
 "pres": "any"
 }

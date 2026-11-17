@@ -14,9 +14,7 @@ function rng(seed) {
 }
 
 // Any portrait can become any saint (artistic interpretation, not likeness).
-// Robot faces are reserved for angels.
-export function faceCandidates(faces = [], saint) {
-  if (!saint || saint.kind === "angel") return faces;
+export function faceCandidates(faces = []) {
   return faces.filter((fc) => fc.tone !== "robot");
 }
 
@@ -38,8 +36,7 @@ export function pickKit(manifest, { themes = [], seed = 1, saint = null } = {}) 
   const wing = pick([...role("crystal"), ...role("robe")], [crystal, robe, mantle]);
   const paint = pick(role("paint"));
   const faces = faceCandidates(manifest.faces, saint);
-  const robots = faces.filter((fc) => fc.tone === "robot");
-  const pool = saint?.kind === "angel" && robots.length && r() < 0.5 ? robots : faces.filter((fc) => fc.tone !== "robot");
+  const pool = faces;
   const face = pool.length ? pool[Math.floor(r() * pool.length)] : null;
   return { bg, robe, mantle, crystal, wing, paint, face };
 }

@@ -539,7 +539,7 @@ async function renderAbout() {
     <section class="about-sec">
       <h2>About the artwork</h2>
       <p>Every collage is cut from Sierra Renee's original works: her red wave paintings, florals, crystals, textile pieces and portraits. <a href="https://www.juujuumama.art/work" target="_blank" rel="noopener">See the original works on juujuumama.art</a>.</p>
-      <p>The saints and angels in each collage are <strong>artistic interpretations, not portraits</strong>. Any face from Sierra's work can become any saint, whatever that saint's historical gender or race. It's meant to say that holiness looks like all of us, not to show what a saint looked like. Saints wear halos. Angels have wings, and sometimes one of Sierra's robot faces, because angels aren't human.</p>
+      <p>The saints and angels in each collage are <strong>artistic interpretations, not portraits</strong>. Any face from Sierra's work can become any saint, whatever that saint's historical gender or race. It's meant to say that holiness looks like all of us, not to show what a saint looked like. Saints wear halos. Angels have wings.</p>
     </section>
     <section class="about-sec">
       <h2>Your privacy</h2>
