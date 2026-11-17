@@ -129,4 +129,5 @@ The free artist builds each image from `public/kit/`, made from Sierra Renee's p
 - **Faces** were found with a face detector across all 438 works, then reviewed and labeled by hand (`scripts/kit-faces.json`). Crops are computed from each face's eye line and chin, so every face sits the same way under a veil, hood or halo.
 - **Face choice:** saints are artistic interpretations, so any of her portraits can become any saint, whatever the saint's historical gender or race. Angels can also get one of her robot faces, about half the time. Robot faces are never used for saints.
 - **About page samples:** the saint collages at the top of the About page are rendered with `node scripts/render-showcase.mjs` into `public/showcase/`.
+- **Prayer tests:** `node scripts/test-prayers.mjs` checks 51 real-world messages: the right intention, the right person, no grammar slips. It runs before every deploy.
 - **Changing the kit:** edit the lists in `scripts/fetch-kit.mjs` (positions in the site's image list) or `scripts/kit-faces.json`, then run `node scripts/fetch-kit.mjs`.

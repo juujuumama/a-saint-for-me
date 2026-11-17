@@ -6,7 +6,7 @@
 
 export const INTENTS = [
   {
-    id: "abuse", themes: ["fear", "family"],
+    id: "abuse", noFallback: true, themes: ["fear", "family"],
     keywords: ["abuse", "abusive", "abused", "hits me", "hit me", "beats me", "chokes me", "not safe at home", "afraid of my husband", "afraid of my boyfriend", "afraid of my partner", "afraid of my wife", "domestic violence", "threatens me", "controlling", "he hurts me", "she hurts me"],
     saints: ["rita", "bakhita", "michael"], scripture: ["ps27_10", "is41_10", "ps34_18"], devotions: ["st_michael", "memorare"],
     title: ["A prayer for safety", "A prayer for courage and safety"],
@@ -18,7 +18,7 @@ export const INTENTS = [
     reflection: ["Reaching out is brave. The National Domestic Violence Hotline (1-800-799-7233) is free and confidential, any hour.", "You are not alone, and you are not to blame. Tell one safe person today."],
   },
   {
-    id: "difficult", themes: ["family", "relationships", "anger"],
+    id: "difficult", noFallback: true, themes: ["family", "relationships", "anger"],
     hooks: { monica: "who loved a difficult family with patience", rita: "who kept her peace in a hard home" },
     keywords: ["narcissis", "toxic", "manipulat", "gaslight", "selfish", "self-centered", "self centered", "guilt trip", "guilt-trip", "boundaries", "boundary", "controlling mother", "controlling father", "controlling mom", "controlling dad", "my in-laws", "mother-in-law", "father-in-law", "never apologizes", "always about them", "always about her", "always about him", "walk on eggshells", "walking on eggshells", "emotionally draining", "difficult person", "difficult family", "my difficult"],
     saints: ["monica", "rita", "teresa_avila"], scripture: ["rom12_18", "mt10_16", "prov4_23"], devotions: ["surrender_novena", "peace_prayer", "memorare"],
@@ -38,7 +38,7 @@ export const INTENTS = [
     reflection: ["A boundary isn't a punishment. It's telling the truth about what you can carry.", "You can pray for someone and still keep your distance. Both can be love."],
   },
   {
-    id: "suicideloss", themes: ["grief", "sadness"],
+    id: "suicideloss", noFallback: true, themes: ["grief", "sadness"],
     keywords: ["died by suicide", "took his own life", "took her own life", "took their own life", "killed himself", "killed herself", "lost to suicide", "committed suicide", "suicide loss"],
     saints: ["monica", "elizabeth_seton", "dymphna"], scripture: ["rom8_38", "ps34_18", "rev21_4"], devotions: ["eternal_rest", "divine_mercy_chaplet", "rosary_seven_sorrows"],
     title: ["A prayer after a suicide loss"],
@@ -55,7 +55,7 @@ export const INTENTS = [
     reflection: ["It wasn't your fault. Grief after suicide carries questions; you don't have to answer them alone. Consider a suicide-loss support group.", "Speak their name with love. Their life was more than how it ended."],
   },
   {
-    id: "dying", themes: ["grief", "health", "fear"], hooks: { joseph: "patron of a happy death" },
+    id: "dying", noFallback: true, themes: ["grief", "health", "fear"], hooks: { joseph: "patron of a happy death" },
     keywords: ["dying", "end of life", "last days", "hospice", "palliative", "won't make it", "not going to make it", "on a ventilator", "life support", "days to live", "weeks to live", "deathbed"],
     saints: ["joseph", "raphael", "faustina"], scripture: ["ps23_1", "jn14_27", "ps116_15"], devotions: ["divine_mercy_chaplet", "anointing_sick", "anima_christi"],
     title: ["A prayer for a peaceful death", "A prayer at the bedside"],
@@ -72,7 +72,7 @@ export const INTENTS = [
     reflection: ["Say what matters: thank you, I love you, I forgive you, please forgive me. Ask for a priest for the Anointing of the Sick.", "Presence is enough. You don't have to find perfect words."],
   },
   {
-    id: "sickchild", themes: ["parenting", "health", "fear"],
+    id: "sickchild", noFallback: true, themes: ["parenting", "health", "fear"],
     keywords: ["nicu", "picu", "pediatric", "children's hospital", "my child is sick", "my son is sick", "my daughter is sick", "my baby is sick", "special needs", "autism", "autistic", "down syndrome", "disability", "disabilities", "developmental delay", "seizures", "~my son has", "~my daughter has", "~my child has", "~my baby has"],
     saints: ["gianna", "raphael", "martin_porres"], scripture: ["mk10_14", "is49_15", "is43_2"], devotions: ["memorare", "anointing_sick"],
     title: ["A prayer for my child", "A prayer for a sick child"],
@@ -90,7 +90,7 @@ export const INTENTS = [
   },
   {
     id: "cancer", themes: ["health", "fear"],
-    keywords: ["cancer", "chemo", "tumor", "tumour", "biopsy", "radiation", "oncolog", "surgery", "operation", "diagnos", "scan results", "mri", "malignant"],
+    keywords: ["cancer", "chemo", "tumor", "tumour", "radiation", "oncolog", "malignant", "leukemia", "lymphoma", "metasta", "mastectomy", "carcinoma", "melanoma", "stage 4", "stage four"],
     saints: ["peregrine", "raphael", "padre_pio"], scripture: ["jer17_14", "is41_10"], devotions: ["anointing_sick", "divine_mercy_chaplet"],
     title: ["A prayer for healing", "A prayer before treatment", "A prayer in illness"],
     titleOther: "A prayer for {who}'s healing",
@@ -108,7 +108,58 @@ export const INTENTS = [
   },
   {
     id: "illness", themes: ["health"],
-    keywords: ["sick", "illness", "ill ", "hospital", "in pain", "chronic", "flu", "covid", "infection", "heart attack", "stroke", "my health", "doctor", "recovering from"],
+    keywords: ["sick", "illness", "ill ", "hosp", "in pain", "chronic", "flu", "covid", "infection", "heart attack", "stroke", "my health", "doctor", "recovering from", "surgery", "surgury", "operation", "procedure", "icu", "emergency room", " er ", "diagnos", "biopsy", "mri", "scan", "test results", "lab results", "bloodwork", "waiting for results", "dementia", "alzheimer", "memory loss"],
+    variants: [
+      {
+        when: "\\b(dementia|alzheimer|memory loss|doesn't recognize|doesnt recognize|forgetting everything)",
+        title: ["A prayer for a loved one with dementia"],
+        titleOther: "A prayer for {who}",
+        saints: ["joseph", "martin_porres", "dymphna"], scripture: ["is49_15", "rom8_38", "is40_31"], devotions: ["memorare", "rosary_sorrowful"],
+        opening: ["Watching someone you love fade in memory is a long, quiet grief. God remembers everything they are.", "Even when they forget, they are never forgotten by God."],
+        openingOther: ["Even when {who} forgets, God never forgets {them}. Let's pray.", "Loving someone with dementia is a long goodbye. Let's bring {who} to God."],
+        self: [
+          "Lord, I'm watching someone I love slip away in memory, and it breaks my heart. Even when they forget, You never forget them. Give them peace and dignity, and give me patience, tenderness and rest. Let me love the person they are today.",
+        ],
+        other: [
+          "Lord, {who} is losing pieces of {their} memory, but You hold all of {them}. Keep {them} calm, safe and surrounded by gentle care. Let {them} feel love even when {they} can't name it, and give our family patience and grace.",
+          "Father, You knew {who} before {they} {were} born and You know {them} still. Comfort {them} in confusion, guard {their} dignity, and give everyone caring for {them} strength and tenderness.",
+        ],
+        reflection: ["Love them as they are today. Music, touch and familiar prayers often reach deeper than memory.", "You are grieving someone who is still here. Be gentle with yourself."],
+      },
+      {
+        when: "\\b(surgery|surgury|operation|procedure|operated|going under|anesthesia)\\b",
+        title: ["A prayer before surgery", "A prayer for a safe surgery"],
+        titleOther: "A prayer for {who}'s surgery",
+        saints: ["raphael", "padre_pio", "joseph"], scripture: ["is41_10", "jer17_14", "ps23_1"], devotions: ["anima_christi", "memorare"],
+        opening: ["Surgery can make anyone afraid. Let's place it all in God's hands.", "Before a surgery, it helps to remember: you are held."],
+        openingOther: ["Let's pray for {who} and everyone caring for {them} in surgery.", "Let's place {who} in God's hands before surgery."],
+        self: [
+          "Lord, I'm going into surgery and I'm afraid. Guide the hands and minds of my surgeons, nurses and anesthesiologist. Keep me safe while I sleep, bring me through without complications, and give me a gentle, steady recovery. Into Your hands I place my body and my fear.",
+          "Divine Physician, be in the operating room with me. Calm my nerves tonight, give the whole medical team clarity and skill, and let me wake up held by Your peace.",
+        ],
+        other: [
+          "Lord, I place {who} in Your hands before {their} surgery. Guide the surgeons, nurses and everyone on the team with skill and wisdom. Keep {them} safe, bring {them} through without complications, and give {them} a gentle recovery. Calm {their} fears, and mine.",
+          "Divine Physician, be in the operating room with {who}. Steady every hand that cares for {them}, protect {them} through every moment of surgery, and let {them} wake to peace and healing.",
+        ],
+        reflection: ["Breathe slowly and pray one sentence: 'Jesus, I trust in You.' Let that be enough.", "Ask someone to text you when it's over. You don't have to wait alone."],
+      },
+      {
+        when: "\\b(results|biopsy|scan|scans|mri|ct scan|tests|bloodwork|diagnos|waiting to hear|waiting on the doctor)",
+        title: ["A prayer while waiting for results"],
+        titleOther: "A prayer for {who} while waiting for results",
+        saints: ["raphael", "padre_pio", "bernadette"], scripture: ["phil4_6", "is41_10", "ps46_10"], devotions: ["surrender_novena", "teresa_bookmark"],
+        opening: ["Waiting for results can be the hardest part. Let's rest this in God's hands.", "The waiting is real. You don't have to carry it alone."],
+        openingOther: ["Waiting is hard. Let's pray for {who} while you wait.", "Let's hold {who} in prayer through the waiting."],
+        self: [
+          "Lord, I'm waiting for results and my mind keeps running ahead to the worst. Hold me in this in-between. Whatever the answer, You will be there, and so will the people who love me. Give me peace for tonight and courage for whatever comes.",
+          "Jesus, I trust in You. I'm scared of what the doctors might say. Quiet my thoughts, keep me from imagining every possibility, and let me rest in Your care until I know more.",
+        ],
+        other: [
+          "Lord, {who} is waiting for results, and we're all holding our breath. Give {them} peace in the waiting, good news if it is Your will, and strength for whatever comes. Hold us close until we know.",
+        ],
+        reflection: ["Pray, hope, and don't worry. Padre Pio's advice was made for waiting rooms.", "Do one kind, ordinary thing today while you wait."],
+      },
+    ],
     saints: ["raphael", "bernadette", "martin_porres"], scripture: ["jer17_14", "mk5_34"], devotions: ["anointing_sick", "anima_christi"],
     title: ["A prayer for healing", "A prayer in sickness"],
     titleOther: "A prayer for {who}'s recovery",
@@ -145,7 +196,7 @@ export const INTENTS = [
   },
   {
     id: "grief", themes: ["grief"],
-    keywords: ["died", "passed away", "passed on", "funeral", "death of", "lost my mom", "lost my dad", "lost my mother", "lost my father", "lost my husband", "lost my wife", "lost my son", "lost my daughter", "lost my brother", "lost my sister", "lost my grandma", "lost my grandpa", "lost my friend", "grieving", "grief", "anniversary of", "miss her", "miss him", "cemetery", "was killed"],
+    keywords: ["died", "passed away", "passed on", "funeral", "death of", "lost my mom", "lost my dad", "lost my mother", "lost my father", "lost my husband", "lost my wife", "lost my son", "lost my daughter", "lost my brother", "lost my sister", "lost my grandma", "lost my grandpa", "lost my friend", "grieving", "grief", "anniversary of", "cemetery", "was killed", "passed last night", "passed yesterday", "passed this morning", "passed today", "passed recently", "just passed", "~passed", "~miss her", "~miss him"],
     saints: ["elizabeth_seton", "monica", "zelie_louis"], scripture: ["jn11_35", "rev21_4", "wis3_1"], devotions: ["eternal_rest", "rosary_glorious", "hail_holy_queen"],
     title: ["A prayer in grief", "A prayer for comfort", "A prayer of remembrance"],
     titleOther: "A prayer for {who}",
@@ -162,7 +213,7 @@ export const INTENTS = [
     reflection: ["Love does not end. The ones we have lost are held in the same hands that hold us.", "You may carry this for a long while. You will not carry it alone."],
   },
   {
-    id: "babyloss", themes: ["grief", "motherhood"], hooks: { gianna: "who gave her life for her child" },
+    id: "babyloss", noFallback: true, themes: ["grief", "motherhood"], hooks: { gianna: "who gave her life for her child" },
     keywords: ["miscarriage", "miscarried", "stillbirth", "stillborn", "lost the baby", "lost our baby", "lost my baby", "pregnancy loss", "no heartbeat"],
     saints: ["zelie_louis", "gianna", "elizabeth_seton"], scripture: ["ps34_18", "is49_15", "rev21_4"], devotions: ["memorare", "rosary_seven_sorrows"],
     title: ["A prayer after losing a baby", "A prayer for a little one"],
@@ -175,7 +226,7 @@ export const INTENTS = [
   },
   {
     id: "pregnancy", themes: ["motherhood", "hope"],
-    keywords: ["pregnant", "expecting", "due date", "labor", "delivery", "c-section", "baby on the way", "trimester", "giving birth", "ultrasound"],
+    keywords: ["~pregnant", "expecting", "due date", "labor", "delivery", "c-section", "baby on the way", "trimester", "giving birth", "ultrasound"],
     saints: ["gerard", "gianna", "anne"], scripture: ["ps139_13", "lk1_46", "is49_15"], devotions: ["rosary_joyful", "memorare"],
     title: ["A prayer for a mother-to-be", "A prayer for a safe delivery"],
     titleOther: "A prayer for {who} and the baby",
@@ -192,7 +243,7 @@ export const INTENTS = [
   },
   {
     id: "infertility", themes: ["motherhood", "hope", "sadness"],
-    keywords: ["infertil", "ivf", "trying to conceive", "trying for a baby", "can't get pregnant", "cant get pregnant", "ttc", "fertility"],
+    keywords: ["infertil", "ivf", "trying to conceive", "didn't get pregnant", "didnt get pregnant", "not pregnant", "negative test", "another negative", "period came", "wish i was pregnant", "wish i were pregnant", "still not pregnant", "trying for a baby", "can't get pregnant", "cant get pregnant", "ttc", "fertility"],
     saints: ["anne", "rita", "gianna"], scripture: ["lam3_22", "is49_15", "ps34_18"], devotions: ["memorare", "novena_st_jude"],
     title: ["A prayer for the gift of a child", "A prayer while waiting"],
     opening: ["Waiting month after month is its own quiet grief. God sees every hope and every tear.", "Your longing is holy. Let's bring it to God gently."],
@@ -221,7 +272,31 @@ export const INTENTS = [
   },
   {
     id: "parenting", themes: ["parenting", "family"], hooks: { joseph: "who raised Jesus with tenderness" },
-    keywords: ["~my son", "~my daughter", "~my kids", "~my children", "~my child", "~my teen", "~my toddler", "~my baby", "parenting", "as a mom", "as a dad", "being a mom", "being a parent", "single mom", "single dad", "custody"],
+    variants: [
+      {
+        when: "\\b(kindergarten|first day of school|starting school|leaving for college|off to college|moving out|empty nest|graduat)",
+        title: ["A prayer for a child's new chapter"],
+        titleOther: "A prayer for {who}'s new chapter",
+        opening: ["Letting them grow is one of the hardest, holiest parts of loving them.", "Big transitions stir big feelings. Let's bless this new chapter."],
+        openingOther: ["Let's bless {who} in this new step.", "It's tender to watch them grow. Let's pray for {who}."],
+        self: ["Lord, my child is stepping into something new and my heart is full and aching at the same time. Go with them where I can't. Protect them, give them good friends and wise guides, and let them carry our love and Yours wherever they go."],
+        other: [
+          "Lord, bless {who} in this new chapter. Go with {them} where I can't. Give {them} courage, good friends and wise guides, protect {them} from harm, and let {them} always know the way home, to us and to You.",
+        ],
+        reflection: ["Say a blessing over them before they go, even a simple sign of the cross on their forehead.", "Their growing up is a sign you did something right."],
+      },
+      {
+        when: "\\b(bullied|bullying|picked on|mean to (him|her|them))",
+        title: ["A prayer for a child who is being bullied"],
+        titleOther: "A prayer for {who}",
+        other: [
+          "Lord, {who} is being hurt by other kids, and it breaks my heart. Protect {them}, heal the words that wounded {them}, and remind {them} how loved and worthy {they} {are}. Give {them} a true friend, give the adults around {them} wisdom to act, and give me the right words.",
+        ],
+        self: ["Lord, my child is being bullied. Protect them, heal their heart, and send them a true friend. Give me wisdom to advocate for them and calm to help them feel safe at home."],
+        reflection: ["Tell them today, in words, that they are loved and that it's not their fault.", "Kindness is contagious. Pray for the kids who are unkind too."],
+      },
+    ],
+    keywords: ["~my son", "~my daughter", "~my kids", "~my children", "~my child", "~my teen", "~my toddler", "~my baby", "parenting", "kids fighting", "kids won't", "siblings", "bullied", "bullying", "kindergarten", "leaving for college", "off to college", "moving out", "empty nest", "as a mom", "as a dad", "being a mom", "being a parent", "single mom", "single dad", "custody"],
     saints: ["joseph", "monica", "anne"], scripture: ["is66_13", "ps139_13", "prov3_5"], devotions: ["rosary_joyful", "novena_st_joseph"],
     title: ["A prayer for my children", "A prayer for a tired parent"],
     opening: ["Parenting is holy work that rarely feels holy in the moment. You're doing more than you know.", "God loves your children even more than you do. Let's bring them to Him."],
@@ -233,7 +308,7 @@ export const INTENTS = [
   },
   {
     id: "marriage", themes: ["marriage", "relationships"],
-    keywords: ["my marriage", "~my husband", "~my wife", "divorce", "separated", "separation", "we fight", "fighting", "cheated", "affair", "unfaithful", "counseling", "marriage"],
+    keywords: ["my marriage", "~my husband", "~my wife", "divorce", "separated", "separation", "we fight", "~fighting", "arguing", "argue", "cheated", "affair", "unfaithful", "counseling", "marriage"],
     saints: ["rita", "zelie_louis", "thomas_more"], scripture: ["1cor13_4", "col3_13"], devotions: ["rosary_luminous", "peace_prayer"],
     title: ["A prayer for my marriage", "A prayer for healing in marriage"],
     opening: ["Marriage can carry deep wounds and deep grace at the same time. Let's bring yours to God.", "You're not alone in this. Christ was present at the wedding at Cana, and He's present now."],
@@ -245,7 +320,7 @@ export const INTENTS = [
   },
   {
     id: "heartbreak", themes: ["relationships", "sadness"],
-    keywords: ["broke up", "break up", "breakup", "heartbroken", "heartbreak", "my ex", "dumped", "left me", "walked out", "ghosted", "rejected"],
+    keywords: ["broke up", "break up", "breakup", "~heartbroken", "heartbreak", "my ex", "dumped", "left me", "walked out", "ghosted", "rejected"],
     saints: ["rita", "mary_magdalene", "therese"], scripture: ["ps34_18", "jer29_11"], devotions: ["memorare", "litany_humility"],
     title: ["A prayer for a broken heart"],
     opening: ["Heartbreak can feel physical. Be gentle with yourself today.", "The Lord is close to the brokenhearted, close to you right now."],
@@ -269,7 +344,16 @@ export const INTENTS = [
   },
   {
     id: "job", themes: ["work", "finances"],
-    keywords: ["job", "lost my job", "laid off", "layoff", "fired", "unemploy", "interview", "career", "my boss", "coworker", "resume", "applications", "work is"],
+    variants: [{
+      when: "\\binterview",
+      title: ["A prayer before an interview"],
+      self: [
+        "Lord, I have an interview coming up. Calm my nerves, clear my mind and help me be myself. Give me the right words, favor with the people I meet, and peace about the outcome. If this is the right door, open it; if not, lead me to the one that is.",
+        "St. Joseph, pray for me as I interview. Lord, let me speak honestly about my gifts, listen well and leave the result in Your hands.",
+      ],
+      reflection: ["Prepare well, then rest. The right door won't pass you by.", "Pray for the person interviewing you too. It changes the room."],
+    }],
+    keywords: ["job", "lost my job", "laid off", "job interview", "interview", "layoff", "fired", "unemploy", "interview", "career", "my boss", "coworker", "resume", "applications", "work is"],
     saints: ["cajetan", "joseph"], scripture: ["mt6_26", "prov3_5", "mt7_7"], devotions: ["novena_st_joseph", "act_of_hope"],
     title: ["A prayer for work", "A prayer for a new job"],
     opening: ["Work troubles touch everything: money, identity, peace. Let's bring it all to God.", "St. Joseph worked with his hands to provide. He understands."],
@@ -472,7 +556,7 @@ export const INTENTS = [
   },
   {
     id: "lonely", themes: ["loneliness"],
-    keywords: ["lonely", "alone", "isolated", "no friends", "nobody cares", "no one cares", "left out", "invisible"],
+    keywords: ["lonely", "alone", "isolated", "no friends", "nobody cares", "no one cares", "left out", "invisible", "moved away", "miss my friend", "miss my family", "homesick"],
     saints: ["kateri", "teresa_calcutta", "martin_porres"], scripture: ["ps68_6", "heb13_5", "is49_15"], devotions: ["guardian_angel_prayer", "memorare"],
     title: ["A prayer in loneliness"],
     opening: ["Loneliness is one of the hardest feelings to name. Thank you for naming it here.", "You are seen, even when it feels like no one notices."],
@@ -484,7 +568,7 @@ export const INTENTS = [
   },
   {
     id: "forgive", themes: ["anger", "relationships"],
-    keywords: ["forgive", "resent", "betray", "angry at", "mad at", "hurt me", "can't let go", "bitter", "abused me", "lied to me"],
+    keywords: ["forgive", "resent", "betray", "~angry at", "~mad at", "hurt me", "can't let go", "bitter", "abused me", "lied to me"],
     saints: ["rita", "bakhita", "moses_black"], scripture: ["col3_13", "eph4_26"], devotions: ["peace_prayer", "litany_humility"],
     title: ["A prayer for forgiveness", "A prayer for a hurting heart"],
     opening: ["Being hurt is real, and so is your anger. Forgiveness is a process, not a pretending.", "God can hold your anger. Bring it honestly."],
@@ -508,7 +592,18 @@ export const INTENTS = [
   },
   {
     id: "protection", themes: ["fear"],
-    keywords: ["travel", "trip", "flight", "driving", "deploy", "military", "keep safe", "keep them safe", "protect", "protection", "danger", "police", "first responder", "storm", "hurricane", "fire"],
+    variants: [{
+      when: "\\b(flood|flooded|storm|hurricane|tornado|earthquake|wildfire|fire|lost everything|house burned|evacuat)",
+      title: ["A prayer after a disaster"],
+      titleOther: "A prayer for {who} after the disaster",
+      opening: ["Losing your home or belongings is a real loss. You don't have to be okay right now.", "God is close in the wreckage. Let's bring this to Him."],
+      self: [
+        "Lord, the storm took so much. I'm grateful to be safe, and I'm grieving what's gone. Provide what we need to rebuild, send help and kind neighbors, and give me strength for the long work ahead. Remind me that what matters most can't be washed away.",
+      ],
+      other: ["Lord, watch over {who} after this disaster. Keep {them} safe, provide shelter and everything that's needed, and send help quickly. Give {them} strength to rebuild and hope for what comes next."],
+      reflection: ["Accept help when it's offered. Rebuilding is a community's work.", "Take one small step today, and rest."],
+    }],
+    keywords: ["travel", "trip", "flight", "flying", "plane", "driving", "flood", "flooded", "tornado", "earthquake", "wildfire", "lost everything", "deploy", "military", "keep safe", "keep them safe", "protect", "protection", "danger", "police", "first responder", "storm", "hurricane", "fire"],
     saints: ["raphael", "michael", "guardian_angel"], scripture: ["ps23_1", "dt31_6", "is41_10"], devotions: ["guardian_angel_prayer", "st_michael"],
     title: ["A prayer for protection", "A prayer for safe travels"],
     titleOther: "A prayer of protection for {who}",
@@ -525,7 +620,17 @@ export const INTENTS = [
   },
   {
     id: "doubt", themes: ["faith", "confusion"],
-    keywords: ["doubt", "can't feel god", "cant feel god", "where is god", "is god real", "faith is weak", "far from god", "god feels distant", "don't know if i believe", "struggling with faith", "spiritual dryness"],
+    variants: [{
+      when: "\\b(angry at god|mad at god|angry with god|why would god|why did god)",
+      title: ["A prayer when I'm angry at God"],
+      opening: ["The Psalms are full of people angry at God. Your honesty is a prayer.", "God can handle your anger. Bring it to Him instead of away from Him."],
+      self: [
+        "Lord, I'm angry with You. I don't understand why You allowed this. I'm telling You because You'd rather have my honest anger than my silence. Stay with me in it. I don't need an answer today, just Your presence.",
+        "God, like Job, I have questions, and I'm hurt. I won't pretend otherwise. Don't let go of me while I wrestle with You, and lead me, in time, to peace.",
+      ],
+      reflection: ["Pray a lament Psalm today, like Psalm 13: 'How long, O Lord?'", "Anger at God is still talking to God. Keep talking."],
+    }],
+    keywords: ["doubt", "angry at god", "mad at god", "angry with god", "why would god", "why did god", "can't feel god", "cant feel god", "where is god", "is god real", "faith is weak", "far from god", "god feels distant", "don't know if i believe", "struggling with faith", "spiritual dryness"],
     saints: ["thomas_apostle", "teresa_calcutta", "john_cross"], scripture: ["mk9_24", "ps46_10"], devotions: ["lectio_divina", "jesus_prayer"],
     title: ["A prayer in doubt", "A prayer when God feels far"],
     opening: ["Honest questions are a form of prayer. Even saints felt God was far.", "Mother Teresa felt God's absence for decades and kept loving anyway. You're in good company."],
@@ -537,7 +642,7 @@ export const INTENTS = [
   },
   {
     id: "caregiving", themes: ["family", "overwhelm", "health"],
-    keywords: ["caregiver", "caregiving", "taking care of my", "dementia", "alzheimer", "my aging", "nursing home", "hospice care"],
+    keywords: ["caregiver", "caregiving", "taking care of my", "caring for my", "my aging", "nursing home", "burned out caring"],
     saints: ["martin_porres", "dymphna", "joseph"], scripture: ["mt11_28", "is40_31"], devotions: ["surrender_novena", "teresa_bookmark"],
     title: ["A prayer for a caregiver"],
     opening: ["Caring for someone is love made visible, and it is exhausting. You need care too.", "Let's pray for strength, for you and the one you care for."],
@@ -560,7 +665,7 @@ export const INTENTS = [
     reflection: ["Choose one thing to let go of today. The world will keep turning.", "Pray, hope, and don't worry. Padre Pio's advice still works."],
   },
   {
-    id: "prison", themes: ["family", "fear", "hope"], hooks: { joseph: "who protected his family through danger" },
+    id: "prison", noFallback: true, themes: ["family", "fear", "hope"], hooks: { joseph: "who protected his family through danger" },
     keywords: ["prison", "jail", "incarcerat", "locked up", "arrested", "court date", "trial", "sentencing", "probation", "parole", "my lawyer", "legal trouble", "charged with", "lawsuit"],
     saints: ["dismas", "joseph", "jude"], scripture: ["mt25_36", "lk23_43", "is41_10"], devotions: ["divine_mercy_chaplet", "memorare"],
     title: ["A prayer in legal trouble", "A prayer before court"],
@@ -577,7 +682,7 @@ export const INTENTS = [
     reflection: ["No one is defined by their worst moment. Mercy is bigger than any record.", "Write a letter, make a visit, or simply pray their name today."],
   },
   {
-    id: "immigration", themes: ["family", "fear", "loneliness"],
+    id: "immigration", noFallback: true, themes: ["family", "fear", "loneliness"],
     keywords: ["immigra", "deport", " visa", "green card", "asylum", "citizenship", " ice ", "the border", "undocumented", "my papers", "refugee", "far from home", "far from my family"],
     saints: ["cabrini", "joseph", "raphael"], scripture: ["lev19_34", "dt31_6", "heb13_5"], devotions: ["memorare", "novena_st_joseph"],
     title: ["A prayer for immigrants and families", "A prayer far from home"],
@@ -594,7 +699,7 @@ export const INTENTS = [
   },
   {
     id: "selfworth", themes: ["growth", "sadness"],
-    keywords: ["not good enough", "hate myself", "hate my body", "body image", "i'm ugly", "im ugly", "worthless", "not enough", "insecure", "compare myself", "self-esteem", "self esteem", "my weight", "feel like a failure", "unlovable"],
+    keywords: ["not good enough", "hate myself", "hate my body", "body image", "i'm ugly", "im ugly", "worthless", "not enough", "insecure", "compare myself", "self-esteem", "self esteem", "my weight", "feel like a failure", "unlovable", "behind in life", "feel behind", "turning 30", "turning 40", "turning 50", "midlife"],
     saints: ["therese", "bernadette", "mary_magdalene"], scripture: ["ps139_13", "eph2_10", "1sam16_7"], devotions: ["litany_humility", "memorare"],
     title: ["A prayer for self-worth", "A prayer to see myself as God does"],
     opening: ["The voice telling you you're not enough is not God's voice.", "You are fearfully and wonderfully made, on your hardest days too."],
@@ -618,13 +723,22 @@ export const INTENTS = [
   },
   {
     id: "pet", themes: ["grief", "sadness"],
-    keywords: ["my dog", "my cat", "my pet", "put down", "put to sleep", "euthan", "the vet", "my puppy", "my kitten", "my horse", "rainbow bridge"],
+    keywords: ["my dog", "my cat", "my pet", "my dog's", "my cat's", "our dog", "our cat", "put down", "put to sleep", "euthan", "the vet", "my puppy", "my kitten", "my horse", "rainbow bridge"],
     saints: ["francis", "anthony", "kateri"], scripture: ["ps145_9", "ps34_18"], devotions: ["glory_be", "memorare"],
-    title: ["A prayer for a beloved animal", "A prayer after losing a pet"],
+    title: ["A prayer after losing a pet", "A prayer for a beloved animal"],
+    variants: [{
+      when: "\\b(sick|ill|vet|surgery|injured|hurt|limping|not eating|cancer|tumor|old age|getting old)\\b",
+      title: ["A prayer for a sick pet"],
+      opening: ["Worrying about an animal you love is real worry. St. Francis would understand.", "Your love for them matters to God. Let's pray for them."],
+      self: [
+        "Lord, You made every creature and called it good. I'm worried about my animal and I love them so much. Ease their pain, guide their care, and give me the wisdom and courage to do what is kind.",
+        "St. Francis, friend of every creature, pray with me. Lord, comfort my companion, give the vet skill and wisdom, and help me make loving choices, whatever comes.",
+      ],
+      reflection: ["Sit with them for a few quiet minutes today. Your presence comforts them.", "Doing what is kind, even when it's hard, is love."],
+    }],
     opening: ["Grief for an animal you loved is real grief. Their love was a gift from God.", "St. Francis called the animals his brothers and sisters. Your love for yours matters."],
     self: [
       "Creator God, thank You for the gift of my companion: the loyalty, the comfort, the joy they brought into my days. My heart hurts. Hold my grief, and let me remember them with gratitude. Your tender mercies are over all Your works.",
-      "Lord, You made every creature and called it good. I'm worried about my animal and I love them so much. Ease their pain, guide their care, and give me the wisdom and courage to do what is kind.",
     ],
     reflection: ["Let yourself grieve. Love doesn't come in sizes.", "Tell a favorite story about them to someone today."],
   },
@@ -665,6 +779,14 @@ export const INTENTS = [
   },
   {
     id: "joy_pregnancy", joy: true, themes: ["gratitude", "motherhood", "hope"],
+    nervous: {
+      title: ["A prayer for a new pregnancy"],
+      opening: ["A new pregnancy can bring joy and fear at the same time. Both are welcome here.", "Let's bring this little life, and your nerves, to God."],
+      self: [
+        "Lord, I just found out I'm pregnant and I'm nervous and overwhelmed. Thank You for this little life, even while I'm afraid. Watch over my baby and my body, calm my worries, and give me what I need for each step ahead.",
+        "Creator God, this is a lot to take in. Hold me and this baby. Guide me to good care, surround me with support, and give me peace about what I can't control.",
+      ],
+    },
     keywords: ["i'm pregnant", "im pregnant", "i am pregnant", "we're pregnant", "we are pregnant", "we're expecting", "we are expecting", "positive pregnancy test", "positive test", "found out i'm pregnant", "is pregnant", "going to be a mom", "going to be a dad", "going to be parents", "going to be a grandma", "going to be a grandpa", "going to be an aunt", "going to be an uncle", "grandbaby on the way", "baby on the way"],
     saints: ["gerard", "anne", "gianna"], scripture: ["ps139_13", "lk1_46", "jer29_11"], devotions: ["rosary_joyful", "glory_be", "memorare"],
     title: ["A prayer of joy for new life", "A prayer for a little one on the way"],
@@ -698,9 +820,17 @@ export const INTENTS = [
   },
   {
     id: "joy_work", joy: true, themes: ["gratitude", "work", "inspiration"], hooks: { cajetan: "who trusted God's providence" },
+    nervous: {
+      title: ["A prayer for a new job"],
+      opening: ["New beginnings bring nerves. That's normal, and God goes ahead of you.", "Starting something new is brave. Let's bring the nerves to God."],
+      self: [
+        "Lord, I start this new job soon and I'm nervous. Calm my mind, help me learn quickly and be patient with myself while I do. Give me kind coworkers, a good first impression and the confidence that You placed me here for a reason.",
+        "St. Joseph, worker, walk with me into this new job. Lord, settle my nerves, help me listen well, ask good questions and treat everyone with kindness. Let this work become a blessing.",
+      ],
+    },
     variants: [{
       when: "\\b(raise|promot|bonus)",
-      title: ["A prayer of thanks for a raise", "A prayer of thanks for a promotion"],
+      title: ["A prayer of thanks for a raise or promotion"],
       self: [
         "Thank You, Lord, for this recognition and this provision! Thank You for the people I work with and for the strength You've given me. Help me carry new responsibility with humility, use this increase wisely and generously, and keep my work in its right place in my life.",
         "St. Joseph, worker and provider, rejoice with me! Lord, thank You for blessing my work. Let me lead and serve with kindness, remember those who are still struggling, and share what I've been given.",
@@ -718,7 +848,14 @@ export const INTENTS = [
   },
   {
     id: "joy_school", joy: true, themes: ["gratitude", "decisions", "inspiration"],
-    keywords: ["got into", "accepted to", "accepted into", "acceptance letter", "got accepted", "scholarship", "passed my exam", "passed the exam", "passed the bar", "passed my boards", "passed my test", "made the team", "made honor roll", "dean's list", "got my license"],
+    nervous: {
+      title: ["A prayer for a new beginning at school"],
+      opening: ["New beginnings bring nerves. You're more ready than you feel.", "Let's ask God to go ahead of you into this new start."],
+      self: [
+        "Lord, I'm excited about this and also really nervous. Help me trust that I belong here. Give me good friends, a clear mind and the courage to ask for help when I need it.",
+      ],
+    },
+    keywords: ["got into", "accepted to", "accepted into", "acceptance letter", "got accepted", "scholarship", "passed my exam", "passed the exam", "passed the bar", "passed my boards", "passed my test", "passed my driving test", "i passed", "passed my", "passed her", "passed his", "passed their", "passed the test", "made the team", "made honor roll", "dean's list", "got my license"],
     saints: ["ignatius", "therese", "thomas_more"], scripture: ["jer29_11", "ps118_24", "eph2_10"], devotions: ["glory_be", "gratitude_te_deum"],
     title: ["A prayer of thanks for good news"],
     opening: ["Congratulations! All that work paid off. Let's thank God.", "What a wonderful achievement. Let's celebrate with gratitude."],
@@ -729,9 +866,21 @@ export const INTENTS = [
   },
   {
     id: "joy_love", joy: true, themes: ["gratitude", "relationships", "marriage"],
+    nervous: {
+      title: ["A prayer for a new relationship"],
+      opening: ["New love can be exciting and nerve-wracking. Let's bring it to God.", "Let's ask God to guide this new chapter of your heart."],
+      self: [
+        "Lord, I'm excited and nervous about this relationship. Guide us as we get to know each other. Help me be honest and myself, protect my heart, and let this grow in the direction You want for both of us.",
+      ],
+    },
     variants: [{
       when: "engaged|said yes|proposed",
       title: ["A prayer for our engagement"],
+      nervous: {
+        title: ["A prayer for our engagement"],
+        opening: ["Big joy often comes with big nerves. Let's bring both to God.", "Wedding plans can be overwhelming. Let's keep your marriage at the center."],
+        self: ["Lord, thank You for our engagement, and help me with the nerves: the planning, the costs, the big changes ahead. Keep our focus on our marriage more than the wedding, help us make wise choices together, and give us peace and joy along the way."],
+      },
       self: [
         "Thank You, Lord, for our engagement! Thank You for bringing us together and for this promise. Prepare our hearts for the sacrament of marriage. Teach us to love each other with patience, honesty and faithfulness, and be the center of the home we're going to build.",
         "Jesus, You blessed the wedding at Cana. Bless us as we prepare to marry. Keep our focus on our marriage more than our wedding day, help us grow in faith together, and fill our engagement with joy and peace.",
@@ -749,7 +898,7 @@ export const INTENTS = [
   },
   {
     id: "joy_health", joy: true, themes: ["gratitude", "health", "hope"],
-    keywords: ["cancer free", "cancer-free", "in remission", "remission", "clear scan", "scan was clear", "scans were clear", "results came back good", "results were good", "good results", "results were normal", "surgery went well", "successful surgery", "benign", "came home from the hospital", "home from the hospital", "recovering well", "is recovering", "got better", "feeling better", "no more chemo", "last chemo", "rang the bell"],
+    keywords: ["cancer free", "cancer-free", "in remission", "remission", "clear scan", "scan was clear", "scans were clear", "results came back good", "results were good", "good results", "results were normal", "came back clear", "came back good", "came back negative", "came back benign", "not cancer", "isn't cancer", "all clear", "surgery went well", "successful surgery", "benign", "came home from the hospital", "home from the hospital", "recovering well", "is recovering", "got better", "feeling better", "no more chemo", "last chemo", "rang the bell"],
     saints: ["raphael", "peregrine", "bernadette"], scripture: ["jer17_14", "ps118_24", "mk5_34"], devotions: ["gratitude_te_deum", "glory_be", "anima_christi"],
     title: ["A prayer of thanks for healing", "A prayer of thanks for good news"],
     titleOther: "A prayer of thanks for {who}'s healing",
@@ -1029,50 +1178,58 @@ export const CLOSINGS = {
 const FEM = /\b(mom|mother|mama|grandma|grandmother|sister|daughter|wife|girlfriend|aunt|niece|fiancee|stepmom|godmother|mother-in-law)\b/;
 const MASC = /\b(dad|father|papa|grandpa|grandfather|brother|son|husband|boyfriend|uncle|nephew|fiance|stepdad|godfather|father-in-law)\b/;
 export function pronounsFor(who = "", text = "") {
-  const w = who.toLowerCase();
+  const w = who.toLowerCase().split(/\s+/).pop(); // "my mom's friend" → friend
   // "my friend, she's..." — for relations that could be anyone, take a hint from the message
   if (!FEM.test(w) && !MASC.test(w) && text) {
     const she = /\b(she|she's|shes|her|herself)\b/i.test(text), he = /\b(he|he's|hes|him|his|himself)\b/i.test(text);
-    if (she && !he) return { they: "she", them: "her", their: "her", are: "is", themself: "herself" };
-    if (he && !she) return { they: "he", them: "him", their: "his", are: "is", themself: "himself" };
+    if (she && !he) return { they: "she", them: "her", their: "her", are: "is", were: "was", themself: "herself" };
+    if (he && !she) return { they: "he", them: "him", their: "his", are: "is", were: "was", themself: "himself" };
   }
-  if (FEM.test(w)) return { they: "she", them: "her", their: "her", are: "is", themself: "herself" };
-  if (MASC.test(w)) return { they: "he", them: "him", their: "his", are: "is", themself: "himself" };
-  return { they: "they", them: "them", their: "their", are: "are", themself: "themselves" };
+  if (FEM.test(w)) return { they: "she", them: "her", their: "her", are: "is", were: "was", themself: "herself" };
+  if (MASC.test(w)) return { they: "he", them: "him", their: "his", are: "is", were: "was", themself: "himself" };
+  return { they: "they", them: "them", their: "their", are: "are", were: "were", themself: "themselves" };
 }
-const RELATION = /\bmy (mother-in-law|father-in-law|in-laws|sister-in-law|brother-in-law|mom|mother|mama|dad|father|papa|grandma|grandmother|grandpa|grandfather|sister|brother|son|daughter|husband|wife|boyfriend|girlfriend|fianc[eé]e?|partner|friend|best friend|aunt|uncle|cousin|niece|nephew|baby|kids|children|family|parents|stepmom|stepdad|godmother|godfather|coworker|neighbor)\b/i;
+const RELATION = /\bmy (?:(?:teenage|teen|little|older|younger|oldest|youngest|adult|grown|elderly|sweet) )?(mother-in-law|father-in-law|in-laws|sister-in-law|brother-in-law|mom|mother|mama|dad|father|papa|grandma|grandmother|grandpa|grandfather|sister|brother|son|daughter|husband|wife|boyfriend|girlfriend|fianc[eé]e?|partner|friend|best friend|aunt|uncle|cousin|niece|nephew|baby|kids|children|family|parents|stepmom|stepdad|godmother|godfather|coworker|neighbor)\b/i;
 
 // Find who the prayer is for, when the person is praying for someone else.
+const REL_WORDS = "mom|mother|dad|father|grandma|grandmother|grandpa|grandfather|sister|brother|son|daughter|husband|wife|boyfriend|girlfriend|partner|friend|aunt|uncle|cousin|baby|kids|children|parents|family";
 export function detectWho(text = "", intentId) {
   const m = text.match(RELATION);
   if (!m) return "";
+  // "my friend's mom died": the prayer is for the friend's mom
+  const chain = text.slice(m.index + m[0].length).match(new RegExp(`^'s (${REL_WORDS})\\b`, "i"));
+  if (chain) return `${m[0].toLowerCase()}'s ${chain[1].toLowerCase()}`;
   const forSomeone = /\bpray(ing)? for (my|her|him|them|our)\b/i.test(text);
-  const theirStory = ["money", "joy_sober", "lovedone", "joy_pregnancy", "joy_baby", "joy_health", "difficult", "cancer", "illness", "faithchild", "grief", "protection", "pregnancy", "addiction", "mental", "dying", "sickchild", "prison", "immigration", "suicideloss"].includes(intentId);
+  const theirStory = ["joy_sober", "lovedone", "joy_pregnancy", "joy_baby", "joy_health", "difficult", "cancer", "illness", "faithchild", "grief", "protection", "pregnancy", "addiction", "mental", "dying", "sickchild", "prison", "immigration", "suicideloss"].includes(intentId);
   // "my husband left me" is the speaker's story, not a prayer for him
-  const selfStory = /\b(left me|cheated on me|hurt me|lied to me|broke up with me)\b/i.test(text);
+  const selfStory = /\b(left me|cheated on me|hurt me|lied to me|broke up with me|and i (keep|are|have|can't|cant|don't|dont|aren't|fight|argue))\b/i.test(text);
   // "my husband lost his job", "my son is struggling": the story is about them
-  const aboutThem = new RegExp(`\\bmy ${m[1]}('s)? (is|was|has|had|lost|got|needs|just|starts|started|can't|cant|won't|keeps|isn't|doesn't|has been|went)\\b`, "i").test(text);
-  return (forSomeone || theirStory || aboutThem) && !selfStory ? `my ${m[1].toLowerCase()}` : "";
+  const aboutThem = new RegExp(`\\b${m[0].replace(/[-]/g, "\\-")}('s)? (is|was|has|had|lost|got|needs|just|starts|started|can't|cant|won't|keeps|isn't|doesn't|has been|went)\\b`, "i").test(text);
+  return (forSomeone || theirStory || aboutThem) && !selfStory ? m[0].toLowerCase() : "";
 }
 
-const WORRY = /\b(worried|worry|scared|afraid|anxious|anxiety|stressed|struggling|hard|hate|dread|lost|fired|laid off|sad|crying|can't|cannot|won't)\b/;
+const WORRY = /\b(worried|worry|scared|afraid|anxious|anxiety|nervous|stressed|struggling|hard|hate|dread|lost|fired|laid off|sad|crying|can't|cannot|won't)\b/;
 const HAPPY = /(!|\b(excited|happy|thrilled|grateful|thankful|blessed|finally|yay|so glad|praise god|good news|congrat|celebrat|can't wait|cant wait)\b)/;
+const PRIORITY = ["pet", "joy_school", "prison"];
 export function detectIntent(text = "", themes = []) {
   const t = ` ${text.toLowerCase()} `;
   const worried = WORRY.test(t), happy = HAPPY.test(t);
   let best = null;
   for (const it of INTENTS) {
     // keywords starting with "~" are generic ("my son") and count for less than specific ones ("jail")
+    if ((it.id === "pregnancy" || it.id === "joy_pregnancy") && /\b(not pregnant|didn'?t get pregnant|wish i (was|were) pregnant|negative test)\b/.test(t)) continue;
     let hits = it.keywords.reduce((n, k) => (k.startsWith("~") ? (t.includes(k.slice(1)) ? n + 0.5 : n) : t.includes(k) ? n + 1 : n), 0);
-    if (it.joy && hits) hits *= worried && !happy ? 0.4 : 2;
+    const hasNerves = it.nervous || (it.variants || []).some((v) => v.nervous);
+    if (it.joy && hits) hits *= worried && !happy && !hasNerves ? 0.4 : 2;
+    if (PRIORITY.includes(it.id) && hits) hits += 0.25;
     if (hits && (!best || hits > best.hits)) best = { it, hits };
   }
   if (best) return best.it;
   // fall back to the strongest theme (e.g. a chip, or a feeling word)
-  return INTENTS.find((it) => it.themes[0] === themes[0]) || null;
+  return INTENTS.find((it) => !it.noFallback && !it.joy && it.themes[0] === themes[0]) || null;
 }
 
 export function fill(str, who, text = "") {
   const p = pronounsFor(who, text);
-  return str.replace(/\{who\}/g, who).replace(/\{them\}/g, p.them).replace(/\{their\}/g, p.their).replace(/\{they\}/g, p.they).replace(/\{are\}/g, p.are).replace(/\{themself\}/g, p.themself);
+  return str.replace(/\{who\}/g, who).replace(/\{them\}/g, p.them).replace(/\{their\}/g, p.their).replace(/\{they\}/g, p.they).replace(/\{are\}/g, p.are).replace(/\{themself\}/g, p.themself).replace(/\{were\}/g, p.were);
 }

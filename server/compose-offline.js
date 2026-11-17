@@ -45,9 +45,12 @@ export function composeOffline(checkin, context = {}, style) {
   if (intent) themes = [...new Set([...intent.themes, ...themes])];
   // A more specific version of the intention (e.g. a raise rather than a new job)
   const variant = intent?.variants?.find((v) => new RegExp(v.when, "i").test(text));
-  const src = variant ? { ...intent, ...variant } : intent;
+  const nervousBlock = variant ? variant.nervous : intent?.nervous;
+  const nervousNews = Boolean(nervousBlock) && /\b(nervous|anxious|scared|afraid|worried|butterflies|jitters|overwhelmed)\b/i.test(text) && !/(!|\b(so excited|thrilled|so happy|can't wait|cant wait)\b)/i.test(text);
+  let src = variant ? { ...intent, ...variant } : intent;
+  if (nervousNews) src = { ...src, ...nervousBlock, joy: false, celebrate: false };
   if (!themes.length) themes = ["peace", "faith", "hope"];
-  const isThanks = Boolean(intent?.joy || intent?.celebrate);
+  const isThanks = Boolean(src?.joy || src?.celebrate);
 
   let who = checkin.personName || detectWho(text, intent?.id);
   const otherMode = Boolean(who && (src?.other || intent?.id === "grief"));
@@ -56,9 +59,9 @@ export function composeOffline(checkin, context = {}, style) {
   // Saints, Scripture, devotions: the intention's own picks first, then the best theme matches.
   const pinned = (ids, lib) => (ids || []).map((id) => lib.find((x) => x.id === id)).filter(Boolean);
   const fillUp = (first, pool, n) => [...first, ...pool.filter((x) => !first.includes(x))].slice(0, n);
-  const saints = fillUp(pinned(intent?.saints, SAINTS), scoreBy(SAINTS, themes), 3);
-  const scripture = fillUp(pinned(intent?.scripture, SCRIPTURE), scoreBy(SCRIPTURE, themes), 2);
-  const devotions = fillUp(pinned(intent?.devotions, DEVOTIONS), [...scoreBy(DEVOTIONS.filter((d) => d.kind === "prayer"), themes).slice(0, 1), ...scoreBy(DEVOTIONS.filter((d) => d.kind !== "prayer"), themes)], 3);
+  const saints = fillUp(pinned(src?.saints, SAINTS), scoreBy(SAINTS, themes), 3);
+  const scripture = fillUp(pinned(src?.scripture, SCRIPTURE), scoreBy(SCRIPTURE, themes), 2);
+  const devotions = fillUp(pinned(src?.devotions, DEVOTIONS), [...scoreBy(DEVOTIONS.filter((d) => d.kind === "prayer"), themes).slice(0, 1), ...scoreBy(DEVOTIONS.filter((d) => d.kind !== "prayer"), themes)], 3);
 
   // The prayer
   let lead = saints[0];
@@ -86,7 +89,7 @@ export function composeOffline(checkin, context = {}, style) {
   const body = paras.join("\n\n");
 
   const title = otherMode && src?.titleOther ? fill(src.titleOther, who, text) : src ? rand(src.title) : "A prayer for today";
-  const opening = otherMode && intent?.openingOther ? fill(rand(intent.openingOther), who, text) : intent ? rand(intent.opening) : "Thank you for trusting this moment with prayer. You are not alone in what you are carrying.";
+  const opening = otherMode && src?.openingOther ? fill(rand(src.openingOther), who, text) : src ? rand(src.opening) : "Thank you for trusting this moment with prayer. You are not alone in what you are carrying.";
 
   const motifPool = themes.flatMap((t) => style.motifs.byTheme[t] || []);
   const pick = (arr, n) => [...arr].sort(() => Math.random() - 0.5).slice(0, n);
@@ -102,7 +105,7 @@ export function composeOffline(checkin, context = {}, style) {
     prayer: { title, body, closing: "Through Christ our Lord. Amen." },
     scripture: scripture.map((s, i) => ({ id: s.id, connection: CONNECTIONS[(i + Math.floor(Math.random() * 4)) % CONNECTIONS.length] })),
     devotions: devotions.map((d) => ({ id: d.id, suggestion: d.kind === "rosary" ? "If a whole Rosary feels like too much today, one decade is a beautiful prayer." : d.kind === "devotion" ? "Consider it this week, when you have a quiet moment." : "Pray it slowly, perhaps once in the morning and once at night." })),
-    reflection: intent?.reflection ? rand(intent.reflection) : pickReflection(themes, isThanks),
+    reflection: src?.reflection ? rand(src.reflection) : pickReflection(themes, isThanks),
     art_brief: {
       title: isThanks ? "Overflowing Light" : "Held in the Night Garden",
       concept: `A symbolic meditation on ${PHRASES[themes[0]] || "being held by God"}.`,
