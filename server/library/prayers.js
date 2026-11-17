@@ -281,7 +281,84 @@ export const INTENTS = [
   },
   {
     id: "money", themes: ["finances", "anxiety"], hooks: { joseph: "who provided for the Holy Family" },
-    keywords: ["money", "rent", "bills", "debt", "afford", "evict", "mortgage", "broke", "paycheck", "food stamps", "can't pay", "financial", "overdraft"],
+    variants: [
+      {
+        when: "\\b(evict|eviction|behind on rent|can't pay rent|cant pay rent|pay rent|rent is due|foreclos|mortgage|homeless|shelter|losing (our|my) (home|house|apartment)|nowhere to live|landlord)",
+        title: ["A prayer for a home", "A prayer when rent is due"],
+        titleOther: "A prayer for {who}'s home",
+        self: [
+          "Lord, Jesus had nowhere to lay His head, so You know this fear. I'm afraid of losing our home. Provide what we need for the rent, soften the heart of anyone who holds our future, and lead us to help we don't know about yet. Whatever happens, keep us together and keep us safe.",
+          "Holy Family, you had no room at the inn. Pray for us. Lord, give us a safe place to live and the means to keep it. Give me courage to ask for help, wisdom with every dollar, and peace tonight under whatever roof we have.",
+        ],
+        other: [
+          "Lord, {who} is afraid of losing {their} home. Provide for {them}. Open doors to help, soften the hearts of landlords and lenders, and give {them} a safe place to live. Show me how I can help.",
+        ],
+      },
+      {
+        when: "\\b(food|groceries|feed my|feed our|food stamps|snap|wic|food bank|hungry|empty fridge|nothing to eat)\\b",
+        title: ["A prayer for daily bread"],
+        titleOther: "A prayer for {who}'s table",
+        self: [
+          "Our Father, give us this day our daily bread. Lord, I'm worried about putting food on the table. You fed the five thousand and You feed the birds of the air. Feed us too. Lead us to the help we need without shame, and let us never forget those who are hungry when we have enough.",
+          "Lord, it's hard to admit we don't have enough to eat. You see us. Provide for my family today, bless the people and pantries that share, and give me the humility to receive and, one day, the joy to give.",
+        ],
+        other: [
+          "Lord, {who} doesn't have enough to eat right now. Fill {their} table, lead {them} to help without shame, and move my heart to share what I have.",
+        ],
+      },
+      {
+        when: "\\b(medical bill|medical bills|hospital bill|hospital bills|medical debt|insurance|copay|can't afford (my |the )?(medication|medicine|treatment|surgery|prescription)|cant afford (my |the )?(medication|medicine|treatment))",
+        title: ["A prayer for medical bills"],
+        titleOther: "A prayer for {who}'s medical bills",
+        self: [
+          "Lord, I'm already carrying illness, and now the bills too. Lift this weight. Open doors to assistance, payment plans and people who will help, and give me peace to focus on healing. Remind me that my life is worth far more than what it costs.",
+          "Divine Physician, provide for the care I need and the bills that come with it. Give me wisdom to find help, courage to ask, and trust that You will not abandon me in this.",
+        ],
+        other: [
+          "Lord, {who} is facing medical bills on top of everything else. Provide for {them}, open doors to help and mercy, and let {them} focus on getting well.",
+        ],
+      },
+      {
+        when: "^(?=.*\\b(my kids|my children|my son|my daughter|my baby|my family)\\b)(?=.*\\b(afford|provide|money|christmas|presents|gifts|birthday|school supplies|shoes|clothes|diapers|formula|daycare|childcare)\\b)",
+        title: ["A prayer for a providing parent"],
+        other: null, // always the parent's own prayer
+        self: [
+          "St. Joseph, provider for the Holy Family, pray for me. Lord, I want to give my children everything, and right now I can't. Provide what they need, and help me remember that what they need most is my love and Yours. Let them never feel the weight I'm carrying.",
+          "Lord, the holidays and birthdays make it harder. Help me give my children joy that money can't buy: time, laughter, faith and family. Provide for what they truly need, and free me from guilt over what I can't give.",
+        ],
+      },
+      {
+        when: "\\b(my business|our business|small business|my shop|my store|my restaurant|customers|clients|sales are|slow season|keep the doors open|payroll)\\b",
+        title: ["A prayer for my business"],
+        titleOther: "A prayer for {who}'s business",
+        self: [
+          "St. Joseph, craftsman of Nazareth, pray for me. Lord, I've poured myself into this work and it's struggling. Bring customers, give me wisdom in every decision, and help me provide for my family and the people who work with me. Whatever happens, let me run it with integrity.",
+        ],
+        other: [
+          "Lord, bless {who}'s business. Bring customers and opportunities, give {them} wisdom and stamina, and let {their} work provide for {their} family and bless {their} community.",
+        ],
+      },
+      {
+        when: "\\b(car broke|car broke down|car repair|repair|repairs|transmission|emergency expense|unexpected|out of nowhere|vet bill|roof|furnace|water heater|broke down)\\b",
+        title: ["A prayer for an unexpected expense"],
+        self: [
+          "Lord, just when I was getting by, this happened. You aren't surprised by it, even though I am. Provide what I need to fix it, give me creativity and help from unexpected places, and keep me from panic. You've carried me before; carry me again.",
+        ],
+      },
+      {
+        when: "\\b(debt|credit card|credit cards|loans|loan|collections|collector|overdue|behind on (bills|payments)|bills (are )?piling|bankrupt|late fees|interest)\\b",
+        title: ["A prayer for freedom from debt"],
+        titleOther: "A prayer for {who}'s finances",
+        self: [
+          "Lord, this debt feels like a weight on my chest every day. Free me from it, one payment at a time. Give me discipline and wisdom, honest help and fair creditors, and peace that doesn't wait until the balance is zero. My worth is not my bank account.",
+          "Father, forgive me for any choices that led here, and help me make better ones. Show me a way out of this debt I can't see yet, and quiet the shame that keeps me awake. You are my provider, not my paycheck.",
+        ],
+        other: [
+          "Lord, {who} is weighed down by debt. Give {them} a way forward, wise counsel and peace in the meantime. Free {them} from shame, and show me how to help without hurting either of us.",
+        ],
+      },
+    ],
+    keywords: ["money", "rent", "bills", "debt", "afford", "evict", "mortgage", "broke", "paycheck", "food stamps", "can't pay", "financial", "overdraft", "groceries", "food bank", "medical bills", "hospital bill", "hospital bills", "credit card", "loans", "collections", "behind on", "foreclos", "homeless", "utilities", "electric bill", "shut off", "my business", "small business", "sales are", "car broke", "repair", "unexpected expense", "struggling financially", "living paycheck", "make ends meet", "tight budget"],
     saints: ["cajetan", "joseph", "anthony"], scripture: ["phil4_19", "mt6_26"], devotions: ["novena_st_joseph", "act_of_hope"],
     title: ["A prayer for provision", "A prayer in financial hardship"],
     opening: ["Money worries can keep you up at night. God cares about the bills too.", "There's no shame in struggling. Let's ask God for what you need."],
@@ -848,6 +925,14 @@ const EXTRA = {
     other: ["Lord, bless {who}, who gives so much of {themself} caring for someone else. Renew {their} strength, send {them} help and rest, and let {them} feel how much {their} love matters."],
   },
 };
+EXTRA.money.self.push(
+  "Jesus, You told us not to worry about tomorrow, and I'm trying. Today I give You every bill, every number and every fear. Help me take one wise step today, and trust You with the rest.",
+  "Lord, money is tight and our home feels tense. Protect our family from blaming each other. Help us talk honestly, plan together and trust You together.",
+);
+EXTRA.money.other.push(
+  "St. Joseph, provider, pray for {who}. Lord, {who} is carrying so much financial stress. Lift the weight from {their} shoulders, bring unexpected help, and give {them} rest tonight.",
+  "Lord, I'm worried about {who}'s finances. Give {them} wisdom, opportunity and peace, and give me the right words and the right ways to support {them}.",
+);
 for (const [id, add] of Object.entries(EXTRA)) {
   const it = INTENTS.find((x) => x.id === id);
   if (!it) continue;
@@ -962,7 +1047,7 @@ export function detectWho(text = "", intentId) {
   const m = text.match(RELATION);
   if (!m) return "";
   const forSomeone = /\bpray(ing)? for (my|her|him|them|our)\b/i.test(text);
-  const theirStory = ["joy_sober", "lovedone", "joy_pregnancy", "joy_baby", "joy_health", "difficult", "cancer", "illness", "faithchild", "grief", "protection", "pregnancy", "addiction", "mental", "dying", "sickchild", "prison", "immigration", "suicideloss"].includes(intentId);
+  const theirStory = ["money", "joy_sober", "lovedone", "joy_pregnancy", "joy_baby", "joy_health", "difficult", "cancer", "illness", "faithchild", "grief", "protection", "pregnancy", "addiction", "mental", "dying", "sickchild", "prison", "immigration", "suicideloss"].includes(intentId);
   // "my husband left me" is the speaker's story, not a prayer for him
   const selfStory = /\b(left me|cheated on me|hurt me|lied to me|broke up with me)\b/i.test(text);
   // "my husband lost his job", "my son is struggling": the story is about them

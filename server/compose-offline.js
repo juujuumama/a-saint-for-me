@@ -50,7 +50,7 @@ export function composeOffline(checkin, context = {}, style) {
   const isThanks = Boolean(intent?.joy || intent?.celebrate);
 
   let who = checkin.personName || detectWho(text, intent?.id);
-  const otherMode = Boolean(who && (intent?.other || intent?.id === "grief"));
+  const otherMode = Boolean(who && (src?.other || intent?.id === "grief"));
   if (!otherMode) who = checkin.personName || "";
 
   // Saints, Scripture, devotions: the intention's own picks first, then the best theme matches.
