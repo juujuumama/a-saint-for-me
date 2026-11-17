@@ -1,3 +1,5 @@
+import { selfHarmRisk, thirdPartyRisk, abuseRisk, assaultMention } from "../safety.js";
+
 // Hand-written prayer library for the built-in (no-AI) composer.
 // Built around the intentions people most often bring to prayer. Each intention has
 // its own words, saints, Scripture and devotions; pieces are combined so prayers
@@ -6,10 +8,48 @@
 
 export const INTENTS = [
   {
+    // chosen whenever someone's words suggest they (or someone they love) may be thinking of suicide or self-harm
+    id: "despair", noFallback: true, themes: ["sadness", "fear", "hope"],
+    hooks: { dymphna: "patron of those in mental anguish", john_cross: "who found God in the darkest night" },
+    keywords: [],
+    saints: ["dymphna", "john_cross", "teresa_calcutta"], scripture: ["ps34_18", "rom8_38", "is41_10"], devotions: ["jesus_prayer", "memorare", "divine_mercy_chaplet"],
+    title: ["A prayer for when you can't go on", "A prayer in the darkest hour"],
+    titleOther: "A prayer for {who}'s life",
+    opening: ["I'm so glad you're here and that you said this out loud. Your life matters, to God and to people who love you. Please reach out to someone right now: you can call or text 988 any time.", "What you're feeling is real, and it is not the whole truth about you or your future. You don't have to carry this alone tonight. Call or text 988, or tell someone near you."],
+    openingOther: ["You're right to take this seriously. Stay close to {who}, ask {them} directly how {they} {are} doing, and call or text 988 together. You don't have to handle this alone.", "Thank you for caring for {who}. If {they} {are} in immediate danger, call 911 or 988 now. Let's pray for {them}."],
+    self: [
+      "Lord, I'm in so much pain that I can't see a way forward. I'm telling You the truth because I have nowhere else to put it. Hold on to me, because I can't hold on by myself. Keep me safe through this hour and this night. Send me one person to tell, and give me the courage to tell them. Remind me that this darkness is not the end of my story, and that You are not finished with me.",
+      "Jesus, You cried out from the cross, 'My God, why have You forsaken me?' You know this darkness from the inside. Stay with me in it. I don't need answers right now, only a reason to make it to morning. Be that reason. Put someone in my path tonight, and help me reach for the phone, a friend, a stranger, anyone. My life is in Your hands.",
+    ],
+    other: [
+      "Lord, I'm frightened for {who}. Hold {them} tight tonight and do not let {them} go. Break through the lie that the world is better without {them}. Put the right people and the right words in {their} path, starting with me. Give me courage to ask the hard questions, stay close and get help.",
+    ],
+    reflection: ["Please don't wait. Call or text 988 now, or tell one person: 'I'm not okay and I need help.' That is the bravest prayer there is.", "The pain you feel now can change, even if you can't imagine it. Stay for tomorrow. Reach out to someone tonight."],
+  },
+  {
+    id: "survivor", noFallback: true, themes: ["fear", "sadness", "anger"],
+    keywords: [],
+    saints: ["bakhita", "dymphna", "rita"], scripture: ["ps34_18", "is43_2", "rom8_38"], devotions: ["memorare", "st_michael"],
+    title: ["A prayer for a survivor", "A prayer for healing after harm"],
+    titleOther: "A prayer for {who}'s healing",
+    opening: ["What happened to you was not your fault. Not then, not now. You deserved safety, and you deserve healing.", "Thank you for trusting this with words. It was not your fault, and God grieves what was done to you."],
+    openingOther: ["Believing and standing by {who} is one of the most healing things you can do. Let's pray for {them}.", "What happened to {who} was not {their} fault. Let's ask God to heal and protect {them}."],
+    self: [
+      "Lord, You saw what was done to me, and it broke Your heart. It was not my fault. Heal the places in my body, my memory and my trust that were wounded. Free me from shame that was never mine to carry. Lead me to people who believe me and can help me heal, and in Your time, give me back my peace.",
+      "Jesus, You were betrayed and wounded by others, so You understand. Be gentle with me. When the memories come, hold me. Give me courage to tell someone safe, strength to seek help, and the deep knowledge that I am not ruined: I am Yours, and I am beloved.",
+    ],
+    other: [
+      "Lord, what was done to {who} was wrong, and it was not {their} fault. Heal {their} body, {their} memories and {their} trust. Surround {them} with people who believe {them}, lead {them} to good help, and protect {them} from further harm. Show me how to stand beside {them}.",
+    ],
+    reflection: ["You don't have to carry this alone. RAINN's hotline (1-800-656-4673) is free and confidential, any hour.", "Healing isn't linear, and it isn't a test of faith. Be as gentle with yourself as God is."],
+  },
+  {
     id: "abuse", noFallback: true, themes: ["fear", "family"],
     keywords: ["abuse", "abusive", "abused", "hits me", "hit me", "beats me", "chokes me", "not safe at home", "afraid of my husband", "afraid of my boyfriend", "afraid of my partner", "afraid of my wife", "domestic violence", "threatens me", "controlling", "he hurts me", "she hurts me"],
     saints: ["rita", "bakhita", "michael"], scripture: ["ps27_10", "is41_10", "ps34_18"], devotions: ["st_michael", "memorare"],
     title: ["A prayer for safety", "A prayer for courage and safety"],
+    titleOther: "A prayer for {who}'s safety",
+    openingOther: ["It's frightening to watch someone you love be mistreated. You can't make {their} choices, but your steady presence matters.", "No one deserves to be harmed. Let's pray for {who}'s safety, and for wisdom in how to help."],
     opening: ["It is never God's will for you to be harmed. You deserve to be safe, and reaching out for help is right and good.", "What's happening is not your fault. Your safety matters more than keeping the peace."],
     self: [
       "Lord, You see what is happening to me, and You do not want me to be hurt. Protect me. Give me courage to tell someone I trust, wisdom to make a plan, and safe people and places to turn to. Free me from the lie that I deserve this, and lead me into safety and peace.",
@@ -355,7 +395,7 @@ export const INTENTS = [
     }],
     keywords: ["job", "lost my job", "laid off", "job interview", "interview", "layoff", "fired", "unemploy", "interview", "career", "my boss", "coworker", "resume", "applications", "work is"],
     saints: ["cajetan", "joseph"], scripture: ["mt6_26", "prov3_5", "mt7_7"], devotions: ["novena_st_joseph", "act_of_hope"],
-    title: ["A prayer for work", "A prayer for a new job"],
+    title: ["A prayer for work", "A prayer for my work life"],
     opening: ["Work troubles touch everything: money, identity, peace. Let's bring it all to God.", "St. Joseph worked with his hands to provide. He understands."],
     self: [
       "St. Joseph, worker and provider, pray with me. Lord, You know what I need before I ask. Open the right doors, close the wrong ones, and give me courage for every application and interview. Help me remember that my worth is not my job title.",
@@ -1196,6 +1236,9 @@ const REL_WORDS = "mom|mother|dad|father|grandma|grandmother|grandpa|grandfather
 export function detectWho(text = "", intentId) {
   const m = text.match(RELATION);
   if (!m) return "";
+  // "I want to die, my mom doesn't care" is the speaker's own crisis
+  if (intentId === "despair") return thirdPartyRisk(text) ? m[0].toLowerCase() : "";
+  if (intentId === "survivor") return /\bmy [a-z' -]+ (was|got|has been|is being|were)\b/i.test(text) ? m[0].toLowerCase() : "";
   // "my friend's mom died": the prayer is for the friend's mom
   const chain = text.slice(m.index + m[0].length).match(new RegExp(`^'s (${REL_WORDS})\\b`, "i"));
   if (chain) return `${m[0].toLowerCase()}'s ${chain[1].toLowerCase()}`;
@@ -1211,7 +1254,12 @@ export function detectWho(text = "", intentId) {
 const WORRY = /\b(worried|worry|scared|afraid|anxious|anxiety|nervous|stressed|struggling|hard|hate|dread|lost|fired|laid off|sad|crying|can't|cannot|won't)\b/;
 const HAPPY = /(!|\b(excited|happy|thrilled|grateful|thankful|blessed|finally|yay|so glad|praise god|good news|congrat|celebrat|can't wait|cant wait)\b)/;
 const PRIORITY = ["pet", "joy_school", "prison"];
+const byId = (id) => INTENTS.find((x) => x.id === id);
 export function detectIntent(text = "", themes = []) {
+  // Safety first: these override every keyword match.
+  if (selfHarmRisk(text)) return byId("despair");
+  if (assaultMention(text)) return byId("survivor");
+  if (abuseRisk(text)) return byId("abuse");
   const t = ` ${text.toLowerCase()} `;
   const worried = WORRY.test(t), happy = HAPPY.test(t);
   let best = null;
