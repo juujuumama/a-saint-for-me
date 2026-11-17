@@ -66,6 +66,9 @@ const CASES = [
   ["I was raped last year and can't move on", "survivor", null, ""],
   ["my brother is in an abusive relationship", "abuse", null, "my brother"],
   ["this job is killing me", "job"],
+  ["my grandpa died and I can't afford the funeral", "grief", null, "my grandpa"],
+  ["My friend tried to kill herself", "despair", null, "my friend"],
+  ["my cousin overdosed last night and died", "grief"],
 ];
 
 let fail = 0;

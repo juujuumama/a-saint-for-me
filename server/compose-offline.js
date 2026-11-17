@@ -4,7 +4,7 @@ import { SAINTS, saintById } from "./library/saints.js";
 import { SCRIPTURE, scriptureById } from "./library/scripture.js";
 import { DEVOTIONS, devotionById } from "./library/devotions.js";
 import { themesFromCheckin } from "./library/themes.js";
-import { INTENTS, SAINT_HOOKS, FEELING_LINES, JOY_NERVES, INVOCATIONS, CLOSINGS, detectIntent, detectWho, fill } from "./library/prayers.js";
+import { INTENTS, SAINT_HOOKS, FEELING_LINES, JOY_NERVES, INVOCATIONS, CLOSINGS, detectIntent, detectWho, fill, matches, secondConcern } from "./library/prayers.js";
 
 // ---------- Offline composer ----------
 function scoreBy(items, themes) {
@@ -44,7 +44,7 @@ export function composeOffline(checkin, context = {}, style) {
   const intent = detectIntent(text, themes) || (checkin.mode === "thanks" ? INTENTS.find((i) => i.id === "gratitude") : null);
   if (intent) themes = [...new Set([...intent.themes, ...themes])];
   // A more specific version of the intention (e.g. a raise rather than a new job)
-  const variant = intent?.variants?.find((v) => new RegExp(v.when, "i").test(text));
+  const variant = intent?.variants?.find((v) => matches(v.when, text));
   const nervousBlock = variant ? variant.nervous : intent?.nervous;
   const nervousNews = Boolean(nervousBlock) && /\b(nervous|anxious|scared|afraid|worried|butterflies|jitters|overwhelmed)\b/i.test(text) && !/(!|\b(so excited|thrilled|so happy|can't wait|cant wait)\b)/i.test(text);
   let src = variant ? { ...intent, ...variant } : intent;
@@ -74,6 +74,8 @@ export function composeOffline(checkin, context = {}, style) {
     const named = themes.slice(0, 3).map((t) => PHRASES[t]).filter(Boolean);
     paras.push(`${rand(INVOCATIONS.self)} You know what is on my heart before I can find the words. I place before You ${named.join(", and ")}. Where I am weary, be my rest. Where I am afraid, be my courage. Where I cannot see the way, be my light.`);
   }
+  const also = intent && !isThanks ? secondConcern(text, intent) : "";
+  if (also) paras[0] += ` And Lord, I also bring You ${also}.`;
   const nervous = /\b(nervous|scared|anxious|afraid|butterflies)\b/i.test(text);
   if (isThanks) { if (nervous && !otherMode) paras[0] += " " + rand(JOY_NERVES); }
   else if (feeling && !otherMode) paras[0] += " " + rand(FEELING_LINES[feeling]);

@@ -21,6 +21,7 @@ const SELF_HARM = [
 ];
 
 // Someone else may be in danger: "my friend says she wants to die"
+const ATTEMPT = /\b(tried|attempted|tries|trying) to (kill|hurt|end) (him|her|them)sel(f|ves)\b|\b(tried|attempted) to end (his|her|their) (own )?life\b|\b(he|she|they) (cut|cuts|is cutting) (him|her|them)sel(f|ves)\b/;
 const THIRD_PARTY = /\b(wants|said|says|saying|talks?|talking|threaten(s|ed|ing)?|told me|texted|posted|keeps saying)\b.{0,40}\b(to die|kill (him|her|them)sel(f|ves)|suicid|end (his|her|their) (own )?life|hurt (him|her|them)sel(f|ves)|better off without (him|her|them)|not (be|being) here)\b/;
 
 const ABUSE = [
@@ -38,8 +39,8 @@ const norm = (text = "") => String(text).toLowerCase().replace(/[’‘`]/g, "'"
   .replace(/\b(drug|substance|alcohol) abuse\b/g, " ").replace(/\babuse of (power|authority|trust)\b/g, " ");
 
 // "my son took his own life" / "my brother killed himself" is a loss, handled by the grief prayers.
-export function thirdPartyRisk(text = "") { return THIRD_PARTY.test(norm(text)); }
-export function selfHarmRisk(text = "") { const t = norm(text); return SELF_HARM.some((p) => p.test(t)) || THIRD_PARTY.test(t); }
+export function thirdPartyRisk(text = "") { const t = norm(text); return THIRD_PARTY.test(t) || ATTEMPT.test(t); }
+export function selfHarmRisk(text = "") { const t = norm(text); return SELF_HARM.some((p) => p.test(t)) || THIRD_PARTY.test(t) || ATTEMPT.test(t); }
 export function assaultMention(text = "") { return /\b(rap(e|ed|ist)|sexual(ly)? (assault|abus)|molest|assaulted|forced (himself|herself))/.test(norm(text)); }
 export function abuseRisk(text = "") { const t = norm(text); return ABUSE.some((p) => p.test(t)); }
 export function needsCare(text = "") { return selfHarmRisk(text) || abuseRisk(text); }
