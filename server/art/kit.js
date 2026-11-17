@@ -29,8 +29,11 @@ export function pickKit(manifest, { themes = [], seed = 1, saint = null } = {}) 
   const bg = scored[Math.floor(r() * Math.min(3, scored.length))].b;
   const role = (x) => manifest.textures.filter((t) => t.role === x);
   const pick = (arr, not = []) => { const pool = arr.filter((t) => !not.includes(t)); return pool[Math.floor(r() * pool.length)] || arr[0]; };
-  const robe = pick(role("robe"));
-  const mantle = r() < 0.4 ? null : pick(role("robe"), [robe]); // null = solid jewel-tone mantle
+  // Outfits: pick a series first (knit, neon, soft life…), then a fabric, so no one series dominates.
+  const fams = [...new Set(role("robe").map((t) => t.fam || "knit"))];
+  const outfit = (not = []) => pick(role("robe").filter((t) => (t.fam || "knit") === fams[Math.floor(r() * fams.length)]), not);
+  const robe = outfit();
+  const mantle = r() < 0.4 ? null : outfit([robe]); // null = solid jewel-tone mantle
   const crystal = pick(role("crystal"));
   const wing = pick([...role("crystal"), ...role("robe")], [crystal, robe, mantle]);
   const paint = pick(role("paint"));

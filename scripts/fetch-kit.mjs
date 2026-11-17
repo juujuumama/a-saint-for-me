@@ -14,8 +14,8 @@ const T = {
   land: ["peace", "decisions", "loneliness", "faith", "confusion", "hope", "growth"],
   tarot: ["faith", "decisions", "grief", "peace", "confusion"],
   crystal: ["health", "peace", "anxiety", "faith", "addiction", "growth"],
-  neon: ["hope", "inspiration", "decisions", "overwhelm", "growth", "confusion", "work", "anxiety"],
-  soft: ["peace", "gratitude", "family", "motherhood", "loneliness", "grief", "faith", "hope"],
+  neon: ["hope", "inspiration", "decisions", "overwhelm", "growth", "confusion", "work", "anxiety", "fear", "addiction", "finances"],
+  soft: ["peace", "gratitude", "family", "motherhood", "loneliness", "grief", "faith", "hope", "health", "sadness", "parenting"],
 };
 const BACKGROUNDS = {
   floral: [
@@ -50,14 +50,16 @@ const BACKGROUNDS = {
     "bb3e1d1145", "1da547e7a0", "fb4f17a947", "f8a63c807c", "2146102aed", "a94d499472", "3263824909",
     "b1e4388e62", "bbd0494cb7", "ad7868595a", "0ae5e3be72", "27f7d6a834", "1752dc7757", "5f6e13cfbf",
     "1be923b6ff", "ece62fb7c0",
+    "c6bd3da910", "044203c081", "2768f73c4a", "0498b1454c", "687483b897", "db9c3eff87", "d55bfc771f", "b05fb1e50a", "742b92f24a", "2b0c246843", "989ad2fb50", "6dd94dface", "5ffe451a1e", "17c2bdbd08", "e9a476eff4", "81eb42d07d", "c2c994f6ab", "7dd5429ba6", "e8a269ca13", "c10d09dd8c", "2bdd3e7a02", "07dcf82629", "979b9724da", "1957969994", "d5a544de6c", "2ec384cf04", "26c4e1f4a7", "44ead4c905", "c24514bd40", "4db9eeb5b9", "fbeb0d4e6d", "8e0382c939", "d441e5506d", "338630b6b8", "87f3c30afb", "e488be5c48", "1b5e25bfe1",
   ],
   soft: [
     "8f4518a551", "f0520e3d14", "120884de54", "3009537dc1", "d436f3dd1b", "b4313c876c", "a4b1e65c38",
     "4666d9dee8", "9e3abfa39c",
+    "bb1b0ae8e2", "09bc2628e3", "69e7f0a0b4", "97808aeae9", "0ea621571c", "49bf5d3f16", "2933b8d2dc", "bce2bef73a", "b70b4844a0", "ca9be5c02a", "78e8bc55d5", "4372a3e289", "6cef1a6805", "4ebf073d7f", "a74c64a8c6", "ebe0352e25",
   ],
 };
 const TEXTURES = [
-  // [image, role, crop x,y,w,h]
+  // [image, role, crop x,y,w,h, family]; outfits are chosen family first so one series never dominates
   ["34eab5ddc5", "robe", [0, 0.5, 1, 0.5]], ["3ff7cf1393", "accent", [0.1, 0.25, 0.8, 0.7]], ["8b070b44a1", "accent", [0.2, 0.35, 0.6, 0.5]],
   ["66657f2310", "robe", [0, 0.6, 1, 0.4]], ["85b23c3e12", "robe", [0, 0.62, 1, 0.38]], ["a5e622f05a", "robe", [0, 0.65, 1, 0.35]],
   ["aac2363f33", "robe", [0, 0.62, 1, 0.38]], ["d6f9754b90", "robe", [0, 0.6, 1, 0.4]], ["e83bb00629", "robe", [0, 0.35, 1, 0.65]],
@@ -73,6 +75,24 @@ const TEXTURES = [
   ["67dd28b80b", "crystal", [0, 0, 1, 1]], ["e7f5252f1b", "crystal", [0, 0.45, 1, 0.55]], ["291c43f941", "crystal", [0.1, 0.35, 0.8, 0.6]],
   // new works (Nov 2026): neon dreamscape and soft life
   ["4ecd7f7442", "accent", [0.1,  0.2,  0.8,  0.6]], ["98a1f7beec", "accent", [0.1,  0.2,  0.8,  0.7]], ["a04b4541f8", "paint", [0,  0,  1,  1]], ["b4313c876c", "paint", [0,  0.3,  1,  0.7]], ["2bb3dc4bc7", "accent", [0,  0.3,  1,  0.6]],
+  ["fc47d3dd68", "robe", [0.3, 0.4, 0.5, 0.5], "neon"],
+  ["635202f7fb", "robe", [0.1, 0.55, 0.8, 0.45], "neon"],
+  ["e015667e50", "robe", [0, 0.55, 1, 0.45], "neon"],
+  ["a3bd294436", "robe", [0, 0.5, 1, 0.5], "neon"],
+  ["5f6f64e95d", "robe", [0.1, 0.4, 0.6, 0.5], "neon"],
+  ["60c888e26a", "robe", [0.1, 0.6, 0.8, 0.4], "neon"],
+  ["33299ee97a", "robe", [0.1, 0.45, 0.8, 0.55], "neon"],
+  ["5f2b12b134", "robe", [0.3, 0.4, 0.4, 0.6], "neon"],
+  ["8945bd8a76", "robe", [0.2, 0.4, 0.6, 0.6], "soft"],
+  ["e448f7eea5", "robe", [0.1, 0.6, 0.8, 0.4], "soft"],
+  ["93c1499026", "robe", [0.2, 0.5, 0.6, 0.5], "soft"],
+  ["ad820f3eaf", "robe", [0.5, 0.45, 0.4, 0.5], "soft"],
+  ["8a7f7932a6", "robe", [0, 0.75, 1, 0.25], "neon"],
+  ["a9cb52cb84", "robe", [0.2, 0.5, 0.7, 0.5], "soft"],
+  ["cdba0bc268", "paint", [0, 0, 1, 1]],
+  ["cadfda87ee", "paint", [0, 0.3, 1, 0.7]],
+  ["b0d059a419", "paint", [0, 0.6, 1, 0.4]],
+  ["c6e0ef9992", "crystal", [0, 0.3, 1, 0.7]],
 ];
 const FACES = JSON.parse(fs.readFileSync(path.resolve("scripts/kit-faces.json"), "utf8"));
 
@@ -122,7 +142,7 @@ async function inBatches(items, fn, size = 8) {
 const manifest = { source: "Artwork by Sierra Renee (juujuumama.art). All rights reserved by the artist.", backgrounds: [], textures: [], faces: [] };
 const bgItems = Object.entries(BACKGROUNDS).flatMap(([group, ns]) => ns.map((n) => ({ n, group })));
 manifest.backgrounds = (await inBatches(bgItems, async ({ n, group }) => { const p = await get(byId.get(n), "bg", [0, 0, 1, 1], 760, 72); return p && { ...p, themes: T[group], group }; })).filter(Boolean);
-manifest.textures = (await inBatches(TEXTURES, async ([n, role, crop]) => { const p = await get(byId.get(n), "tx", crop, 480, 72); return p && { ...p, role }; })).filter(Boolean);
+manifest.textures = (await inBatches(TEXTURES, async ([n, role, crop, fam]) => { const p = await get(byId.get(n), "tx", crop, 480, 72); return p && { ...p, role, ...(fam ? { fam } : {}) }; })).filter(Boolean);
 manifest.faces = (await inBatches(FACES, async (fc, i) => {
   const url = byId.get(fc.id);
   if (!url) { console.warn("missing face image", fc.id); return null; }
