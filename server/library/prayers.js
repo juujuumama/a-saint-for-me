@@ -293,7 +293,64 @@ export const INTENTS = [
   },
   {
     id: "addiction", themes: ["addiction", "growth"],
-    keywords: ["addict", "sober", "sobriety", "relapse", "drinking", "alcohol", "drugs", "using again", "recovery", "gambling", "porn", "clean for", "rehab", "aa meeting", "na meeting", "craving"],
+    variants: [
+      {
+        // in recovery themselves, praying for someone still struggling
+        when: "^(?=.*\\b(i'm|i am|i've been|ive been|im|my own|i got|i'm in|i am in)\\b[^.]*\\b(sober|recovery|clean)\\b)(?=.*\\bmy (mom|mother|dad|father|brother|sister|son|daughter|husband|wife|boyfriend|girlfriend|partner|friend|best friend|cousin|uncle|aunt)\\b)",
+        title: ["A prayer for both of us in recovery"],
+        titleOther: "A prayer for {who}, and for my own recovery",
+        self: [
+          "Lord, You know the road I'm walking in recovery, and You know how much I want the people I love to find freedom too. Keep me strong one day at a time, and use my story to give hope without pressure. I can't save anyone, but You can. Hold all of us.",
+        ],
+        other: [
+          "Lord, thank You for my own recovery, one day at a time. Now I bring You {who}, who is still caught in what I know too well. Break {their} chains as You broke mine. Protect {them} until {they} {are} ready, and when that day comes, let me be there with open arms, without losing my own sobriety in the process.",
+          "Jesus, You freed me, and I know You can free {who}. Give {them} a moment of clarity and a way out. Give me wisdom to love {them} without enabling, to share hope without preaching, and to guard my own recovery while I pray for {them}.",
+        ],
+      },
+      {
+        when: "\\b(craving|crave|urge to|want to drink|want to use|want a drink|tempted)\\b",
+        title: ["A prayer in a moment of craving"],
+        self: [
+          "Jesus, the craving is here right now. Be stronger than it. Help me breathe, call someone, pray, and wait it out. I don't have to win forever, just this moment, and I don't have to win it alone.",
+          "Lord, I want to use right now, and I'm asking You for help instead. Get me through the next ten minutes. Remind me how far I've come and who I'm doing this for. Send me someone to call, and let this wave pass.",
+        ],
+      },
+      {
+        when: "\\b(overdos|fentanyl|heroin|opioid|terrified (he|she|they)'?ll die|scared (he|she|they)'?ll die)",
+        title: ["A prayer for protection from overdose"],
+        titleOther: "A prayer for {who}'s safety",
+        self: [
+          "Lord, I'm scared of what this addiction could do to me. Protect my life. Lead me to help today: a doctor, a counselor, a meeting, someone who will stay with me. I want to live, and I want to be free.",
+        ],
+        other: [
+          "Lord, I'm afraid of getting the phone call. Protect {who} from overdose and from every danger. Wrap {them} in Your mercy tonight, send {them} people and moments that lead toward recovery, and calm my fear with trust in You.",
+          "St. Michael, protect {who}. Lord, keep {them} alive, keep {them} safe, and bring {them} through this darkness to the day {they} {are} ready for help. Give me peace enough to sleep tonight, trusting {them} to You.",
+        ],
+      },
+      {
+        when: "\\b(rehab|detox|treatment center|in treatment|went into treatment|inpatient|outpatient program)\\b",
+        title: ["A prayer for treatment and recovery"],
+        titleOther: "A prayer for {who} in treatment",
+        self: [
+          "Lord, I'm starting treatment and I'm scared. Thank You for bringing me this far. Carry me through detox and the hard days, help me be honest and open, and let me meet the person I'm meant to be on the other side.",
+        ],
+        other: [
+          "Jesus, {who} is in treatment now. Thank You for this step. Strengthen {them} through detox and the hard days ahead, give {them} honest friends in recovery, and let {them} discover who {they} {are} without the substance. Prepare our family to support {them} well.",
+        ],
+      },
+      {
+        when: "\\b(relapse|relapsed|slipped|used again|drank again|drinking again|using again|fell off|messed up my sobriety|lost my sobriety|start over)\\b",
+        title: ["A prayer after a relapse", "A prayer to begin again"],
+        self: [
+          "Lord, I fell, and I'm ashamed. But You are the God of second chances, and seventy-times-seven chances. Lift me up without letting me drown in guilt. Help me tell someone today, get back to the meetings and the people who help, and start again with this very day.",
+          "Jesus, a relapse doesn't erase the sober days You gave me, or Your love for me. Wash away my shame, show me what I need to learn, and give me the humility to reach out for help right now. Today is day one again, and You are with me in it.",
+        ],
+        other: [
+          "Lord, {who} has relapsed, and my heart is heavy. Don't let {them} give up on {themself}. Lift {them} out of shame, keep {them} safe, and lead {them} back to help and to You. Give me patience and hope, and keep me from despair.",
+        ],
+      },
+    ],
+    keywords: ["addict", "sober", "sobriety", "relapse", "drinking", "alcohol", "drugs", "using again", "recovery", "gambling", "porn", "clean for", "rehab", "aa meeting", "na meeting", "craving", "overdose", "overdosed", "fentanyl", "opioid", "heroin", "meth", "detox", "treatment center", "still using", "drunk again", "binge", "high again", "using drugs", "his drinking", "her drinking", "addicted"],
     saints: ["matt_talbot", "moses_black", "augustine"], scripture: ["1cor10_13", "2cor5_17", "lam3_22"], devotions: ["st_michael", "sacrament_reconciliation", "divine_mercy_chaplet"],
     title: ["A prayer for recovery", "A prayer for strength today"],
     titleOther: "A prayer for {who}'s recovery",
@@ -302,9 +359,13 @@ export const INTENTS = [
     self: [
       "Lord, I can't do this on my own, so I'm asking You to do it with me. Give me strength for today, just today. When the craving comes, be stronger. When I fall, help me get up without despair. Surround me with people who tell me the truth and help me stay free.",
       "Jesus, You make all things new. Break the chains I cannot break, heal the wounds I've been trying to numb, and fill the empty places with Your love. Thank You for every sober day, and give me one more.",
+      "Lord, these early days are so hard. My body and mind are fighting me. Carry me through the next hour, and the next. Keep me honest with the people helping me, and let me believe that it really does get better.",
+      "Lord, I'm carrying so much shame about who I was when I was using. You see all of it and You still call me beloved. Help me make amends where I can, forgive myself where I should, and walk forward as the person You're making me.",
     ],
     other: [
       "Lord, You see {who} in {their} struggle. Break the hold of this addiction, protect {them} from harm, and lead {them} to the help that fits {them}. Give me wisdom to love {them} without enabling, and peace when I can't fix it.",
+      "Mary, Mother of Sorrows, you watched your Son suffer. Stay with me as I watch {who} suffer in addiction. Lord, I can't fix this, so I give {them} to You. Keep {them} alive, keep {them} safe, and bring {them} to the day {they} {are} ready for help. Give me strength to love {them} and to take care of myself.",
+      "Lord, loving {who} through addiction has worn me down. Help me set boundaries without bitterness, hope without enabling, and pray without carrying what only {they} and You can carry. Bring {them} home to {themself} and to You.",
     ],
     reflection: ["Just for today. That's enough. Tomorrow has its own grace.", "Your past isn't the whole story. Today is a new page."],
   },
@@ -635,6 +696,11 @@ export const INTENTS = [
     self: [
       "Thank You, Lord, for every sober day! I couldn't have done this without You and the people You sent me. Keep me humble and grateful, protect me from complacency, and let my story give hope to someone still struggling.",
     ],
+    titleOther: "A prayer of thanks for {who}'s sobriety",
+    openingOther: ["What a gift! Let's thank God for {who}'s sobriety.", "Every sober day is a miracle. Let's celebrate {who}."],
+    other: [
+      "Thank You, Lord, for {who}'s sobriety! Thank You for every hard-won day and every person who walked with {them}. Keep {them} strong, humble and surrounded by support, and let {their} story give hope to others.",
+    ],
     reflection: ["Celebrate this, and tell someone who's still struggling that it's possible.", "Just for today, again. Gratitude keeps recovery strong."],
   },
   {
@@ -896,7 +962,7 @@ export function detectWho(text = "", intentId) {
   const m = text.match(RELATION);
   if (!m) return "";
   const forSomeone = /\bpray(ing)? for (my|her|him|them|our)\b/i.test(text);
-  const theirStory = ["lovedone", "joy_pregnancy", "joy_baby", "joy_health", "difficult", "cancer", "illness", "faithchild", "grief", "protection", "pregnancy", "addiction", "mental", "dying", "sickchild", "prison", "immigration", "suicideloss"].includes(intentId);
+  const theirStory = ["joy_sober", "lovedone", "joy_pregnancy", "joy_baby", "joy_health", "difficult", "cancer", "illness", "faithchild", "grief", "protection", "pregnancy", "addiction", "mental", "dying", "sickchild", "prison", "immigration", "suicideloss"].includes(intentId);
   // "my husband left me" is the speaker's story, not a prayer for him
   const selfStory = /\b(left me|cheated on me|hurt me|lied to me|broke up with me)\b/i.test(text);
   // "my husband lost his job", "my son is struggling": the story is about them
