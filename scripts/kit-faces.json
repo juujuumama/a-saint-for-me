@@ -78,7 +78,7 @@
 "chin": 0.2976,
 "tone": "light",
 "pres": "fem",
-"zoom": 0.8
+"zoom": 0.84
 },
 {
 "id": "1d236b36ad",
@@ -256,7 +256,7 @@
 "chin": 0.4055,
 "tone": "dark",
 "pres": "fem",
-"zoom": 0.68
+"zoom": 0.64
 },
 {
 "id": "4dc7515d2f",
@@ -417,7 +417,7 @@
 "chin": 0.3585,
 "tone": "light",
 "pres": "fem",
-"zoom": 0.68
+"zoom": 0.62
 },
 {
 "id": "7d5d22bbbe",
@@ -650,7 +650,7 @@
 "chin": 0.3139,
 "tone": "medium",
 "pres": "fem",
-"zoom": 0.68
+"zoom": 0.9
 },
 {
 "id": "b691bb6fc3",
@@ -724,7 +724,7 @@
 "chin": 0.3688,
 "tone": "medium",
 "pres": "fem",
-"zoom": 0.68
+"zoom": 0.76
 },
 {
 "id": "c53777f0a4",
@@ -837,7 +837,7 @@
 "chin": 0.396,
 "tone": "light",
 "pres": "fem",
-"zoom": 0.56
+"zoom": 0.58
 },
 {
 "id": "e47810341a",
