@@ -148,7 +148,10 @@ manifest.faces = (await inBatches(FACES, async (fc, i) => {
   const url = byId.get(fc.id);
   if (!url) { console.warn("missing face image", fc.id); return null; }
   const [, W, H] = url.match(/-(\d+)x(\d+)\./).map(Number);
-  const p = await get(url, "face", faceCrop(fc, W, H), 300, 80, `-${i}`);
+  const crop = faceCrop(fc, W, H);
+  // file name comes from the artwork and the crop, so removing one face never renames another
+  const tag = "-" + crop.map((v) => Math.round(v * 1000).toString(36)).join("");
+  const p = await get(url, "face", crop, 300, 80, tag);
   return p && { ...p, tone: fc.tone, pres: fc.pres };
 })).filter(Boolean);
 fs.writeFileSync(path.join(OUT, "kit.json"), JSON.stringify(manifest));

@@ -9,20 +9,32 @@ import { needsCare, CARE_RESOURCES } from "./lib/safety.js";
 import { pickKit, kitFiles } from "./lib/art/kit.js";
 
 const STYLE = await fetch(new URL("./lib/style.json", import.meta.url)).then((r) => r.json());
-const KIT = await fetch(new URL("./kit/kit.json", import.meta.url)).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+// "no-cache" = always ask the server whether the kit changed (a tiny check), so a phone
+// never keeps an old list that names pieces which are no longer there.
+const fetchKit = (cache) => fetch(new URL("./kit/kit.json", import.meta.url), { cache }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+let KIT = await fetchKit("no-cache");
 const kitData = new Map();
 async function loadFile(file) {
   if (kitData.has(file)) return kitData.get(file);
-  const p = fetch(new URL(`./kit/${file}`, import.meta.url)).then((r) => r.blob()).then((b) => new Promise((res) => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.readAsDataURL(b); }));
+  const p = fetch(new URL(`./kit/${file}`, import.meta.url))
+    .then((r) => (r.ok && /^image\//.test(r.headers.get("content-type") || "image/") ? r.blob() : null))
+    .then((b) => b && new Promise((res) => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.onerror = () => res(null); fr.readAsDataURL(b); }))
+    .catch(() => null);
   kitData.set(file, p);
   return p;
 }
 const saintFor = (e, a) => (a.saintId ? saintById(a.saintId) : null);
 const kitPick = (e, a) => (KIT ? pickKit(KIT, { themes: e.devotional.themes, seed: a.seed, saint: saintFor(e, a) }) : null);
 // Load the artist's kit pieces an experience needs, before drawing it.
-async function ensure(e) {
-  await Promise.all(e.artHistory.flatMap((a) => kitFiles(kitPick(e, a)).map(loadFile)));
+async function ensure(e, retry = true) {
+  const files = e.artHistory.flatMap((a) => kitFiles(kitPick(e, a)));
+  const got = await Promise.all(files.map(loadFile));
   for (const f of kitData.keys()) kitData.set(f, await kitData.get(f));
+  // A piece is missing (the kit was updated since this list was saved): get the fresh list and redraw.
+  if (retry && got.some((x) => !x)) {
+    const fresh = await fetchKit("reload");
+    if (fresh) { KIT = fresh; cache.clear(); for (const [f, v] of kitData) if (!v) kitData.delete(f); return ensure(e, false); }
+  }
 }
 const KEY = "asfm:db";
 const blank = () => ({ settings: { memoryConsent: false }, experiences: [] });
@@ -39,7 +51,9 @@ function artUrl(e, a) {
   const k = `${e.id}:${a.seed}`;
   if (!cache.has(k)) {
     const saint = saintFor(e, a), pick = kitPick(e, a);
-    const kit = pick && Object.fromEntries(Object.entries(pick).map(([k2, v]) => [k2, v ? { ...v, href: kitData.get(v.file) } : null]));
+    let kit = pick && Object.fromEntries(Object.entries(pick).map(([k2, v]) => [k2, v && kitData.get(v.file) ? { ...v, href: kitData.get(v.file) } : null]));
+    // never draw a broken image: no face → plain face oval; any other piece missing → the kit-free style
+    if (kit && Object.entries(pick).some(([k2, v]) => v && k2 !== "face" && !kit[k2])) kit = null;
     cache.set(k, svgUrl(proceduralArtwork({ brief: { ...e.devotional.art_brief, composition: a.composition }, themes: e.devotional.themes, seed: a.seed, aspect: a.aspect, words: a.words, saint, style: STYLE, kit })));
   }
   return cache.get(k);
