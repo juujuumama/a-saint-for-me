@@ -316,7 +316,7 @@ function renderArt(exp) {
 
   let framed;
   if (VIEW === "card") framed = `<div class="collectible"><div class="artframe">${imgOrPending}${pending}${failed}</div><div class="meta"><div class="t">${esc(d.prayer.title)}</div><div class="p">${esc(firstLines)}</div><div class="s">${esc(saintNames)}<br>${fmtDate(exp.createdAt, { month: "long", day: "numeric", year: "numeric" })}</div></div></div>`;
-  else framed = `<div class="artframe">${imgOrPending}${pending}${failed}${VIEW === "prayer" && cur ? `<div class="overlay-prayer"><h3>${esc(d.prayer.title)}</h3><p>${esc(firstLines)}</p></div>` : ""}</div>`;
+  else framed = `<div class="artframe">${imgOrPending}${pending}${failed}${VIEW === "prayer" && cur ? `<div class="overlay-prayer"><h2>${esc(d.prayer.title)}</h2><p>${esc(firstLines)}</p></div>` : ""}</div>`;
 
   col.innerHTML = `
     <div class="view-switch" role="group" aria-label="Artwork view">
@@ -513,7 +513,7 @@ async function renderAbout() {
       <h1>A daily prayer, and a piece of art made for it</h1>
       <p class="lead">Share what's on your heart, in your own words or out loud. A Saint for Me answers with a personal prayer, saints to walk with you, Scripture, prayers of the Church, and a one-of-a-kind collage built from the original artwork of Sierra Renee (juujuumama).</p>
     </header>
-    ${sample.images.length ? `<div class="about-strip">${sample.images.map((u) => `<img src="${u}" alt="A saint or angel collage made by the app" loading="lazy">`).join("")}</div>` : ""}
+    ${sample.images.length ? `<div class="about-strip" tabindex="0" role="region" aria-label="Sample saint collages">${sample.images.map((u) => `<img src="${u}" alt="A saint or angel collage made by the app" loading="lazy">`).join("")}</div>` : ""}
 
     <section class="about-sec why">
       <h2>Why I made this</h2>

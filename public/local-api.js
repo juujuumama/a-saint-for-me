@@ -28,6 +28,8 @@ const KEY = "asfm:db";
 const blank = () => ({ settings: { memoryConsent: false }, experiences: [] });
 function load() { try { return JSON.parse(localStorage.getItem(KEY)) || blank(); } catch { return blank(); } }
 let db = load();
+// Another tab saved something: pick it up so this tab never overwrites it.
+addEventListener("storage", (e) => { if (e.key === KEY || e.key === null) db = load(); });
 function save() { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch { /* storage full or blocked: keep working in memory */ } }
 const id = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
 const svgUrl = (svg) => "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);

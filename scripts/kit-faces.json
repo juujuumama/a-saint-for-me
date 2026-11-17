@@ -1158,5 +1158,165 @@
 "chin": 0.4351,
 "tone": "dark",
 "pres": "masc"
+},
+{
+"id": "6b6aa527b1",
+"fx": 0.1599,
+"eye": 0.1058,
+"chin": 0.2044,
+"tone": "dark",
+"pres": "fem"
+},
+{
+"id": "6b6aa527b1",
+"fx": 0.1743,
+"eye": 0.6418,
+"chin": 0.7304,
+"tone": "dark",
+"pres": "fem"
+},
+{
+"id": "8fb4730b6e",
+"fx": 0.5001,
+"eye": 0.093,
+"chin": 0.1611,
+"tone": "light",
+"pres": "fem"
+},
+{
+"id": "0afeb0f9f6",
+"fx": 0.6466,
+"eye": 0.3016,
+"chin": 0.5774,
+"tone": "light",
+"pres": "fem"
+},
+{
+"id": "2b9e7231dd",
+"fx": 0.4694,
+"eye": 0.2653,
+"chin": 0.4118,
+"tone": "light",
+"pres": "fem"
+},
+{
+"id": "b6281ac5d1",
+"fx": 0.5835,
+"eye": 0.3471,
+"chin": 0.5737,
+"tone": "dark",
+"pres": "masc"
+},
+{
+"id": "58de031c94",
+"fx": 0.5148,
+"eye": 0.2208,
+"chin": 0.2745,
+"tone": "dark",
+"pres": "fem"
+},
+{
+"id": "8945bd8a76",
+"fx": 0.5032,
+"eye": 0.1998,
+"chin": 0.2718,
+"tone": "dark",
+"pres": "fem"
+},
+{
+"id": "6c0c92558f",
+"fx": 0.4749,
+"eye": 0.4846,
+"chin": 0.7474,
+"tone": "dark",
+"pres": "fem"
+},
+{
+"id": "97808aeae9",
+"fx": 0.5549,
+"eye": 0.3613,
+"chin": 0.4561,
+"tone": "dark",
+"pres": "any"
+},
+{
+"id": "c59d38ee6e",
+"fx": 0.5248,
+"eye": 0.3221,
+"chin": 0.5492,
+"tone": "dark",
+"pres": "fem"
+},
+{
+"id": "28bea04977",
+"fx": 0.6152,
+"eye": 0.3686,
+"chin": 0.5339,
+"tone": "dark",
+"pres": "fem"
+},
+{
+"id": "9c6aeef6a0",
+"fx": 0.5784,
+"eye": 0.426,
+"chin": 0.6194,
+"tone": "dark",
+"pres": "fem"
+},
+{
+"id": "93a933dc6e",
+"fx": 0.4869,
+"eye": 0.4228,
+"chin": 0.5104,
+"tone": "dark",
+"pres": "fem"
+},
+{
+"id": "d4351bdd26",
+"fx": 0.6151,
+"eye": 0.3337,
+"chin": 0.5105,
+"tone": "dark",
+"pres": "masc"
+},
+{
+"id": "d4351bdd26",
+"fx": 0.3869,
+"eye": 0.5515,
+"chin": 0.6818,
+"tone": "dark",
+"pres": "masc"
+},
+{
+"id": "93c1499026",
+"fx": 0.5787,
+"eye": 0.1702,
+"chin": 0.2342,
+"tone": "dark",
+"pres": "fem"
+},
+{
+"id": "b299a00b0f",
+"fx": 0.4879,
+"eye": 0.3717,
+"chin": 0.5552,
+"tone": "dark",
+"pres": "masc"
+},
+{
+"id": "5b754724c5",
+"fx": 0.5589,
+"eye": 0.383,
+"chin": 0.5551,
+"tone": "dark",
+"pres": "fem"
+},
+{
+"id": "9214c3aa87",
+"fx": 0.4568,
+"eye": 0.2645,
+"chin": 0.343,
+"tone": "dark",
+"pres": "any"
 }
 ]

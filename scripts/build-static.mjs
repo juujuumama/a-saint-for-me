@@ -28,6 +28,12 @@ html = html
   .replace(/href="\/journey"/g, 'href="#/journey"')
   .replace(/href="\/about"/g, 'href="#/about"')
   .replace("Your devotionals are private to this device's account.", "Your devotionals are saved only on this device, in this browser.");
+// Fetch every module and data file in parallel instead of one import at a time (faster on slow phones).
+const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)]));
+const mods = ["local-api.js", ...walk(path.join(out, "lib")).filter((f) => f.endsWith(".js")).map((f) => path.relative(out, f))];
+const preload = mods.map((m) => `<link rel="modulepreload" href="${m}">`).join("\n  ") +
+  '\n  <link rel="preload" href="lib/style.json" as="fetch" crossorigin>\n  <link rel="preload" href="kit/kit.json" as="fetch" crossorigin>';
+html = html.replace("</head>", `  ${preload}\n</head>`);
 fs.writeFileSync(path.join(out, "index.html"), html);
 fs.writeFileSync(path.join(out, ".nojekyll"), "");
 console.log("Built browser-only edition → dist/");
