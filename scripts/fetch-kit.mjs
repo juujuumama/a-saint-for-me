@@ -136,7 +136,7 @@ async function piece(...args) {
 }
 async function inBatches(items, fn, size = 8) {
   const out = [];
-  for (let i = 0; i < items.length; i += size) out.push(...(await Promise.all(items.slice(i, i + size).map(fn))));
+  for (let i = 0; i < items.length; i += size) out.push(...(await Promise.all(items.slice(i, i + size).map((x, j) => fn(x, i + j)))));
   return out;
 }
 
