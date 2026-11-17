@@ -98,8 +98,9 @@ const FACES = JSON.parse(fs.readFileSync(path.resolve("scripts/kit-faces.json"),
 
 // Head oval is 0.8 wide : 1 tall. Eyes sit at 47% of its height, chin at 87%,
 // so every face lands in the same place under a veil, hood or halo.
-function faceCrop({ fx, eye, chin }, W, H) {
-  let ch = ((chin - eye) * H) / 0.4, cw = ch * 0.8;
+// zoom < 1 crops closer (used where a neighboring robot would otherwise show at the edge).
+function faceCrop({ fx, eye, chin, zoom = 1 }, W, H) {
+  let ch = (((chin - eye) * H) / 0.4) * zoom, cw = ch * 0.8;
   const k = Math.min(1, W / cw, H / ch); ch *= k; cw *= k;
   let top = eye * H - 0.47 * ch, left = fx * W - cw / 2;
   top = Math.max(0, Math.min(H - ch, top)); left = Math.max(0, Math.min(W - cw, left));

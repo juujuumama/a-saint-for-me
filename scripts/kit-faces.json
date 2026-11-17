@@ -85,7 +85,8 @@
 "eye": 0.2018,
 "chin": 0.2976,
 "tone": "light",
-"pres": "fem"
+"pres": "fem",
+"zoom": 0.8
 },
 {
 "id": "1d236b36ad",
@@ -100,14 +101,6 @@
 "fx": 0.3638,
 "eye": 0.2244,
 "chin": 0.3557,
-"tone": "light",
-"pres": "fem"
-},
-{
-"id": "1dfafee2b8",
-"fx": 0.327,
-"eye": 0.1545,
-"chin": 0.2622,
 "tone": "light",
 "pres": "fem"
 },
@@ -221,7 +214,8 @@
 "eye": 0.1922,
 "chin": 0.3177,
 "tone": "medium",
-"pres": "fem"
+"pres": "fem",
+"zoom": 0.56
 },
 {
 "id": "46693feb4d",
@@ -269,7 +263,8 @@
 "eye": 0.3105,
 "chin": 0.4055,
 "tone": "dark",
-"pres": "fem"
+"pres": "fem",
+"zoom": 0.68
 },
 {
 "id": "4dc7515d2f",
@@ -429,7 +424,8 @@
 "eye": 0.2563,
 "chin": 0.3585,
 "tone": "light",
-"pres": "fem"
+"pres": "fem",
+"zoom": 0.68
 },
 {
 "id": "7d5d22bbbe",
@@ -661,7 +657,8 @@
 "eye": 0.1937,
 "chin": 0.3139,
 "tone": "medium",
-"pres": "fem"
+"pres": "fem",
+"zoom": 0.68
 },
 {
 "id": "b691bb6fc3",
@@ -693,7 +690,8 @@
 "eye": 0.2352,
 "chin": 0.3309,
 "tone": "medium",
-"pres": "fem"
+"pres": "fem",
+"zoom": 0.6
 },
 {
 "id": "bb9b1cb0b5",
@@ -733,7 +731,8 @@
 "eye": 0.268,
 "chin": 0.3688,
 "tone": "medium",
-"pres": "fem"
+"pres": "fem",
+"zoom": 0.68
 },
 {
 "id": "c53777f0a4",
@@ -845,7 +844,8 @@
 "eye": 0.2687,
 "chin": 0.396,
 "tone": "light",
-"pres": "fem"
+"pres": "fem",
+"zoom": 0.56
 },
 {
 "id": "e47810341a",
