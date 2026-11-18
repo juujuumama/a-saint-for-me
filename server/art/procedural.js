@@ -641,3 +641,39 @@ export function saintEmblem(saint, seed = 1, style) {
   ${icons}
   <rect width="${W}" height="${H}" fill="#fff" filter="url(#paper)" opacity=".8" style="mix-blend-mode:multiply"/></svg>`;
 }
+
+// ---- Titles for each collage: chosen from the prayer's main theme and the saint, varied by seed ----
+const ART_TITLES = {
+  motherhood: ["The Long Night Feeding", "Mother of the Small Hours", "Cradle and Crown", "What the Mother Keeps"],
+  parenting: ["Holding Down the Fort", "The Patient Hour", "Small Hands, Big Grace", "A Softer Voice"],
+  marriage: ["Two Lamps, One Flame", "The Vow Remembered", "Bread for Two", "Mending the Thread"],
+  relationships: ["The Open Door", "Bridge of Small Kindnesses", "Love, Unhurried", "The Mended Cord"],
+  family: ["The Kitchen Table Saint", "Under One Roof", "Keeper of the Household", "Family of Many Colors"],
+  finances: ["Daily Bread", "The Widow's Coin", "Enough for Today", "Lilies of the Field"],
+  work: ["Saint of the Commute", "The Carpenter's Bench", "Honest Labor", "Hands at Work"],
+  addiction: ["One Day at a Time", "The Unbroken Chain", "Morning After the Storm", "Freedom Rising"],
+  health: ["The Healing Hour", "Balm of Gilead", "Rest for the Body", "Mender of Bones"],
+  grief: ["Love Does Not End", "The Empty Chair", "Tears Into Pearls", "Where Love Goes On"],
+  decisions: ["The Crossroads", "Lamp for My Feet", "The Narrow Path", "Choosing Light"],
+  growth: ["Slow Bloom", "The Mustard Seed", "Rooted and Rising", "New Leaves"],
+  faith: ["Mustard Seed Faith", "The Kneeling Place", "Steadfast", "Lantern in the Dark"],
+  gratitude: ["Overflowing Light", "My Cup Runs Over", "Every Good Gift", "Joy in the Morning"],
+  overwhelm: ["Come to Me, All Who Are Weary", "The Lightened Load", "A Pause in the Storm", "Rest for the Weary"],
+  anxiety: ["Be Still", "The Calm Within", "Do Not Be Afraid", "Quiet Waters"],
+  loneliness: ["Never Alone", "The Companion", "A Light in the Window", "You Are Seen"],
+  sadness: ["Held in the Night Garden", "Mourning Into Dancing", "Blue Hour Prayer", "Comfort My People"],
+  anger: ["The Calmed Sea", "Slow to Anger", "Fire Into Light", "The Gentle Answer"],
+  hope: ["Anchor of the Soul", "Morning Will Come", "The Hope That Holds", "First Light"],
+  confusion: ["The Clearing", "Lamp Unto My Feet", "Through the Fog", "The Way Made Plain"],
+  peace: ["Peace I Leave With You", "Still Waters", "The Quiet Garden", "Sabbath Light"],
+  discouragement: ["Get Up and Walk", "The Second Wind", "Not Finished Yet", "Strength Renewed"],
+  inspiration: ["Kindled", "The Spark Within", "Wings Like Eagles", "Make All Things New"],
+  fear: ["Do Not Be Afraid", "Under His Wings", "The Guarded Gate", "Courage, Rising"],
+};
+export function artTitle(themes = [], saint = null, seed = 1) {
+  const pool = ART_TITLES[themes.find((t) => ART_TITLES[t])] || ART_TITLES.peace;
+  const t = pool[(seed >>> 3) % pool.length];
+  // now and then, name the saint: "St. Joseph and the Patient Hour"
+  if (saint?.name && (seed >>> 7) % 3 === 0 && /^The /.test(t)) return `${saint.name.replace(/\s*\(.*\)/, "")} and ${t.replace(/^The /, "the ")}`;
+  return t;
+}

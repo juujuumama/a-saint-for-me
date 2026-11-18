@@ -2,7 +2,7 @@
 // running entirely on the visitor's device. Devotionals are saved in this
 // browser only; artwork is re-drawn from its seed, so storage stays tiny.
 import { composeOffline, hydrate } from "./lib/compose-offline.js";
-import { proceduralArtwork, saintEmblem, wordsFrom, symbolIcon, SYMBOL_KEYS } from "./lib/art/procedural.js";
+import { proceduralArtwork, saintEmblem, wordsFrom, symbolIcon, SYMBOL_KEYS, artTitle } from "./lib/art/procedural.js";
 import { EMOTIONS, CIRCUMSTANCES } from "./lib/library/themes.js";
 import { saintById, saintOfDay } from "./lib/library/saints.js";
 import { needsCare, CARE_RESOURCES } from "./lib/safety.js";
@@ -80,7 +80,7 @@ function makeArt(e) {
   const sources = [d.reflection, d.scripture?.[0]?.text, d.scripture?.[1]?.text].filter(Boolean);
   const rotated = sources.map((_, k) => sources[(seed + k) % sources.length]);
     const words = rotated.map(wordsFrom).find((w) => w.length) || wordsFrom("Be still, and know that I am God.");
-  e.artHistory = [...(e.artHistory || []), { seed, composition, aspect: "portrait", saintId: saint?.id, words, title: d.art_brief.title }];
+  e.artHistory = [...(e.artHistory || []), { seed, composition, aspect: "portrait", saintId: saint?.id, words, title: artTitle(d.themes, saint, seed) }];
   e.art = { status: "ready", current: e.artHistory.length - 1 };
 }
 
@@ -94,7 +94,7 @@ function pub(e) {
     devotional: { ...e.devotional, saints: e.devotional.saints.map((s) => ({ ...s, symbols: s.emblem?.symbols || [], emblem: emblemUrl(s) })) },
     art: {
       status: "ready", notice: null,
-      current: cur ? { url: artUrl(e, cur), kind: "studio-sketch", provider: "procedural", title: cur.title, composition: cur.composition, aspect: cur.aspect } : null,
+      current: cur ? { url: artUrl(e, cur), kind: "studio-sketch", provider: "procedural", title: !cur.title || /^(Held in the Night Garden|Overflowing Light)$/.test(cur.title) ? artTitle(e.devotional.themes, saintFor(e, cur), cur.seed) : cur.title, composition: cur.composition, aspect: cur.aspect } : null,
       history: e.artHistory.map((a, i) => ({ index: i, url: artUrl(e, a), kind: "studio-sketch", composition: a.composition })),
     },
   };

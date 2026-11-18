@@ -76,6 +76,11 @@ const CASES = [
   ["my son keeps yelling at me", "parenting", null, "my son"],
   ["my partner is away and my toddler is sick and wont sleep", "illness", null, "my toddler"],
   ["I feel so alone with my thoughts", "lonely"],
+  ["My partner is traveling for work and I'm alone with my two-year-old for the next few days. I need to be patient and not yell at him.", "parenting", null, ""],
+  ["my partner is out of town for work and I'm by myself with my little one, pray I don't lose it", "parenting", null, ""],
+  ["my 3 year old is sick", "illness", null, "my 3 year old"],
+  ["I'm going to lose it, so much to do", "overwhelm"],
+  ["give me patience at work, my boss is awful", "job"],
 ];
 
 let fail = 0;

@@ -64,7 +64,7 @@ const KEYWORDS = {
 
 export function detectThemes(text = "") {
   // "alone with my toddler" is a parenting stretch, not loneliness
-  const t = text.toLowerCase().replace(/\b(home )?(alone|by myself|on my own) with ((my|the|our|both|all) )?((\w+ )?(kids|children|toddler|baby|babies|son|daughter|little ones?|twins|newborn|boys|girls|kiddos|child))\b/g, "with $4");
+  const t = text.toLowerCase().replace(/\b(home )?(alone|by myself|on my own) with ((my|the|our|both|all) )?((\w+ )?(kids|children|toddler|baby|babies|son|daughter|little ones?|little (?:boy|girl|guy|man|lady)|twins|newborn|infant|preschooler|boys?|girls?|kiddos?|child|(?:\d+|one|two|three|four|five|six|seven|eight|nine|ten)[- ]?(?:year|yr|month)[- ]?olds?))\b/g, "with $4");
   // match at word starts, so "grandmother" doesn't read as "mother"
   const hit = (w) => new RegExp(`(^|[^a-z])${w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`).test(t);
   return Object.entries(KEYWORDS)
