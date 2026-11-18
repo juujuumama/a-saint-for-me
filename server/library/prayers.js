@@ -341,6 +341,30 @@ export const INTENTS = [
     id: "parenting", themes: ["parenting", "family"], hooks: { joseph: "who raised Jesus with tenderness" },
     variants: [
       {
+        // a parent on their own for a while: partner traveling, deployed, working away
+        when: "\\b((alone|solo|on my own|by myself) with ((my|the|our|both|all) )?(\\w+ )?(KIDS)|single parenting|solo parenting|parenting (alone|solo|on my own)|(partner|husband|wife|spouse|hubby|boyfriend|girlfriend)\\b.{0,30}\\b(traveling|travelling|away|deployed|out of town|on a trip|on a work trip|gone for))".replace("KIDS", "kids|children|toddler|baby|babies|son|daughter|little ones?|twins|newborn|boys|girls|kiddos|child"),
+        noAlso: true, other: null,
+        title: ["A prayer for parenting solo this week", "A prayer for holding down the fort"],
+        opening: ["Holding everything together on your own, even for a few days, is a lot. Asking for patience is already a good start.", "Solo stretches are long. Let's ask for patience, energy and a little grace for both of you."],
+        self: [
+          "Lord, I'm parenting on my own for the next little while, and I'm already tired. Give me patience when I'm stretched thin, a gentle voice when I want to yell, and the humility to start over when I get it wrong. Let my child feel safe and loved with me, even on the hard days. Watch over the one who is away, and bring us all back together in peace.",
+          "Jesus, You were patient with tired, hungry, quarreling disciples. Be patient with me, and make me patient too. Carry me through these days on my own: the early mornings, the meltdowns, the long evenings. When I'm about to snap, give me one slow breath. Protect the one who is away, and let this time bring my child and me closer.",
+        ],
+        reflection: ["When you feel a yell rising, whisper 'Jesus, help me' and take one breath. If you do yell, a quick 'I'm sorry, I love you' teaches more than a perfect day.", "Lower the bar for these few days: fed, safe and loved is enough."],
+      },
+      {
+        // patience, yelling, tantrums
+        when: "\\b((yell|yelling|yelled|shout|shouting|shouted|scream|screaming|screamed)\\b(?! at me)|lose my (temper|patience|cool)|losing my (temper|patience|cool)|lost my (temper|patience|cool)|snap(ped|ping)? at|so impatient|be (more )?patient|patience with|tantrums?|meltdowns?|terrible twos|touched out|mom rage)",
+        other: null,
+        title: ["A prayer for patience as a parent", "A prayer for a calmer heart at home"],
+        opening: ["Wanting to do better is already love in action. Let's ask for patience.", "Every parent has days they lose their temper. Grace is for those days."],
+        self: [
+          "Lord, I love my child, and I keep running out of patience. Slow me down before the words come out sharp. Give me a pause, a breath and a gentler voice. When I get it wrong, help me say sorry quickly and hold my child close. Heal anything my anger has hurt, and grow in me the steady, patient love You have for me.",
+          "Jesus, You let the little children come to You, even when the disciples were annoyed. Give me Your patience today. Help me see the need underneath the meltdown, and the tired person underneath my own temper. Make our home a place where mistakes are forgiven quickly, mine included.",
+        ],
+        reflection: ["Next time you feel it rising, lower your voice instead of raising it, and get down to their eye level.", "Repair matters more than perfection. 'I'm sorry I yelled' is a powerful thing to say out loud."],
+      },
+      {
         when: "\\b(kindergarten|first day of school|starting school|leaving for college|off to college|moving out|empty nest|graduat)",
         title: ["A prayer for a child's new chapter"],
         titleOther: "A prayer for {who}'s new chapter",
@@ -363,7 +387,7 @@ export const INTENTS = [
         reflection: ["Tell them today, in words, that they are loved and that it's not their fault.", "Kindness is contagious. Pray for the kids who are unkind too."],
       },
     ],
-    keywords: ["see my kids", "~my teenager", "~my teen", "dropping out", "drop out", "~my son", "~my daughter", "~my kids", "~my children", "~my child", "~my teen", "~my toddler", "~my baby", "parenting", "kids fighting", "kids won't", "siblings", "bullied", "bullying", "kindergarten", "leaving for college", "off to college", "moving out", "empty nest", "as a mom", "as a dad", "being a mom", "being a parent", "single mom", "single dad", "custody"],
+    keywords: ["see my kids", "~my teenager", "~my teen", "dropping out", "drop out", "~my son", "~my daughter", "~my kids", "~my children", "~my child", "~my teen", "~my baby", "toddler", "tantrum", "meltdown", "terrible twos", "not to yell", "stop yelling", "keep yelling", "yelled at my", "yell at my", "yelling at my", "lose my temper", "lost my temper", "losing my temper", "lose my patience", "losing my patience", "lost my patience", "patient with my", "patience with my", "be more patient", "solo parenting", "parenting alone", "parenting solo", "single parenting", "solo with", "touched out", "mom rage", "parenting", "kids fighting", "kids won't", "siblings", "bullied", "bullying", "kindergarten", "leaving for college", "off to college", "moving out", "empty nest", "as a mom", "as a dad", "being a mom", "being a parent", "single mom", "single dad", "custody"],
     saints: ["joseph", "monica", "anne"], scripture: ["is66_13", "ps139_13", "prov3_5"], devotions: ["rosary_joyful", "novena_st_joseph"],
     title: ["A prayer for my children", "A prayer for a tired parent"],
     opening: ["Parenting is holy work that rarely feels holy in the moment. You're doing more than you know.", "God loves your children even more than you do. Let's bring them to Him."],
@@ -1312,11 +1336,29 @@ export function pronounsFor(who = "", text = "") {
   if (MASC.test(w)) return { they: "he", them: "him", their: "his", are: "is", were: "was", themself: "himself" };
   return { they: "they", them: "them", their: "their", are: "are", were: "were", themself: "themselves" };
 }
-const RELATION = /\bmy (?:(?:teenage|teen|little|older|younger|oldest|youngest|adult|grown|elderly|sweet) )?(mother[- ]in[- ]law|father[- ]in[- ]law|in[- ]laws|sister[- ]in[- ]law|brother[- ]in[- ]law|mom|mother|mama|dad|father|papa|grandma|grandmother|grandpa|grandfather|sister|brother|son|daughter|husband|wife|boyfriend|girlfriend|fianc[eé]e?|partner|friend|best friend|aunt|uncle|cousin|niece|nephew|baby|kids|children|family|parents|stepmom|stepdad|godmother|godfather|coworker|neighbor)\b/i;
+const RELATION = /\bmy (?:(?:teenage|teen|little|older|younger|oldest|youngest|adult|grown|elderly|sweet) )?(mother[- ]in[- ]law|father[- ]in[- ]law|in[- ]laws|sister[- ]in[- ]law|brother[- ]in[- ]law|mom|mother|mama|dad|father|papa|grandma|grandmother|grandpa|grandfather|sister|brother|son|daughter|husband|wife|boyfriend|girlfriend|fianc[eé]e?|partner|friend|best friend|aunt|uncle|cousin|niece|nephew|baby|toddler|newborn|child|kid|kids|children|teenager|teen|stepson|stepdaughter|family|parents|stepmom|stepdad|godmother|godfather|coworker|neighbor)\b/i;
 
 // Find who the prayer is for, when the person is praying for someone else.
 const REL_WORDS = "mom|mother|dad|father|grandma|grandmother|grandpa|grandfather|sister|brother|son|daughter|husband|wife|boyfriend|girlfriend|partner|friend|aunt|uncle|cousin|baby|kids|children|parents|family";
+// For some intentions the prayer can only be "for" certain people: a parenting prayer is
+// for a child, never for the partner who happens to be mentioned first.
+const WHO_FOR = { parenting: /\b(son|daughter|kids?|children|child|toddler|baby|babies|teen|teenager|boy|girl|twins|stepson|stepdaughter)\b/i };
 export function detectWho(text = "", intentId) {
+  if (WHO_FOR[intentId]) {
+    const all = [...text.matchAll(new RegExp(RELATION.source, "gi"))].filter((x) => WHO_FOR[intentId].test(x[0]));
+    if (!all.length) return "";
+    text = text.slice(all[0].index);
+  }
+  // Several people named ("my partner is away and my toddler is sick"): pray for the one
+  // named closest before what the prayer is about.
+  const rels = [...text.matchAll(new RegExp(RELATION.source, "gi"))];
+  if (rels.length > 1 && byId(intentId)) {
+    const low = text.toLowerCase();
+    const at = byId(intentId).keywords.map((k) => low.search(new RegExp(`(?<![a-z])${k.replace(/^~/, "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`))).filter((i) => i > 0);
+    const kw = at.length ? Math.min(...at.filter((i) => !rels.some((r) => i >= r.index && i < r.index + r[0].length)).concat(Infinity)) : Infinity;
+    const before = rels.filter((r) => r.index < kw).pop();
+    if (before && before.index > 0) text = text.slice(before.index);
+  }
   const m = text.match(RELATION);
   if (!m) return "";
   // "I want to die, my mom doesn't care" is the speaker's own crisis
@@ -1372,7 +1414,8 @@ export function detectIntent(text = "", themes = []) {
   if (selfHarmRisk(text)) return byId("despair");
   if (assaultMention(text)) return byId("survivor");
   if (abuseRisk(text)) return byId("abuse");
-  const t = ` ${norm(text)} `;
+  // "alone with my toddler" is a parenting stretch, not loneliness
+  const t = ` ${norm(text)} `.replace(/ (home )?(alone|by myself|on my own) with ((my|the|our|both|all) )?((\w+ )?(kids|children|toddler|baby|babies|son|daughter|little ones?|twins|newborn|boys|girls|kiddos|child)) /g, " solo with $4 ");
   const worried = WORRY.test(t), happy = HAPPY.test(t);
   let best = null; const ranked = [];
   for (const it of INTENTS) {

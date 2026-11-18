@@ -74,8 +74,10 @@ export function composeOffline(checkin, context = {}, style) {
     const named = themes.slice(0, 3).map((t) => PHRASES[t]).filter(Boolean);
     paras.push(`${rand(INVOCATIONS.self)} You know what is on my heart before I can find the words. I place before You ${named.join(", and ")}. Where I am weary, be my rest. Where I am afraid, be my courage. Where I cannot see the way, be my light.`);
   }
-  const also = intent && !isThanks ? secondConcern(text, intent) : "";
-  if (also) paras[0] += ` And Lord, I also bring You ${also}.`;
+  const also = intent && !isThanks && !variant?.noAlso ? secondConcern(text, intent) : "";
+  // don't add "my children" to a prayer that is already for a child
+  const sameChild = also === "my children" && /\b(son|daughter|kids?|children|child|toddler|baby|babies|newborn|teen|teenager|stepson|stepdaughter)\b/i.test(who);
+  if (also && !sameChild) paras[0] += ` And Lord, I also bring You ${also}.`;
   const nervous = /\b(nervous|scared|anxious|afraid|butterflies)\b/i.test(text);
   if (isThanks) { if (nervous && !otherMode) paras[0] += " " + rand(JOY_NERVES); }
   else if (feeling && !otherMode) paras[0] += " " + rand(FEELING_LINES[feeling]);

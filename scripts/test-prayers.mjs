@@ -69,6 +69,13 @@ const CASES = [
   ["my grandpa died and I can't afford the funeral", "grief", null, "my grandpa"],
   ["My friend tried to kill herself", "despair", null, "my friend"],
   ["my cousin overdosed last night and died", "grief"],
+  ["My partner is traveling for work and I'm alone with my toddler for the next few days and I need to be patient and try not to yell at him", "parenting", null, ""],
+  ["my husband is deployed and I'm alone with the kids", "parenting", null, ""],
+  ["I'm so tired, my wife is away and I'm home alone with three kids", "parenting", null, ""],
+  ["I keep yelling at my kids and I hate it", "parenting", null, ""],
+  ["my son keeps yelling at me", "parenting", null, "my son"],
+  ["my partner is away and my toddler is sick and wont sleep", "illness", null, "my toddler"],
+  ["I feel so alone with my thoughts", "lonely"],
 ];
 
 let fail = 0;
