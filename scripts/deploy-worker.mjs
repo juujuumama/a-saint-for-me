@@ -13,7 +13,7 @@ const label = (t) => (Array.isArray(t) ? t[0] : t || "").replace(/^A prayer (for
 // short clarifications where topics are easy to confuse
 const HINTS = {
   heartbreak: "a breakup, being left or cheated on", marriage: "struggles between spouses who are still together",
-  lonely: "feeling alone or isolated", mental: "depression, anxiety, a heavy mind", overwhelm: "too much to do, stretched thin",
+  lonely: "feeling alone or isolated, missing family or friends far away, lonely in a new place", mental: "depression, anxiety, a heavy mind", overwhelm: "too much to do, stretched thin",
   suicideloss: "someone died by suicide", grief: "someone died", sickchild: "a child is sick", illness: "an adult is sick or having surgery",
   difficult: "a hard person: narcissistic, controlling, toxic", job: "work stress, job loss, job search", parenting: "raising kids, patience, solo parenting",
   lovedone: "praying for someone, nothing more specific fits",

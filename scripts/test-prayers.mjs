@@ -28,7 +28,6 @@ const CASES = [
   ["we lost the baby at 10 weeks", "babyloss"],
   ["my grandpa passed last night", "grief", null, "my grandpa"],
   ["my friend's mom died, how do I pray for her", "grief", null, "my friend's mom"],
-  ["my best friend moved away and I miss her", "lonely", null, ""],
   ["my brother took his own life last month", "suicideloss", null, "my brother"],
   ["my dad is dying of cancer, hospice says days", "dying", null, "my dad"],
   ["my cat is sick", "pet", "sick pet"],
@@ -81,6 +80,12 @@ const CASES = [
   ["my 3 year old is sick", "illness", null, "my 3 year old"],
   ["I'm going to lose it, so much to do", "overwhelm"],
   ["give me patience at work, my boss is awful", "job"],
+  ["missing your family", "lonely"],
+  ["spending thanksgiving away from my family this year", "lonely"],
+  ["I miss my mom so much, she lives so far away", "lonely", null, ""],
+  ["I'm so lonely since moving to this new city, I don't know anyone", "lonely", "new place"],
+  ["I miss my mom so much", "lonely", "missing someone", ""],
+  ["my best friend moved away and I miss her", "lonely", "friend far away", ""],
 ];
 
 let fail = 0;

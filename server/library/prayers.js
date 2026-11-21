@@ -365,6 +365,7 @@ export const INTENTS = [
         reflection: ["Next time you feel it rising, lower your voice instead of raising it, and get down to their eye level.", "Repair matters more than perfection. 'I'm sorry I yelled' is a powerful thing to say out loud."],
       },
       {
+        strict: true,
         when: "\\b(kindergarten|first day of school|starting school|leaving for college|off to college|moving out|empty nest|graduat)",
         title: ["A prayer for a child's new chapter"],
         titleOther: "A prayer for {who}'s new chapter",
@@ -691,7 +692,56 @@ export const INTENTS = [
   },
   {
     id: "lonely", themes: ["loneliness"],
-    keywords: ["lonley", "lonly", "all alone", "no one to talk to", "lonely", "alone", "isolated", "no friends", "nobody cares", "no one cares", "left out", "invisible", "moved away", "miss my friend", "miss my family", "homesick"],
+    variants: [
+      {
+        // missing family who are far away (only with a clue about distance, so a death is never mistaken for distance)
+        strict: true, // even when the AI picks this one, the words must match
+        when: "\\b(miss(ing|ed)? (my |your |our )?(family|families|home|people|kids|children)\\b|missing family|homesick|far (away )?from (home|my family|family|my kids|everyone)|away from (my |our )?(family|home|kids|children|loved ones)|without (my |our )?family|(holidays?|christmas|thanksgiving|easter|birthday|eid|new year).{0,25}\\b(alone|without|away|apart)|(alone|without|away|apart).{0,25}\\b(holidays?|christmas|thanksgiving|easter|my birthday)|(FAM).{0,40}\\b(lives?|living|moved|live) (so |really |very )?(far|away|across|overseas|abroad|in another)|(can'?t|cannot|couldn'?t) (go|fly|travel|get) home|haven'?t seen (my )?(FAM)|across the (country|world|ocean) from)".replace(/FAM/g, "family|families|mom|mum|mother|dad|father|parents|kids|children|son|daughter|sister|brother|siblings|grandma|grandpa|grandparents|people"),
+        other: null,
+        title: ["A prayer for missing family", "A prayer for when home is far away"],
+        opening: ["Missing the people you love shows how much they matter. Let's bring them close in prayer.", "Distance is hard on the heart. God holds you and the people you love, wherever you are."],
+        self: [
+          "Lord, I miss my family, and the distance feels heavy today. Hold the people I love where I can't. Keep them safe and well, and let them feel my love across the miles. Fill the empty places in my days with Your presence, and bring us together again soon, with joy.",
+          "Jesus, You know what it is to be far from home. Comfort me in this ache of missing the people I love. Bless every call and message between us, watch over them until we're together again, and help me find belonging and good people right where I am.",
+        ],
+        reflection: ["Call or send a voice message to someone you miss today. Tell them one specific thing you love about them.", "Pray for each person you miss by name tonight. Prayer closes distances nothing else can."],
+      },
+      {
+        // a friend who moved away
+        when: "\\b((best )?friends?\\b.{0,30}\\b(moved|moving) (away|across|to)|miss(ing)? my (best )?friends?\\b)",
+        other: null,
+        title: ["A prayer for a friend far away"],
+        opening: ["Friendship that spans the miles is still friendship. Let's pray for yours.", "It's hard when a good friend is no longer close by. God keeps you both."],
+        self: [
+          "Lord, I miss my friend. Thank You for the gift of that friendship, and keep it alive across the distance. Bless my friend in their new place, give them good people there, and give me the courage to stay in touch and the openness to new friendships near me.",
+        ],
+        reflection: ["Send your friend a photo or memory today, just to say you're thinking of them.", "Good friendships stretch; they don't have to break. Schedule your next call."],
+      },
+      {
+        // missing someone, with no clue whether they are far away or have died: words that fit both
+        strict: true,
+        when: "\\bmiss(ing|ed)? (my |him|her|them|you)|\\bi miss (him|her|them)\\b",
+        other: null,
+        title: ["A prayer for missing someone"],
+        opening: ["Missing someone is love that has nowhere to go for a while. Let's give it to God.", "The ache of missing someone is real. You don't have to carry it alone."],
+        self: [
+          "Lord, I miss them so much. You know every reason my heart aches. Hold the one I love in Your care, wherever they are, and hold me in this missing. Turn my longing into prayer, comfort me in the quiet moments, and let love, which never ends, be stronger than the distance between us.",
+        ],
+        reflection: ["Say their name in prayer tonight, and one thing you're grateful for about them.", "Missing someone is a form of love. Let it be a prayer."],
+      },
+      {
+        // lonely in a new place
+        when: "\\b(moved (to|here|across|away to|out to)|moving to|new (city|town|state|country|place|area|neighborhood|school)|(don'?t|do not|dont) know anyone|starting over (in|somewhere))",
+        other: null,
+        title: ["A prayer for belonging in a new place"],
+        opening: ["New places can be lonely at first. It's okay that it doesn't feel like home yet.", "Starting over somewhere new takes courage. Let's ask God for belonging."],
+        self: [
+          "Lord, I'm somewhere new and I don't have my people here yet. Be my home while I find one. Lead me to a parish, a friend and a place where I'm known. Give me courage to say yes to invitations and to offer them, and let this new place become a gift.",
+        ],
+        reflection: ["Go to Mass at a nearby parish this week and stay for coffee after, even for five minutes.", "Say yes to one small invitation, or make one."],
+      },
+    ],
+    keywords: ["missing my family", "missing your family", "missing family", "miss your family", "miss home", "homesick", "far from home", "far from my family", "away from my family", "away from family", "without my family", "holidays alone", "thanksgiving away", "thanksgiving without", "christmas away", "christmas without", "holidays away", "holidays without", "havent seen my family", "~miss my", "~missing my", "lives so far", "lives far away", "new city", "new town", "dont know anyone", "lonley", "lonly", "all alone", "no one to talk to", "lonely", "alone", "isolated", "no friends", "nobody cares", "no one cares", "left out", "invisible", "moved away", "miss my friend", "miss my family", "homesick"],
     saints: ["kateri", "teresa_calcutta", "martin_porres"], scripture: ["ps68_6", "heb13_5", "is49_15"], devotions: ["guardian_angel_prayer", "memorare"],
     title: ["A prayer in loneliness"],
     opening: ["Loneliness is one of the hardest feelings to name. Thank you for naming it here.", "You are seen, even when it feels like no one notices."],

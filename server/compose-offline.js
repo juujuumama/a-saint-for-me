@@ -49,7 +49,8 @@ export function composeOffline(checkin, context = {}, style) {
   const intent = aiIntent || found || (checkin.mode === "thanks" ? INTENTS.find((i) => i.id === "gratitude") : null);
   if (intent) themes = [...new Set([...intent.themes, ...themes])];
   // A more specific version of the intention (e.g. a raise rather than a new job)
-  const aiVariant = aiIntent && ai.variant > 0 ? intent.variants?.[ai.variant - 1] : null;
+  let aiVariant = aiIntent && ai.variant > 0 ? intent.variants?.[ai.variant - 1] : null;
+  if (aiVariant?.strict && !matches(aiVariant.when, text)) aiVariant = null; // sensitive versions need the words to match
   const variant = aiVariant || intent?.variants?.find((v) => matches(v.when, text));
   const nervousBlock = variant ? variant.nervous : intent?.nervous;
   const nervousNews = Boolean(nervousBlock) && /\b(nervous|anxious|scared|afraid|worried|butterflies|jitters|overwhelmed)\b/i.test(text) && !/(!|\b(so excited|thrilled|so happy|can't wait|cant wait)\b)/i.test(text);
