@@ -342,7 +342,7 @@ export const INTENTS = [
     variants: [
       {
         // a parent on their own for a while: partner traveling, deployed, working away
-        when: "\\b((alone|solo|on my own|by myself) with ((my|the|our|both|all) )?(\\w+ )?(KIDS)|single parenting|solo parenting|parenting (alone|solo|on my own)|(partner|husband|wife|spouse|hubby|boyfriend|girlfriend)\\b.{0,30}\\b(traveling|travelling|away|deployed|out of town|on a trip|on a work trip|gone for))".replace("KIDS", "kids|children|toddler|baby|babies|son|daughter|little ones?|little (?:boy|girl|guy|man|lady)|twins|newborn|infant|preschooler|boys?|girls?|kiddos?|child|(?:\d+|one|two|three|four|five|six|seven|eight|nine|ten)[- ]?(?:year|yr|month)[- ]?olds?"),
+        when: "\\b((alone|solo|on my own|by myself|just me|only me) (with|and) ((my|the|our|both|all) )?(\\w+ )?(KIDS)|single parenting|solo parenting|parenting (alone|solo|on my own)|(partner|husband|wife|spouse|hubby|boyfriend|girlfriend)\\b.{0,30}\\b(traveling|travelling|away|deployed|out of town|on a trip|on a work trip|gone for|working nights|working late|on night shift))".replace("KIDS", "kids|children|toddler|baby|babies|son|daughter|little ones?|little (?:boy|girl|guy|man|lady)|twins|newborn|infant|preschooler|boys?|girls?|kiddos?|child|(?:\d+|one|two|three|four|five|six|seven|eight|nine|ten)[- ]?(?:year|yr|month)[- ]?olds?"),
         noAlso: true, other: null,
         title: ["A prayer for parenting solo this week", "A prayer for holding down the fort"],
         opening: ["Holding everything together on your own, even for a few days, is a lot. Asking for patience is already a good start.", "Solo stretches are long. Let's ask for patience, energy and a little grace for both of you."],
@@ -1384,10 +1384,15 @@ const byId = (id) => INTENTS.find((x) => x.id === id);
 const DEATH = /\b(died|passed away|passed on|funeral|was killed|got killed|killed in)\b/;
 let lastRanked = [];
 // A second concern in the same message ("my mom has cancer and I lost my job")
+// How sure the word matcher was about its last pick (used to decide when to ask the AI)
+let lastScore = { best: 0, next: 0 };
+export function matchConfidence() { return lastScore; }
 export function secondConcern(text, primary) {
   const next = lastRanked.find((x) => x.hits >= 1 && x.it.id !== "lovedone" && !x.it.joy && !x.it.celebrate && ALSO[x.it.id] && x.it.id !== primary?.id);
   return next ? ALSO[next.it.id] : "";
 }
+// the AI's second topic, as a phrase ("" when it isn't a real second concern)
+export function alsoFor(id, primary) { const it = INTENTS.find((x) => x.id === id); return it && it.id !== primary?.id && !it.joy && !it.celebrate && it.id !== "lovedone" ? ALSO[it.id] || "" : ""; }
 // Short phrases for a second concern, in the speaker's voice
 const ALSO = {
   job: "my work and the job I need", money: "our finances and the bills ahead", cancer: "the illness of someone I love", illness: "the sickness we're facing",
@@ -1415,7 +1420,7 @@ export function detectIntent(text = "", themes = []) {
   if (assaultMention(text)) return byId("survivor");
   if (abuseRisk(text)) return byId("abuse");
   // "alone with my toddler" is a parenting stretch, not loneliness
-  const t = ` ${norm(text)} `.replace(/ (home )?(alone|by myself|on my own) with ((my|the|our|both|all) )?((\w+ )?(kids|children|toddler|baby|babies|son|daughter|little ones?|little (?:boy|girl|guy|man|lady)|twins|newborn|infant|preschooler|boys?|girls?|kiddos?|child|(?:\d+|one|two|three|four|five|six|seven|eight|nine|ten)[- ]?(?:year|yr|month)[- ]?olds?)) /g, " solo with $4 ");
+  const t = ` ${norm(text)} `.replace(/ (home )?(alone|by myself|on my own|just me|only me) (?:with|and) (?=((my|the|our|both|all) )?((\w+ )?(kids|children|toddler|baby|babies|son|daughter|little ones?|little (?:boy|girl|guy|man|lady)|twins|newborn|infant|preschooler|boys?|girls?|kiddos?|child|(?:\d+|one|two|three|four|five|six|seven|eight|nine|ten)[- ]?(?:year|yr|month)[- ]?olds?)) )/g, " solo with ");
   const worried = WORRY.test(t), happy = HAPPY.test(t);
   let best = null; const ranked = [];
   for (const it of INTENTS) {
@@ -1438,6 +1443,7 @@ export function detectIntent(text = "", themes = []) {
   // A death changes everything: "my cousin overdosed and died" is grief
   if (best && DEATH.test(t) && !["grief", "suicideloss", "pet", "babyloss", "despair", "lostthing"].includes(best.it.id) && !best.it.joy) best = { it: byId("grief"), hits: 9 };
   lastRanked = ranked.sort((a, b) => b.hits - a.hits).filter((x) => x.it !== best?.it);
+  lastScore = { best: best?.hits || 0, next: lastRanked[0]?.hits || 0 };
   if (best) return best.it;
   // good news with no specific topic → thanksgiving
   if (happy && !worried) return byId("gratitude");

@@ -4,7 +4,7 @@ import { SAINTS, saintById } from "./library/saints.js";
 import { SCRIPTURE, scriptureById } from "./library/scripture.js";
 import { DEVOTIONS, devotionById } from "./library/devotions.js";
 import { themesFromCheckin } from "./library/themes.js";
-import { INTENTS, SAINT_HOOKS, FEELING_LINES, JOY_NERVES, INVOCATIONS, CLOSINGS, detectIntent, detectWho, fill, matches, secondConcern } from "./library/prayers.js";
+import { INTENTS, SAINT_HOOKS, FEELING_LINES, JOY_NERVES, INVOCATIONS, CLOSINGS, detectIntent, detectWho, fill, matches, secondConcern, alsoFor } from "./library/prayers.js";
 
 // ---------- Offline composer ----------
 function scoreBy(items, themes) {
@@ -41,10 +41,16 @@ export function composeOffline(checkin, context = {}, style) {
   if (checkin.mode === "thanks" && !themes.includes("gratitude")) themes.unshift("gratitude");
 
   const text = checkin.text || "";
-  const intent = detectIntent(text, themes) || (checkin.mode === "thanks" ? INTENTS.find((i) => i.id === "gratitude") : null);
+  // checkin.ai (optional) is what the AI understood: { intent, variant, who, also }.
+  // Safety always comes first: despair, abuse and survivor prayers are never overridden.
+  const found = detectIntent(text, themes);
+  const ai = checkin.ai && !["despair", "survivor", "abuse"].includes(found?.id) ? checkin.ai : null;
+  const aiIntent = ai && INTENTS.find((i) => i.id === ai.intent && !["despair", "survivor", "abuse"].includes(i.id));
+  const intent = aiIntent || found || (checkin.mode === "thanks" ? INTENTS.find((i) => i.id === "gratitude") : null);
   if (intent) themes = [...new Set([...intent.themes, ...themes])];
   // A more specific version of the intention (e.g. a raise rather than a new job)
-  const variant = intent?.variants?.find((v) => matches(v.when, text));
+  const aiVariant = aiIntent && ai.variant > 0 ? intent.variants?.[ai.variant - 1] : null;
+  const variant = aiVariant || intent?.variants?.find((v) => matches(v.when, text));
   const nervousBlock = variant ? variant.nervous : intent?.nervous;
   const nervousNews = Boolean(nervousBlock) && /\b(nervous|anxious|scared|afraid|worried|butterflies|jitters|overwhelmed)\b/i.test(text) && !/(!|\b(so excited|thrilled|so happy|can't wait|cant wait)\b)/i.test(text);
   let src = variant ? { ...intent, ...variant } : intent;
@@ -52,7 +58,11 @@ export function composeOffline(checkin, context = {}, style) {
   if (!themes.length) themes = ["peace", "faith", "hope"];
   const isThanks = Boolean(src?.joy || src?.celebrate);
 
-  let who = checkin.personName || detectWho(text, intent?.id);
+  // Who the prayer is for: with AI, only when the AI and the word matcher agree on the person
+  // (the AI alone tends to name anyone mentioned: "I was hurtful to my sister").
+  const localWho = detectWho(text, intent?.id);
+  const sameWho = (a, b) => { const n = (x) => x.toLowerCase().replace(/^(my|the|our) /, "").split(" ").pop(); return a && b && (a.includes(n(b)) || b.includes(n(a))); };
+  let who = checkin.personName || (aiIntent ? (sameWho(ai.who || "", localWho) ? localWho : "") : localWho);
   const otherMode = Boolean(who && (src?.other || intent?.id === "grief"));
   if (!otherMode) who = checkin.personName || "";
 
@@ -74,7 +84,7 @@ export function composeOffline(checkin, context = {}, style) {
     const named = themes.slice(0, 3).map((t) => PHRASES[t]).filter(Boolean);
     paras.push(`${rand(INVOCATIONS.self)} You know what is on my heart before I can find the words. I place before You ${named.join(", and ")}. Where I am weary, be my rest. Where I am afraid, be my courage. Where I cannot see the way, be my light.`);
   }
-  const also = intent && !isThanks && !variant?.noAlso ? secondConcern(text, intent) : "";
+  const also = intent && !isThanks && !variant?.noAlso ? (aiIntent ? alsoFor(ai.also, intent) : secondConcern(text, intent)) : "";
   // don't add "my children" to a prayer that is already for a child
   const sameChild = also === "my children" && /\b(son|daughter|kids?|children|child|toddler|baby|babies|newborn|teen|teenager|stepson|stepdaughter)\b/i.test(who);
   if (also && !sameChild) paras[0] += ` And Lord, I also bring You ${also}.`;

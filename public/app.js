@@ -543,7 +543,7 @@ async function renderAbout() {
     </section>
     <section class="about-sec">
       <h2>Your privacy</h2>
-      <p>What you write stays private to you. It's never shown to anyone else, and the art is made without it. "Remember my intentions" is off unless you turn it on, and you can delete everything anytime from the shield menu. If your words suggest you might be in danger, crisis resources appear alongside your prayer.</p>
+      <p>What you write stays private to you. It's never shown to anyone else, and the art is made without it. To understand what you mean, your words are read by an AI service on Sierra's own Cloudflare account, which picks the right prayer from the library and doesn't store your words. The prayers themselves are never written by AI. "Remember my intentions" is off unless you turn it on, and you can delete everything anytime from the shield menu. If your words suggest you might be in danger, crisis resources appear alongside your prayer.</p>
     </section>
     </div>
     </div>

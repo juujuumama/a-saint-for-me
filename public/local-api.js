@@ -23,6 +23,20 @@ async function loadFile(file) {
   kitData.set(file, p);
   return p;
 }
+// Optional AI understanding (Sierra's free Cloudflare Worker): picks the prayer topic and who it's for.
+// The prayer itself always comes from the library. Messages are not stored. Crisis messages are never
+// sent; anything slow, offline or failing simply falls back to the built-in word matching.
+const AI_URL = "https://a-saint-for-me.juujuumama.workers.dev/understand";
+async function understand(text) {
+  if (!text || text.length < 12 || needsCare(text) || (typeof navigator !== "undefined" && navigator.onLine === false)) return null;
+  const ctl = new AbortController(); const timer = setTimeout(() => ctl.abort(), 4000);
+  try {
+    const r = await fetch(AI_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text }), signal: ctl.signal });
+    if (!r.ok) return null;
+    const j = await r.json();
+    return typeof j.intent === "string" ? { intent: j.intent, variant: Number(j.variant) || 0, who: String(j.who || ""), also: String(j.also || "") } : null;
+  } catch { return null; } finally { clearTimeout(timer); }
+}
 const saintFor = (e, a) => (a.saintId ? saintById(a.saintId) : null);
 const kitPick = (e, a) => (KIT ? pickKit(KIT, { themes: e.devotional.themes, seed: a.seed, saint: saintFor(e, a) }) : null);
 // Load the artist's kit pieces an experience needs, before drawing it.
@@ -137,7 +151,9 @@ export async function handle(path, method = "GET", body = {}) {
     const context = { recentCompositions: db.experiences.slice(-3).flatMap((e) => e.artHistory.map((a) => a.composition)) };
     const prev = body.continueFrom && db.settings.memoryConsent && db.experiences.find((e) => e.id === body.continueFrom);
     if (prev) { context.previous = { title: prev.intentionTitle, themes: prev.devotional.themes }; if (!checkin.personName) checkin.personName = prev.checkin.personName; }
-    const devotional = { ...hydrate(composeOffline(checkin, context, STYLE)), source: "offline" };
+    const breath = new Promise((r) => setTimeout(r, 1400)); // a breath, so the moment doesn't feel instant
+    const ai = await understand(checkin.text);
+    const devotional = { ...hydrate(composeOffline({ ...checkin, ai }, context, STYLE)), source: ai ? "ai-understood" : "offline" };
     const e = {
       id: id(), createdAt: new Date().toISOString(), intentionTitle: devotional.intention_title, devotional,
       checkin: { ...checkin, text: db.settings.memoryConsent ? checkin.text : undefined },
@@ -146,7 +162,7 @@ export async function handle(path, method = "GET", body = {}) {
     makeArt(e);
     db.experiences.push(e); save();
     await ensure(e);
-    await new Promise((r) => setTimeout(r, 1400)); // a breath, so the moment doesn't feel instant
+    await breath;
     return pub(e);
   }
   if (m && !m[2] && method === "GET") { const e = find(m[1]); await ensure(e); return pub(e); }
